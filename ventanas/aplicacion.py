@@ -30,7 +30,7 @@ def mostrar_contenido(contenido_frame, titulo, texto, clase_contenido= None):
         clase_contenido(contenido_frame)
         
         
-def iniciar_aplicacion(ventana_login, tipo_usuario):
+def iniciar_aplicacion(ventana_login, tipo_usuario, campo_password):
     # Ocultamos la ventana que nos llamó (la ventana de inicio de sesion)
     ventana_login.withdraw()
     ventana = tk.Toplevel()
@@ -83,27 +83,29 @@ def iniciar_aplicacion(ventana_login, tipo_usuario):
     
     def cambiar_a_recordatorios():
         navegar_a_pagina(contenido_frame, "Lista usuarios")
+    
+    def cerrar_sesion():
+        ventana.destroy()          # Cierra por completo el Dashboard
+        ventana_login.deiconify()  # Hace visible otra vez el Login
+        campo_password.delete(0, tk.END) # borra la contraseña de ulimo inicio de sesion
 
-    # Mostrar los botones segun que tipo de usuario inicio sesion
-    if tipo_usuario == "enfermera":
-        tk.Button(menu_frame, text="Calendario", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_calendario).pack(fill="x")    
-        tk.Button(menu_frame, text="Pacientes", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_pacientes).pack(fill="x")    
-        tk.Button(menu_frame, text="Recordatorios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_recordatorios).pack(fill="x")
-    elif tipo_usuario == "doctor":
-        tk.Button(menu_frame, text="Calendario", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_calendario).pack(fill="x")    
+    # Aqui van los botones del menu que se muestran para todos los tipos de usuarios
+    tk.Button(menu_frame, text="Calendario", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_calendario).pack(fill="x")    
+    tk.Button(menu_frame, text="Pacientes", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_pacientes).pack(fill="x")    
+    tk.Button(menu_frame, text="Recordatorios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_recordatorios).pack(fill="x")
+
+    # Mostrar los botones especiales segun que tipo de usuario inicio sesion
+    if tipo_usuario == "doctor":
         tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x")
-        tk.Button(menu_frame, text="Pacientes", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_pacientes).pack(fill="x")    
         tk.Button(menu_frame, text="Medicamentos", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_medicamentos).pack(fill="x")
-        tk.Button(menu_frame, text="Recordatorios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_recordatorios).pack(fill="x")
     elif tipo_usuario == "administrador":
-        tk.Button(menu_frame, text="Calendario", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_calendario).pack(fill="x")    
         tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x")
-        tk.Button(menu_frame, text="Pacientes", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_pacientes).pack(fill="x")    
         tk.Button(menu_frame, text="Medicamentos", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_medicamentos).pack(fill="x")
-        tk.Button(menu_frame, text="Recordatorios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_recordatorios).pack(fill="x")
+    
+    tk.Button(menu_frame, text="Cerrar sesión", height=3,font=("Arial", 10, "bold"), fg="black", command=cerrar_sesion).pack(fill="x")
     
     # Ejecutar la aplicación
     ventana.mainloop()
 
 if __name__ == "__main__":
-    main()
+    pass

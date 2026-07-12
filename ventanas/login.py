@@ -58,7 +58,7 @@ def main():
         
         tipo_usuario = [usuario.get("tipo_usuario") for usuario in usuarios if usuario.get("correo") == correo_introducido ][0]
         messagebox.showinfo("Inicio de sesion exitoso", "Bienvenido a Abuecare")
-        iniciar_aplicacion(ventana, tipo_usuario)
+        iniciar_aplicacion(ventana, tipo_usuario, contra)
 
     def abrir_registro():
         iniciar_registro(ventana)
