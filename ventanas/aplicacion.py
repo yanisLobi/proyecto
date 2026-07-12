@@ -53,7 +53,7 @@ def iniciar_aplicacion(ventana_login, tipo_usuario, campo_password):
     menu_frame.grid(row=0, column=0, sticky="nsew")
 
     imagen_original = tk.PhotoImage(file="recursos/1.png")
-    imagen_pequena = imagen_original.subsample(10, 10)
+    imagen_pequena = imagen_original.subsample(10)
 # Crear una etiqueta (Label) y asignarle la imagen
     etiqueta_logo = tk.Label(menu_frame, image=imagen_pequena)
     etiqueta_logo.pack(pady=50)
