@@ -30,13 +30,17 @@ def mostrar_contenido(contenido_frame, titulo, texto, clase_contenido= None):
         clase_contenido(contenido_frame)
         
         
-def main():
-    ventana = tk.Tk()
+def iniciar_aplicacion(ventana_login, tipo_usuario):
+    # Ocultamos la ventana que nos llamó (la ventana de inicio de sesion)
+    ventana_login.withdraw()
+    ventana = tk.Toplevel()
     ventana.title("AbueCare")
     ventana.geometry("1500x900")
     imagen_original = tk.PhotoImage(file="recursos/1.png")
     ventana.iconphoto(True, imagen_original)
-
+    
+    # Asegurar que si el usuario cierra el Dashboard con la 'X', se cierre todo el programa
+    ventana.protocol("WM_DELETE_WINDOW", ventana_login.destroy)
 
 # Columna 0 (Menú): peso 1. Columna 1 (Contenido): peso 4. Total = 5 partes (1/5 y 4/5)
     ventana.grid_columnconfigure(0, weight=1)
@@ -71,23 +75,16 @@ def main():
     def cambiar_a_usuarios():
         navegar_a_pagina(contenido_frame, "Lista usuarios")
 
-    
-    
-    
     def cambiar_a_pacientes():
         navegar_a_pagina(contenido_frame, "Lista pacientes")
 
-    
-
     def cambiar_a_medicamentos():
         navegar_a_pagina(contenido_frame, "Lista usuarios")
-
     
     def cambiar_a_recordatorios():
         navegar_a_pagina(contenido_frame, "Lista usuarios")
 
-        
-    tipo_usuario = "administrador" # doctor, administrador, enfermera
+    # Mostrar los botones segun que tipo de usuario inicio sesion
     if tipo_usuario == "enfermera":
         tk.Button(menu_frame, text="Calendario", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_calendario).pack(fill="x")    
         tk.Button(menu_frame, text="Pacientes", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_pacientes).pack(fill="x")    
