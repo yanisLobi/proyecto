@@ -7,9 +7,9 @@ from ventanas.registro import iniciar_registro
         
 def main():
     # esto se actualizara con datos de la db despues
-    usuarios = [{"correo": "a@gmail.com", "contrasena": "a", "tipo_usuario": "administrador"},
-                 {"correo": "b@gmail.com", "contrasena": "b", "tipo_usuario": "doctor"},
-                  {"correo": "c@gmail.com", "contrasena": "b", "tipo_usuario": "enfermera"}]
+    usuarios = [{"correo": "a@gmail.com", "contrasena": "a", "tipo_usuario": "administrador", "nombre": "Yanet"},
+                 {"correo": "b@gmail.com", "contrasena": "b", "tipo_usuario": "doctor", "nombre": "elvia"},
+                  {"correo": "c@gmail.com", "contrasena": "b", "tipo_usuario": "enfermera", "nombre": "Carlitos"}]
     
     ventana = tk.Tk()
     ventana.title("AbueCare Login")
@@ -57,7 +57,8 @@ def main():
             return
         
         tipo_usuario = [usuario.get("tipo_usuario") for usuario in usuarios if usuario.get("correo") == correo_introducido ][0]
-        messagebox.showinfo("Inicio de sesion exitoso", "Bienvenido a Abuecare")
+        nombre_usuario = [usuario.get("nombre") for usuario in usuarios if usuario.get("correo") == correo_introducido ][0]
+        messagebox.showinfo("Inicio de sesion exitoso", f"Bienvenido a Abuecare {nombre_usuario}")
         iniciar_aplicacion(ventana, tipo_usuario, contra)
 
     def abrir_registro():
