@@ -1,0 +1,7 @@
+Tkinter con programacion orientada a objetos
+es la froma profesional de realizar aplicaciones
+
+¿Porque?
+El codigo queda organizado
+es mas facil reutilizar
+permite proyectos grandes
