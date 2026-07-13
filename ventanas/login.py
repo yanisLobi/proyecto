@@ -1,19 +1,32 @@
 import tkinter as tk
 from tkinter import messagebox
 
+from conexion import conectar
 from ventanas.aplicacion import iniciar_aplicacion
 from ventanas.registro import iniciar_registro
 
         
 def main():
     # esto se actualizara con datos de la db despues
-    usuarios = [{"correo": "a@gmail.com", "contrasena": "a", "tipo_usuario": "administrador", "nombre": "Yanet"},
-                 {"correo": "b@gmail.com", "contrasena": "b", "tipo_usuario": "doctor", "nombre": "elvia"},
-                  {"correo": "c@gmail.com", "contrasena": "b", "tipo_usuario": "enfermera", "nombre": "Carlitos"}]
+    # Abre la conexión
+    conexion = conectar()
+    
+    cursor = conexion.cursor(dictionary=True)
+    
+    query = "SELECT * FROM `usuarios`"
+    
+    cursor.execute(query)
+    usuarios = cursor.fetchall()
+    cursor.close()
+    conexion.close()
+        
+    print(usuarios)
+       
+        
     
     ventana = tk.Tk()
     ventana.title("AbueCare Login")
-    ventana.geometry("270x500")
+    ventana.geometry("570x500")
     imagen_original = tk.PhotoImage(file="recursos/1.png")
     ventana.iconphoto(True, imagen_original)
 
@@ -42,22 +55,22 @@ def main():
             messagebox.showinfo("Error al iniciar sesion", "Debes introducir correo y contraseña")
             return
         
-        correos = [usuario.get("correo") for usuario in usuarios]
+        correos = [usuario.get("us_correo_electronico") for usuario in usuarios]
         print(f"Correos encontrados en la DB: {correos}")
         
         if correo_introducido not in correos:
             messagebox.showinfo("Error al iniciar sesion", "El correo introducido no esta registrado")
             return
         
-        contrasena_esperada = [usuario.get("contrasena") for usuario in usuarios if usuario.get("correo") == correo_introducido ][0]
+        contrasena_esperada = [usuario.get("us_contraseña") for usuario in usuarios if usuario.get("us_correo_electronico") == correo_introducido ][0]
         print(f"Contraseña encontrada en la DB: {contrasena_esperada}")
         
         if contrasena_introducida != contrasena_esperada:
             messagebox.showinfo("Error al iniciar sesion", "La contrasena es incorrecta")
             return
         
-        tipo_usuario = [usuario.get("tipo_usuario") for usuario in usuarios if usuario.get("correo") == correo_introducido ][0]
-        nombre_usuario = [usuario.get("nombre") for usuario in usuarios if usuario.get("correo") == correo_introducido ][0]
+        tipo_usuario = [usuario.get("us_tipo_usuario") for usuario in usuarios if usuario.get("us_correo_electronico") == correo_introducido ][0]
+        nombre_usuario = [usuario.get("us_nombre") for usuario in usuarios if usuario.get("us_correo_electronico") == correo_introducido ][0]
         messagebox.showinfo("Inicio de sesion exitoso", f"Bienvenido a Abuecare {nombre_usuario}")
         iniciar_aplicacion(ventana, tipo_usuario, contra)
 

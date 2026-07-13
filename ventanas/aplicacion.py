@@ -95,10 +95,10 @@ def iniciar_aplicacion(ventana_login, tipo_usuario, campo_password):
     tk.Button(menu_frame, text="Recordatorios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_recordatorios).pack(fill="x")
 
     # Mostrar los botones especiales segun que tipo de usuario inicio sesion
-    if tipo_usuario == "doctor":
+    if tipo_usuario == "Doctor":
         tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x")
         tk.Button(menu_frame, text="Medicamentos", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_medicamentos).pack(fill="x")
-    elif tipo_usuario == "administrador":
+    elif tipo_usuario == "Administrador":
         tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x")
         tk.Button(menu_frame, text="Medicamentos", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_medicamentos).pack(fill="x")
     
