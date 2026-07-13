@@ -9,6 +9,7 @@ from tkcalendar import DateEntry
 
 class CrearPacientes:
     def __init__(self, parent):
+        #me queda la duda de que es parent
         self.frame = tk.Frame(parent, bg="#f5f5f5")
         self.frame.pack(fill="both", expand=True)
     
@@ -53,6 +54,7 @@ class CrearPacientes:
         self.tel_contacto = tk.Spinbox(self.frame, from_=50, to=90)
         self.tel_contacto.pack(pady=5)
         
+        tk.Label(self.frame, text="Fecha de nacimiento").pack(pady=5)
         self.fecha = DateEntry(self.frame, year=1960)
         self.fecha.pack(pady=5)
         
