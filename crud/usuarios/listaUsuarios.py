@@ -11,7 +11,7 @@ class ListaUsuarios:
         self.frame.pack(fill="both", expand=True)
         tk.Button(self.frame, text=f"Crear {self.tabla.title()}", command=self.ir_crear).pack(pady=10)
         tk.Button(self.frame, text="Eliminar", command=self.borrar).pack(pady=10)
-        tk.Button(self.frame, text="Actualizar", command=self.ir_crear).pack(pady=10)
+        tk.Button(self.frame, text="Actualizar", command=self.actualizar).pack(pady=10)
 
         self.etiqueta = tk.Label(
             self.frame,
@@ -76,4 +76,21 @@ class ListaUsuarios:
         borrar_registro(self.tabla, self.columnas_tupla[0], id_valor)
         messagebox.showinfo("Eliminar", f"Haz eliminado el {self.tabla.title()} con ID = {id_valor}")
         self.recargar_tabla()
+    
+    def actualizar(self):
+        
+        item_id = self.tree.selection()
+        if not item_id:
+            messagebox.showinfo("Sin selección", f"seleccione un {self.tabla} ")
+            
+            return
+    def mostrar_registros(self):
+        self.ir_crear()
+        
+        
+        
+    #obtenemos los nuevos campos que agrgaron
+    
+            
+        
         
