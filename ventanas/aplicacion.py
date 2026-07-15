@@ -42,15 +42,17 @@ def iniciar_aplicacion(ventana_login, tipo_usuario, campo_password):
     # Asegurar que si el usuario cierra el Dashboard con la 'X', se cierre todo el programa
     ventana.protocol("WM_DELETE_WINDOW", ventana_login.destroy)
 
-# Columna 0 (Menú): peso 1. Columna 1 (Contenido): peso 4. Total = 5 partes (1/5 y 4/5)
-    ventana.grid_columnconfigure(0, weight=1)
-    ventana.grid_columnconfigure(1, weight=4)
+# Columna 0 (Menú): ancho fijo. Columna 1 (Contenido): ocupa el resto del espacio.
+    ventana.grid_columnconfigure(0, weight=0, minsize=300)
+    ventana.grid_columnconfigure(1, weight=1)
     ventana.grid_rowconfigure(0, weight=1) # El row 0 se estira verticalmente
 
 # 1. FRAME DEL MENÚ LATERAL (Ocupa la columna 0)
-# Se usa 'sticky="nsew"' para que el frame se estire en todas direcciones
-    menu_frame = tk.Frame(ventana, bg="#2c3e50")
+# Se usa 'sticky="nsew"' para que el frame se estire en todas direcciones,
+# pero con un ancho fijo para que no cambie al cargar tablas.
+    menu_frame = tk.Frame(ventana, bg="#2c3e50", width=300)
     menu_frame.grid(row=0, column=0, sticky="nsew")
+    menu_frame.grid_propagate(False)
 
     imagen_original = tk.PhotoImage(file="recursos/1.png")
     imagen_pequena = imagen_original.subsample(10)

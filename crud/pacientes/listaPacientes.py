@@ -1,7 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
+from conexion import conectar
 
-from herramientas import navegar_a_pagina
+
+from herramientas import navegar_a_pagina, obtener_tabla
+
 
 class ListaPacientes:
     def __init__(self, parent):
@@ -17,20 +20,28 @@ class ListaPacientes:
             fg="#2c3e50"
         )
         self.etiqueta.pack(pady=20)
-        self.usuarios = [{"nombre": "yanet", "apellido": "lazaro", "edad":"20"}, {"nombre": "juana", "apellido": "lazaro", "edad":"23"},
-                    {"nombre": "karla", "apellido": "lcamscdv", "edad":"55"}]
-  
+        
+        lista_pacientes = obtener_tabla('pacientes')
+        
+        paciente = lista_pacientes[0]
+        columnas = paciente.keys()
+        
         tipo_usuario = ""
         if tipo_usuario == "Doctor" or tipo_usuario == "Administrador":
             tk.Button(self.frame, text="Mostrar información",command= self.mostrar_crear_usuario)
-    
-        tree = ttk. Treeview(self.frame, columns=("nombre","apellido", "edad"), show="headings")
-        tree.heading("nombre", text="Nombre")
-        tree.heading("apellido", text="Apellido")
-        tree.heading("edad", text="Edad")
-        for usuario in self.usuarios:
+
+        columnas_tupla = tuple(columnas)
+        tree = ttk. Treeview(self.frame, columns=columnas_tupla, show="headings")
+        for columna in columnas:
             
-            tree.insert("", tk.END, values=(usuario.get("nombre"),usuario.get("apellido"),usuario.get("edad")))
+            tree.heading(columna, text=columna)
+        
+        
+        for paciente in lista_pacientes:
+            valores_tupla =tuple(paciente.values())
+             
+            
+            tree.insert("", tk.END, values=valores_tupla)
         tree.pack(pady=10)
 
         
