@@ -5,17 +5,16 @@ from conexion import conectar
 from ventanas.aplicacion import iniciar_aplicacion
 from ventanas.registro import iniciar_registro
 from herramientas import obtener_tabla
+import ttkbootstrap as ttkb
         
 def main():
     # esto se actualizara con datos de la db despues
     # Abre la conexión
     lista_usuarios = obtener_tabla('usuarios')
        
-        
-    
-    ventana = tk.Tk()
+    ventana = ttkb.Window(themename="cosmo")
     ventana.title("AbueCare Login")
-    ventana.geometry("270x500")
+    ventana.geometry("370x500")
     imagen_original = tk.PhotoImage(file="recursos/1.png")
     ventana.iconphoto(True, imagen_original)
 
