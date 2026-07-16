@@ -13,7 +13,7 @@ def main():
     lista_usuarios = obtener_tabla('usuarios')
     
     # temas: minty (verde), cosmo (blanco), darkly (obscuro)
-    ventana = ttkb.Window(themename="darkly") 
+    ventana = ttkb.Window(themename="cosmo") 
     ventana.title("AbueCare Login")
     ventana.geometry("300x580")
     ventana.pack_propagate(False)
