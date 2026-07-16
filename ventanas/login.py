@@ -11,10 +11,12 @@ def main():
     # esto se actualizara con datos de la db despues
     # Abre la conexión
     lista_usuarios = obtener_tabla('usuarios')
-       
-    ventana = ttkb.Window(themename="cosmo")
+    
+    # temas: minty (verde), cosmo (blanco), darkly (obscuro)
+    ventana = ttkb.Window(themename="darkly") 
     ventana.title("AbueCare Login")
-    ventana.geometry("370x500")
+    ventana.geometry("300x580")
+    ventana.pack_propagate(False)
     imagen_original = tk.PhotoImage(file="recursos/1.png")
     ventana.iconphoto(True, imagen_original)
 
@@ -22,17 +24,17 @@ def main():
     imagen_pequena = imagen_original.subsample(10)
     
     etiqueta_logo = tk.Label(ventana, image=imagen_pequena)
-    etiqueta_logo.pack(pady=50, padx=30, anchor="w")
+    etiqueta_logo.pack(pady=50, padx=45, anchor="w")
         
     # Entry para correo
     tk.Label(ventana, text="Correo:").pack(pady=5, padx=30, anchor="w")
-    correo = tk.Entry(ventana, width=30)
+    correo = tk.Entry(ventana, width=25)
     correo.pack(pady=5, padx=30, anchor="w")
      
     
     # Entry para contraseña
     tk.Label(ventana, text="Contraseña:").pack(pady=5, padx=30, anchor="w")
-    contra = tk.Entry(ventana, width=30)
+    contra = tk.Entry(ventana, width=25)
     contra.pack(pady=5, padx=30, anchor="w")
     #-------------------------------------------------------------------------------
     
