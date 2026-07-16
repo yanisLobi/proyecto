@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro
+from conexion import conectar
 
 class ListaUsuarios:
     def __init__(self, parent):
@@ -23,9 +24,9 @@ class ListaUsuarios:
         self.etiqueta.pack(pady=20)
         
          
-        lista_usuarios = obtener_tabla(self.tabla)
+        self.lista_usuarios = obtener_tabla(self.tabla)
         
-        usuario = lista_usuarios[0]
+        usuario = self.lista_usuarios[0]
         self.columnas = usuario.keys()
         
         tipo_usuario = ""
@@ -67,12 +68,12 @@ class ListaUsuarios:
             messagebox.showinfo("Error", f"Debes seleccionar un {self.tabla.title()} de la tabla")
             return
 
-        valores = self.tree.item(item_id[0], "values")
-        if not valores:
+        self.valores = self.tree.item(item_id[0], "values")
+        if not self.valores:
             messagebox.showinfo("Error", "La fila seleccionada no tiene datos")
             return
 
-        id_valor = valores[0]
+        id_valor = self.valores[0]
         borrar_registro(self.tabla, self.columnas_tupla[0], id_valor)
         messagebox.showinfo("Eliminar", f"Haz eliminado el {self.tabla.title()} con ID = {id_valor}")
         self.recargar_tabla()
@@ -84,10 +85,46 @@ class ListaUsuarios:
             messagebox.showinfo("Sin selección", f"seleccione un {self.tabla} ")
             
             return
-    def mostrar_registros(self):
         self.ir_crear()
+        self.ir_crear
+        conexion = conectar()
+        cursor = conexion.cursor(dictionary=True)
+        self.valores = self.tree(item_id[0], "values")
+        id_valor = self.valores[0]
+        query = f"SELECT * FROM {self.tabla} WHERE `{self.columnas_tupla[0]}` = %s"
+        cursor.execute(query, (id_valor,))
+        usuario = cursor.fetchone()
+        return usuario
+        
+        self.us_tipo_usuario.set(0)
+        self.us_tipo_usuario.insert(0, usuario["us_tipo_usuario"])
+        
+        self.us_nombre.delete(0, tk.END)
+        self.us_nombre.insert(0, usuario["us_nombre"])
+        
+        self.us_apellidos.delete(0, tk.END)
+        self.us_apellidos.insert(0, usuarios["us_apellidos"])
+        
+        self.us_fecha_nacimiento.delete(0, 'end')
+        self.us_fecha_nacimiento.insert(0, usuario["us_fecha_nacimiento"])
+        
+        self.us_telefono.delete(0, tk.END)
+        self.us_telefono.insert(0, usuario["us_telefono"])
+        
+        self.us_correo_electronico.delete(0, tk.END)
+        self.us_correo_electronico.insert(0, usuario["us_correo_electronico"])
+        
+        self.us_direccion.delete(0, tk.END)
+        self.us_direccion.insert(0, usuario["us_direccion"])
+        
+        self.us_especialidad.set(0)
+        self.us_especialidad.insert(0, usuario["us_especialidad"])
         
         
+
+    
+        
+
         
     #obtenemos los nuevos campos que agrgaron
     

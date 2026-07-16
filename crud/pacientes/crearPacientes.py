@@ -42,16 +42,13 @@ class CrearPacientes:
         tk.Radiobutton(self.frame, text="Femenino",
                           variable=self.radio_sexo, value="Femenino")
         #falta cambiar todo
-        tk.Label(self.frame, text="Fecha de nacimiento").pack(pady=5)
-        self.edad = tk.Spinbox(self.frame, from_=50, to=90)
-        self.edad.pack(pady=5)
         
         tk.Label(self.frame, text="Nombre del contacto de emergencia").pack(pady=5)
         self.nombre_contacto = tk.Entry(self.frame, width=30)
         self.nombre_contacto.pack(pady=5)
         
         tk.Label(self.frame, text="Telefono de Contacto de emergencia").pack(pady=5)
-        self.tel_contacto = tk.Spinbox(self.frame, from_=50, to=90)
+        self.tel_contacto = tk.Entry(self.frame, from_=50, to=90)
         self.tel_contacto.pack(pady=5)
         
         tk.Label(self.frame, text="Fecha de nacimiento").pack(pady=5)
