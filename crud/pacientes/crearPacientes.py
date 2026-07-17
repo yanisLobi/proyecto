@@ -30,6 +30,10 @@ class CrearPacientes:
         tk.Label(self.frame, text="Apellidos").pack(pady=5)
         self.apellidos = tk.Entry(self.frame, width=30)
         self.apellidos.pack(pady=5)
+         
+        tk.Label(self.frame, text="Fecha de nacimiento").pack(pady=5)
+        self.fecha = DateEntry(self.frame, year=1960)
+        self.fecha.pack(pady=5)
         
         tk.Label(self.frame, text="Edad").pack(pady=5)
         self.edad = tk.Spinbox(self.frame, from_=50, to=90)
@@ -50,10 +54,7 @@ class CrearPacientes:
         tk.Label(self.frame, text="Telefono de Contacto de emergencia").pack(pady=5)
         self.tel_contacto = tk.Entry(self.frame, from_=50, to=90)
         self.tel_contacto.pack(pady=5)
-        
-        tk.Label(self.frame, text="Fecha de nacimiento").pack(pady=5)
-        self.fecha = DateEntry(self.frame, year=1960)
-        self.fecha.pack(pady=5)
+     
         
         
        

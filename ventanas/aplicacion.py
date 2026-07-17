@@ -75,13 +75,13 @@ def iniciar_aplicacion(ventana_login, tipo_usuario, campo_password):
     
 
     def cambiar_a_usuarios():
-        navegar_a_pagina(contenido_frame, "Lista usuarios")
+        navegar_a_pagina(contenido_frame, "Lista usuarios", tipo_usuario)
 
     def cambiar_a_pacientes():
         navegar_a_pagina(contenido_frame, "Lista pacientes")
 
     def cambiar_a_medicamentos():
-        navegar_a_pagina(contenido_frame, "Lista usuarios")
+        navegar_a_pagina(contenido_frame, "Lista medicamentos", tipo_usuario)
     
     def cambiar_a_recordatorios():
         navegar_a_pagina(contenido_frame, "Lista usuarios")
@@ -95,7 +95,7 @@ def iniciar_aplicacion(ventana_login, tipo_usuario, campo_password):
     tk.Button(menu_frame, text="Calendario", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_calendario).pack(fill="x")    
     tk.Button(menu_frame, text="Pacientes", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_pacientes).pack(fill="x")    
     tk.Button(menu_frame, text="Recordatorios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_recordatorios).pack(fill="x")
-
+    tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x")
     # Mostrar los botones especiales segun que tipo de usuario inicio sesion
     if tipo_usuario == "Doctor":
         tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x")
