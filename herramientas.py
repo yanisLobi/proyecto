@@ -43,6 +43,9 @@ def navegar_a_pagina(frame, nombre_clase: str, valor=None):
     from crud.medicamentos.listaMedicamentos import ListaMedicamentos
     from crud.medicamentos.crearMedicamentos import CrearMedicamentos
     
+    
+    
+    
 
     paginas = {
         "Lista pacientes": ListaPacientes,
@@ -52,6 +55,8 @@ def navegar_a_pagina(frame, nombre_clase: str, valor=None):
         "Actualizar usuarios": ActualizarUsuarios,
         "Lista medicamentos": ListaMedicamentos,
         "Crear medicamentos": CrearMedicamentos,
+        
+        
         
         
        
