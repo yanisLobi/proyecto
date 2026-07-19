@@ -5,7 +5,7 @@ from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro
 
 
 class ListaUsuarios:
-    def __init__(self, parent, tipo_usuario):
+    def __init__(self, parent, tipo_usuario=None):
         
         self.tabla = 'usuarios' 
         self.frame = tk.Frame(parent, bg="#f5f5f5")

@@ -1,8 +1,7 @@
 from datetime import datetime
-
 from crud.medicamentos.crearMedicamentos import CrearMedicamentos
-import tkinter as tk
 from tkinter import messagebox
+import tkinter as tk
 from herramientas import obtener_registro, navegar_a_pagina, actualizar_registro
 
 
@@ -10,26 +9,22 @@ class ActualizarMedicamentos(CrearMedicamentos):
     def __init__(self, parent, id_seleccionado):
         super().__init__(parent, "Actualizar")
         self.id_seleccionado=id_seleccionado
-        self.med = obtener_registro(self.tabla, "id_me", id_seleccionado)
-        if not self.usuario:
-            messagebox.showinfo("Sin datos", "No se encontró el medicamento seleccionado")
+        self.medicamento = obtener_registro(self.tabla, "id_me", id_seleccionado)
+        if not self.medicamento:
+            messagebox.showinfo("Sin datos", "No se encontró el usuario seleccionado")
             return
-#para cada widget en crear metele el valor del registro seleccionado
-        self.us_tipo_usuario.set(self.usuario.get("us_tipo_usuario", "ninguno"))
-        self.us_nombre.insert(0, self.usuario.get("us_nombre", ""))
-        self.us_apellidos.insert(0, self.usuario.get("us_apellidos", ""))
 
-        fecha_nacimiento = self.usuario.get("us_fecha_nacimiento")
-        if fecha_nacimiento:
-            if isinstance(fecha_nacimiento, str):
-                fecha_nacimiento = datetime.strptime(fecha_nacimiento, "%Y-%m-%d").date()
-            self.us_fecha_nacimiento.set_date(fecha_nacimiento)
+        self.me_nombre_comercial.insert(0, self.medicamento.get("me_nombre_comercial", ""))
+        self.me_forma_farmaceutica.set(self.medicamento.get("me_forma_farmaceutica", "ninguno"))
+        self.me_concentracion.insert(0, self.medicamento.get("me_concentracion", ""))
 
-        self.us_contra.insert(0, self.usuario.get("us_contraseña", ""))
-        self.us_telefono.insert(0, str(self.usuario.get("us_telefono", "")))
-        self.us_correo_electronico.insert(0, self.usuario.get("us_correo_electronico", ""))
-        self.us_direccion.insert(0, self.usuario.get("us_direccion", ""))
-        self.us_especialidad.insert(0, self.usuario.get("us_especialidad", ""))
+        fecha_caducidad = self.medicamento.get("me_fecha_caducidad")
+        if fecha_caducidad:
+            if isinstance(fecha_caducidad, str):
+                fecha_caducidad = datetime.strptime(fecha_caducidad, "%Y-%m-%d").date()
+            self.me_fecha_caducidad.set_date(fecha_caducidad)
+
+        self.me_descripcion.insert(tk.END, str(self.medicamento.get("me_descripcion", "")))
     
     def actualizar_medicamento(self):
         self.guardar_valores()
@@ -40,4 +35,19 @@ class ActualizarMedicamentos(CrearMedicamentos):
         
     def guardar(self):
         self.actualizar_medicamento()
+    
+   # def actualizar_usuario(self):
+        #dicc
+        #construir sql 
+        #conexion, cursor, ejecutar un update
+        #messabox, se actualizo correctamente.
+        #regresar a lista usuarios
+        
+       
+       
+       
+       
+       
+      
+    
     

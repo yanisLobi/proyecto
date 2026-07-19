@@ -1,120 +1,86 @@
+from datetime import datetime
 import tkinter as tk
-
-
-from conexion import conectar
-from herramientas import navegar_a_pagina
-from tkinter import messagebox
+from tkinter import ttk
 from tkcalendar import DateEntry
+from tkinter import messagebox
+from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro
 
 
 class CrearPacientes:
-    def __init__(self, parent):
+    def __init__(self, parent, titulo="Crear"):
         #me queda la duda de que es parent
         self.frame = tk.Frame(parent, bg="#f5f5f5")
         self.frame.pack(fill="both", expand=True)
-    
+        self.tabla = "pacientes"
+          
         self.etiqueta = tk.Label(
             self.frame,
-            text="Crear pacientes",
+            text=f"{titulo} {self.tabla} ",
             font=("Arial", 14, "bold"),
             bg="#f5f5f5",
             fg="#2c3e50"
         )
         self.etiqueta.pack(pady=20)
+        
+        tk.Button(self.frame, text="Limpiar campos", command=self.limpiar).pack(pady=10)
+        tk.Button(self.frame, text="Cancelar", command=self.ir_lista).pack(pady=10)
+        tk.Button(self.frame, text="Guardar", command=self.guardar).pack(pady=10)
 
 
         tk.Label(self.frame, text="Nombre").pack(pady=5)
-        self.nombre = tk.Entry(self.frame, width=30)
-        self.nombre.pack(pady=5)
+        self.pa_nombre = tk.Entry(self.frame, width=30)
+        self.pa_nombre.pack(pady=5)
         
         tk.Label(self.frame, text="Apellidos").pack(pady=5)
-        self.apellidos = tk.Entry(self.frame, width=30)
-        self.apellidos.pack(pady=5)
+        self.pa_apellidos = tk.Entry(self.frame, width=30)
+        self.pa_apellidos.pack(pady=5)
          
         tk.Label(self.frame, text="Fecha de nacimiento").pack(pady=5)
-        self.fecha = DateEntry(self.frame, year=1960)
-        self.fecha.pack(pady=5)
-        
-        tk.Label(self.frame, text="Edad").pack(pady=5)
-        self.edad = tk.Spinbox(self.frame, from_=50, to=90)
-        self.edad.pack(pady=5)
-        
-        tk.Label(self.frame, text="Sexo").pack(pady=5)
-        self.radio_sexo = tk.StringVar(value="ninguno")
-        tk.Radiobutton(self.frame, text="Masculino", 
-                       variable=self.radio_sexo, value="Masculino")
-        tk.Radiobutton(self.frame, text="Femenino",
-                          variable=self.radio_sexo, value="Femenino")
-        #falta cambiar todo
+        self.pa_fecha_nacimiento = DateEntry(self.frame, year=2026)
+        self.pa_fecha_nacimiento.pack(pady=5)
         
         tk.Label(self.frame, text="Nombre del contacto de emergencia").pack(pady=5)
-        self.nombre_contacto = tk.Entry(self.frame, width=30)
-        self.nombre_contacto.pack(pady=5)
+        self.pa_nombre_contacto_emergencia = tk.Entry(self.frame, width=30)
+        self.pa_nombre_contacto_emergencia.pack(pady=5)
         
-        tk.Label(self.frame, text="Telefono de Contacto de emergencia").pack(pady=5)
-        self.tel_contacto = tk.Entry(self.frame, from_=50, to=90)
-        self.tel_contacto.pack(pady=5)
+        tk.Label(self.frame, text="Telefono del Contacto de emergencia").pack(pady=5)
+        self.pa_tel_contacto_emergencia = tk.Entry(self.frame,width=30 )
+        self.pa_tel_contacto_emergencia.pack(pady=5)
+        
+         
+    def limpiar(self):
+        limpiar_frame(self.frame)
+    
+    def ir_lista(self):
+        navegar_a_pagina(self.frame, f"Lista {self.tabla}")
+        
+    def guardar_valores(self):
+        #actualizar los valores del diccionario con los valores de lo widgets
+        self.nuevo_registro ={
+                        'pa_nombre': '',
+                        'pa_apellidos': '', 
+                        'pa_fecha_nacimiento': "1980-01-01", 
+                        'pa_nombre_contacto_emergencia': '',
+                        'pa_tel_contacto_emergencia': '',
+                        }
+        
+        self.nuevo_registro["pa_nombre"] = self.pa_nombre.get()
+        self.nuevo_registro["pa_apellidos"] = self.pa_apellidos.get()
+        self.nuevo_registro["pa_fecha_nacimiento"] = self.pa_fecha_nacimiento.get_date().strftime("%Y-%m-%d")
+        self.nuevo_registro["pa_nombre_contacto_emergencia"] = self.pa_nombre_contacto_emergencia.get()
+        self.nuevo_registro["pa_tel_contacto_emergencia"] = self.pa_tel_contacto_emergencia.get()
+        
+        
+    
+    def crear_paciente(self):
+        self.guardar_valores()
+        insertar_registro(self.tabla, self.nuevo_registro)
      
-        
-        
-       
-        tk.Button(self.frame, text="Guardar Paciente", command=self.guardar).pack(pady=10)
-        tk.Button(self.frame, text="Cancelar", command=self.cancelar).pack(pady=10)
-        tk.Button(self.frame, text="Limpiar", command=self.limpiar).pack(pady=10)
-        
-        self.conexion = conectar()
-    
-    def validar_campos(self):
-    #verificar que ninguno de los campos del formulario este vacip
-        if (
-        self.nombre.get().strip() == "" or
-        self.apellidos.get().strip() == "" or
-        self.edad.get().strip() == "" or
-        self.radio_sexo.get().strip() == ""
-        ):
-            return False
-
-        return True
-        
-    def guardar(self):
-        
-        if (not self.validar_campos):
-            messagebox.showwarning("Campos vacíos", "Todos los campos son obligatorios")
-            return
-        
-        nombre = self.nombre.get().strip()
-        apellido= self.apellidos.get().strip()
-        edad= self.edad.get().strip()
-        sexo= self.radio_sexo.get().strip()
-        
-        # Abre la conexión
-        cursor = self.conexion.cursor()
-        sql = "INSERT INTO `pacientes` (`id_pa`, `pa_nombre`, `pa_apellidos`, `pa_fecha_nacimiento`, `pa_nombre_contacto_emergencia`, `pa_tel_contacto_emergencia`) VALUES (NULL,%s, %s, %s, %s,%s,%s)"
-        cursor.execute(sql, (nombre, apellido, edad, sexo))
-        self.conexion.commit()
-        cursor.close()
-        self.conexion.close()
-        
-        messagebox.showinfo("Saludo", "¡Hola! Has creado un nuevo paciente")
+        messagebox.showinfo("Crear", "Se creó correctamente el paciente")
         navegar_a_pagina(self.frame,"Lista pacientes")
-            
-        
-    def cancelar(self):
-        navegar_a_pagina(self.frame, "Lista pacientes")
+        #messabox, se actualizo correctamente.
+        #regresar a lista usuarios
     
-    def limpiar():
-        #Aqui vamos a tener que limpiar todos los campos
-        pass
-        
-    
-
-def main():
-    root = tk.Tk()
-    root.title("Crear Pacientes")
-    root.geometry("500x400")
-    CrearPacientes(root)
-    root.mainloop()
-    
-if __name__ == "__main__":
-    main()
-       
+    def guardar(self):
+        self.crear_paciente()
+           

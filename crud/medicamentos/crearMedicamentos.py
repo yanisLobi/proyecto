@@ -7,14 +7,15 @@ from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro
 
 
 class CrearMedicamentos:
-    def __init__(self, parent):
+    def __init__(self, parent, titulo="Crear"):
         #me queda la duda de que es parent
         self.frame = tk.Frame(parent, bg="#f5f5f5")
         self.frame.pack(fill="both", expand=True)
+        self.tabla = 'medicamentos'
         
         self.etiqueta = tk.Label(
             self.frame,
-            text="Crear pacientes",
+            text=f"{titulo} {self.tabla}",
             font=("Arial", 14, "bold"),
             bg="#f5f5f5",
             fg="#2c3e50"
@@ -29,13 +30,16 @@ class CrearMedicamentos:
         self.me_nombre_comercial = tk.Entry(self.frame, width=30)
         self.me_nombre_comercial.pack(pady=5)
         
-        
-        tk.Label(self.frame, text="Forma farmecéutica").pack(pady=5)
-        self.me_tipo = tk.StringVar(value="ninguno")
-        tk.Radiobutton(self.frame, text="Sólidas", variable=self.me_tipo, value="Sólidas").pack()
-        tk.Radiobutton(self.frame, text="Semisólidas", variable=self.me_tipo, value="Semisólidas").pack()
-        tk.Radiobutton(self.frame, text="Líquidas", variable=self.me_tipo, value="Líquidas").pack()
-        tk.Radiobutton(self.frame, text="Inhalables", variable=self.me_tipo, value="Inhalables").pack()
+        tk.Label(self.frame, text="Forma farmacéutica").pack(pady=5)
+        self.me_forma_farmaceutica = tk.StringVar(value="ninguno")
+        self.combo_forma_framaceutica = ttk.Combobox(
+            self.frame,
+            textvariable=self.me_forma_farmaceutica,
+            state="readonly",
+            width=27,
+            values=["Sólidas", "Semisólidas", "Líquidas","Inhalables"]
+        )
+        self.combo_forma_framaceutica.pack(pady=5)
         
         tk.Label(self.frame, text="Concentración").pack(pady=5)
         self.me_concentracion = tk.Entry(self.frame, width=30)
@@ -45,9 +49,9 @@ class CrearMedicamentos:
         self.me_fecha_caducidad = DateEntry(self.frame, year= 2026)
         self.me_fecha_caducidad.pack(pady=5)
         
-        tk.Label(self.frame, text="Descripción")
-        me_descripcion = tk.Text(self.frame, height=4, width=40)
-        me_descripcion.pack(pady=5)
+        tk.Label(self.frame, text="Descripción").pack(pady=5)
+        self.me_descripcion = tk.Text(self.frame, width=40)
+        self.me_descripcion.pack(pady=5)
         
     def limpiar(self):
         limpiar_frame(self.frame)
@@ -58,38 +62,31 @@ class CrearMedicamentos:
     def guardar_valores(self):
         #actualizar los valores del diccionario con los valores de lo widgets
         self.nuevo_registro ={
-                        'us_tipo_usuario': '',
-                        'us_nombre': '', 
-                        'us_apellidos': '', 
-                        'us_fecha_nacimiento': "1980-01-01", 
-                        'us_contraseña': '',
-                        'us_telefono': '',
-                        'us_correo_electronico': '',
-                        'us_direccion': '',
-                        'us_especialidad': ''}
+                        'me_nombre_comercial': '', 
+                        'me_forma_farmaceutica': '', 
+                        'me_concentracion': '',
+                        'me_fecha_caducidad': "1980-01-01", 
+                        'me_descripcion': ''
+                        }
         
-        self.nuevo_registro["us_tipo_usuario"] = self.us_tipo_usuario.get()
-        self.nuevo_registro["us_nombre"] = self.us_nombre.get()
-        self.nuevo_registro["us_apellidos"] = self.us_apellidos.get()
-        self.nuevo_registro["us_fecha_nacimiento"] = self.us_fecha_nacimiento.get_date().strftime("%Y-%m-%d")
-        self.nuevo_registro["us_contraseña"] = self.us_contra.get()
-        self.nuevo_registro["us_telefono"] = self.us_telefono.get() 
-        self.nuevo_registro["us_correo_electronico"] = self.us_correo_electronico.get() 
-        self.nuevo_registro["us_direccion"] = self.us_direccion.get() 
-        self.nuevo_registro["us_especialidad"] = self.us_especialidad.get()      
-        
+        self.nuevo_registro["me_nombre_comercial"] = self.me_nombre_comercial.get()
+        self.nuevo_registro["me_forma_farmaceutica"] = self.me_forma_farmaceutica.get()
+        self.nuevo_registro["me_concentracion"] = self.me_concentracion.get()
+        self.nuevo_registro["me_fecha_caducidad"] = self.me_fecha_caducidad.get_date().strftime("%Y-%m-%d")
+        self.nuevo_registro["me_descripcion"] = self.me_descripcion.get("1.0","end-1c")
+       
     
-    def crear_registro(self):
+    def crear_medicamentos(self):
         self.guardar_valores()
         insertar_registro(self.tabla, self.nuevo_registro)
      
-        messagebox.showinfo("Actualización", "Se actualizo correctamente")
-        navegar_a_pagina(self.frame,f"Lista {self.tabla}")
+        messagebox.showinfo("Crear", "Se creó correctamente el medicamento")
+        navegar_a_pagina(self.frame, f"Lista {self.tabla}")
         #messabox, se actualizo correctamente.
         #regresar a lista usuarios
     
     def guardar(self):
-        self.crear_usuario()
+        self.crear_medicamentos()
            
         
         

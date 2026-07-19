@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from crud.usuarios.crearUsuarios import CrearUsuario
 import tkinter as tk
 from tkinter import messagebox
@@ -33,7 +32,7 @@ class ActualizarUsuarios(CrearUsuario):
     
     def actualizar_usuario(self):
         self.guardar_valores()
-        actualizar_registro(self.tabla, self.nuevo_usuario, "id_usuarios", self.id_seleccionado)
+        actualizar_registro(self.tabla, self.nuevo_registro, "id_usuarios", self.id_seleccionado)
      
         messagebox.showinfo("Actualización", "Se actualizo correctamente")
         navegar_a_pagina(self.frame,"Lista usuarios")

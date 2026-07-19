@@ -37,15 +37,13 @@ def limpiar_frame(frame):
 def navegar_a_pagina(frame, nombre_clase: str, valor=None):
     from crud.pacientes.listaPacientes import ListaPacientes
     from crud.pacientes.crearPacientes import CrearPacientes
+    from crud.pacientes.actualizarPacientes import ActualizarPacientes
     from crud.usuarios.listaUsuarios import ListaUsuarios
     from crud.usuarios.crearUsuarios import CrearUsuario
     from crud.usuarios.actualizarUsuarios import ActualizarUsuarios
     from crud.medicamentos.listaMedicamentos import ListaMedicamentos
     from crud.medicamentos.crearMedicamentos import CrearMedicamentos
-    
-    
-    
-    
+    from crud.medicamentos.actualizarMedicamentos import ActualizarMedicamentos
 
     paginas = {
         "Lista pacientes": ListaPacientes,
@@ -55,26 +53,21 @@ def navegar_a_pagina(frame, nombre_clase: str, valor=None):
         "Actualizar usuarios": ActualizarUsuarios,
         "Lista medicamentos": ListaMedicamentos,
         "Crear medicamentos": CrearMedicamentos,
-        
-        
-        
-        
-       
+        "Actualizar medicamentos": ActualizarMedicamentos,
+        "Actualizar pacientes": ActualizarPacientes,
     }
 
     for widget in frame.winfo_children():
         widget.destroy()
+
     clase_instanciar = paginas.get(nombre_clase)
     if not clase_instanciar:
-        raise Exception(f"diccionario paginas no conoce ese archivo: '{nombre_clase}' ")
-   
-    if valor:
-        clase_instanciar = paginas.get(nombre_clase)
-        clase_instanciar(frame, valor) 
-        #ActualizarUsuario(self.frame, self.id_selccionado)
-    
+        raise Exception(f"diccionario paginas no conoce ese archivo: '{nombre_clase}'")
+
+    if valor is not None:
+        clase_instanciar(frame, valor)
     else:
-        paginas.get(nombre_clase)(frame) 
+        clase_instanciar(frame)
 
 
 def obtener_tabla(nombre_tabla):

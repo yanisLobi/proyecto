@@ -1,29 +1,39 @@
-import tkinter as tk
-from listaPacientes import ListaPacientes
+from datetime import datetime
+from crud.pacientes.crearPacientes import CrearPacientes
 from tkinter import messagebox
+import tkinter as tk
+from herramientas import obtener_registro, navegar_a_pagina, actualizar_registro
 
-class ActualizarPacientes:
-    def __init__(self, parent):
-        self.frame = tk.Frame(parent, bg="#f5f5f5")
-        self.frame.pack(fill="both", expand=True)
 
-        self.etiqueta = tk.Label(
-            self.frame,
-            text="ActualizarPacientes",
-            font=("Arial", 14, "bold"),
-            bg="#f5f5f5",
-            fg="#2c3e50"
-        )
-        self.etiqueta.pack(pady=20)
+class ActualizarPacientes(CrearPacientes):
+    def __init__(self, parent, id_seleccionado):
+        super().__init__(parent, "Actualizar")
+        self.id_seleccionado=id_seleccionado
+        self.pacientes = obtener_registro(self.tabla, "id_pa", id_seleccionado)
+        if not self.pacientes:
+            messagebox.showinfo("Sin datos", "No se encontró el usuario seleccionado")
+            return
+
+        self.pa_nombre.insert(0, self.pacientes.get("pa_nombre", ""))
+        self.pa_apellidos.insert(0, self.pacientes.get("pa_apellidos", ""))
+
+        fecha_nacimiento = self.pacientes.get("me_fecha_caducidad")
+        if fecha_nacimiento:
+            if isinstance(fecha_nacimiento, str):
+                fecha_nacimiento = datetime.strptime(fecha_nacimiento, "%Y-%m-%d").date()
+            self.pa_fecha_nacimiento.set_date(fecha_nacimiento)
+
+        self.pa_nombre_contacto_emergencia.insert(0, self.pacientes.get("pa_nombre_contacto_emergencia", ""))
+        self.pa_tel_contacto_emergencia.insert(0, str(self.pacientes.get("pa_tel_contacto_emergencia", "")))
     
-    def actualizar(self):
-        if self.usuarios is None:
-            messagebox.showwarning("Advertencia", "selecciono un pacientes")
-            return
+    def actualizar_pacientes(self):
+        self.guardar_valores()
+        actualizar_registro(self.tabla, self.nuevo_registro, "id_pa", self.id_seleccionado)
+     
+        messagebox.showinfo("Actualización", "Se actualizo correctamente")
+        navegar_a_pagina(self.frame,"Lista pacientes")
         
-        #falta importar crear pacientes
-        if not self.validar_campos():
-            #si la validacion fallo, termina el metodo
-            return
-        
+    def guardar(self):
+        self.actualizar_pacientes()
+    
         
