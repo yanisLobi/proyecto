@@ -15,13 +15,18 @@ class ActualizarTratamientos(CrearTratamientos):
             return
 
         self.tr_nombre.insert(0, self.tratamientos.get("tr_nombre", ""))
-        fecha_caducidad = self.tratamientos.get("me_fecha_caducidad")
         
-        #crear las dos fechas
-        if fecha_caducidad:
-            if isinstance(fecha_caducidad, str):
-                fecha_caducidad = datetime.strptime(fecha_caducidad, "%Y-%m-%d").date()
-            self.me_fecha_caducidad.set_date(fecha_caducidad)
+        fecha_inicio = self.tratamientos.get("tr_fecha_inicio")
+        if fecha_inicio:
+            if isinstance(fecha_inicio, str):
+                fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
+            self.tr_fecha_inicio.set_date(fecha_inicio)
+
+        fecha_final = self.tratamientos.get("tr_fecha_final")
+        if fecha_inicio:
+            if isinstance(fecha_final, str):
+                fecha_final = datetime.strptime(fecha_final, "%Y-%m-%d").date()
+            self.tr_fecha_final.set_date(fecha_final)
 
         self.tr_descripcion.insert(tk.END, str(self.tratamientos.get("tr_descripcion", "")))
     

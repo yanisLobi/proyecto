@@ -51,8 +51,15 @@ class CrearUsuario:
         self.us_fecha_nacimiento.pack(pady=5)
         
         tk.Label(self.frame, text="Especialidad").pack(pady=5)
-        self.us_especialidad = tk.Entry(self.frame, width=30)
-        self.us_especialidad.pack(pady=5)
+        self.us_especialidad = tk.StringVar(value="ninguno")
+        self.combo_especialidad = ttk.Combobox(
+            self.frame,
+            textvariable=self.us_especialidad,
+            state="readonly",
+            width=27,
+            values=["Geriatría", "Médico General"]
+        )
+        self.combo_especialidad.pack(pady=5)
         
         tk.Label(self.frame, text="Correo electrónico").pack(pady=5)
         self.us_correo_electronico = tk.Entry(self.frame, width=30)

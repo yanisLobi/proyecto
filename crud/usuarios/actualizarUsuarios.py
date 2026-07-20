@@ -28,7 +28,7 @@ class ActualizarUsuarios(CrearUsuario):
         self.us_telefono.insert(0, str(self.usuario.get("us_telefono", "")))
         self.us_correo_electronico.insert(0, self.usuario.get("us_correo_electronico", ""))
         self.us_direccion.insert(0, self.usuario.get("us_direccion", ""))
-        self.us_especialidad.insert(0, self.usuario.get("us_especialidad", ""))
+        self.us_especialidad.set(0, self.usuario.get("us_especialidad", "ninguno"))
     
     def actualizar_usuario(self):
         self.guardar_valores()
