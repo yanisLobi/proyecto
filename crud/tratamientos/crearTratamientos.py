@@ -89,7 +89,7 @@ class CrearTratamientos:
         insertar_registro(self.tabla, self.nuevo_registro)
      
         messagebox.showinfo("Crear", "Se creó correctamente el tratamiento")
-        navegar_a_pagina(self.frame, f"Lista {self.tabla}")
+        navegar_a_pagina(self.frame, f"Lista {self.tabla}", tipo_usuario=self.tipo_usuario)
         #messabox, se creó correctamente.
         #regresar a lista usuarios
     

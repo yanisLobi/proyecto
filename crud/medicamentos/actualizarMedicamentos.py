@@ -6,8 +6,8 @@ from herramientas import obtener_registro, navegar_a_pagina, actualizar_registro
 
 
 class ActualizarMedicamentos(CrearMedicamentos):
-    def __init__(self, parent, id_seleccionado):
-        super().__init__(parent, "Actualizar")
+    def __init__(self, parent, id_seleccionado, tipo_usuario=None):
+        super().__init__(parent, "Actualizar", tipo_usuario=tipo_usuario)
         self.id_seleccionado=id_seleccionado
         self.medicamento = obtener_registro(self.tabla, "id_me", id_seleccionado)
         if not self.medicamento:
@@ -31,7 +31,7 @@ class ActualizarMedicamentos(CrearMedicamentos):
         actualizar_registro(self.tabla, self.nuevo_registro, "id_me", self.id_seleccionado)
      
         messagebox.showinfo("Actualización", "Se actualizo correctamente")
-        navegar_a_pagina(self.frame,"Lista medicamentos")
+        navegar_a_pagina(self.frame, "Lista medicamentos", tipo_usuario=self.tipo_usuario)
         
     def guardar(self):
         self.actualizar_medicamento()

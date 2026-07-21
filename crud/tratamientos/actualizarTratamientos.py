@@ -2,14 +2,15 @@ from datetime import datetime
 from crud.tratamientos.crearTratamientos import CrearTratamientos
 from tkinter import messagebox
 import tkinter as tk
+from typing import Any, cast
 from herramientas import obtener_registro, navegar_a_pagina, actualizar_registro
 
 
 class ActualizarTratamientos(CrearTratamientos):
-    def __init__(self, parent, id_seleccionado):
-        super().__init__(parent, "Actualizar")
+    def __init__(self, parent, id_seleccionado, tipo_usuario=None):
+        super().__init__(parent, "Actualizar", tipo_usuario=tipo_usuario)
         self.id_seleccionado=id_seleccionado
-        self.tratamientos = obtener_registro(self.tabla, "id_tratamiento", id_seleccionado)
+        self.tratamientos = cast(dict[str, Any], obtener_registro(self.tabla, "id_tratamiento", id_seleccionado) or {})
         if not self.tratamientos:
             messagebox.showinfo("Sin datos", "No se encontró el usuario seleccionado")
             return
@@ -23,7 +24,7 @@ class ActualizarTratamientos(CrearTratamientos):
             self.tr_fecha_inicio.set_date(fecha_inicio)
 
         fecha_final = self.tratamientos.get("tr_fecha_final")
-        if fecha_inicio:
+        if fecha_final:
             if isinstance(fecha_final, str):
                 fecha_final = datetime.strptime(fecha_final, "%Y-%m-%d").date()
             self.tr_fecha_final.set_date(fecha_final)
@@ -35,7 +36,7 @@ class ActualizarTratamientos(CrearTratamientos):
         actualizar_registro(self.tabla, self.nuevo_registro, "id_tratamiento", self.id_seleccionado)
      
         messagebox.showinfo("Actualización", "Se actualizo correctamente")
-        navegar_a_pagina(self.frame,"Lista tratamientoss")
+        navegar_a_pagina(self.frame, "Lista tratamientos", tipo_usuario=self.tipo_usuario)
         
     def guardar(self):
         self.actualizar_tratamientos()

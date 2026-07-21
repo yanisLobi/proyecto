@@ -6,8 +6,8 @@ from herramientas import obtener_registro, navegar_a_pagina, actualizar_registro
 
 
 class ActualizarPacientes(CrearPacientes):
-    def __init__(self, parent, id_seleccionado):
-        super().__init__(parent, "Actualizar")
+    def __init__(self, parent, id_seleccionado, tipo_usuario=None):
+        super().__init__(parent, "Actualizar", tipo_usuario=tipo_usuario)
         self.id_seleccionado=id_seleccionado
         self.pacientes = obtener_registro(self.tabla, "id_pa", id_seleccionado)
         if not self.pacientes:
@@ -31,7 +31,7 @@ class ActualizarPacientes(CrearPacientes):
         actualizar_registro(self.tabla, self.nuevo_registro, "id_pa", self.id_seleccionado)
      
         messagebox.showinfo("Actualización", "Se actualizo correctamente")
-        navegar_a_pagina(self.frame,"Lista pacientes")
+        navegar_a_pagina(self.frame, "Lista pacientes", tipo_usuario=self.tipo_usuario)
         
     def guardar(self):
         self.actualizar_pacientes()

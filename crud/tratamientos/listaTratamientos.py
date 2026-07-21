@@ -88,4 +88,4 @@ class ListaTratamientos:
             return
         
         id = self.obtener_id_seleccionado()
-        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id)
+            navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, tipo_usuario=self.tipo_usuario)

@@ -83,7 +83,7 @@ class CrearUsuario:
         limpiar_frame(self.frame)
     
     def ir_lista(self):
-        navegar_a_pagina(self.frame, f"Lista {self.tabla}")
+        navegar_a_pagina(self.frame, f"Lista {self.tabla}", tipo_usuario=self.tipo_usuario)
         
     def guardar_valores(self):
         #actualizar los valores del diccionario con los valores de lo widgets
@@ -114,7 +114,7 @@ class CrearUsuario:
         insertar_registro(self.tabla, self.nuevo_registro)
      
         messagebox.showinfo("Crear", "Se creó correctamente el usuario")
-        navegar_a_pagina(self.frame,"Lista usuarios")
+        navegar_a_pagina(self.frame, "Lista usuarios", tipo_usuario=self.tipo_usuario)
         #messabox, se actualizo correctamente.
         #regresar a lista usuarios
     

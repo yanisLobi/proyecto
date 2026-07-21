@@ -5,7 +5,7 @@ from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro
 
 
 class ListaUsuarios:
-    def __init__(self, parent, tipo_usuario):
+    def __init__(self, parent, tipo_usuario=None):
         
         self.tabla = 'usuarios' 
         self.frame = tk.Frame(parent, bg="#f5f5f5")
@@ -59,7 +59,7 @@ class ListaUsuarios:
       
     def ir_crear(self):
     
-        navegar_a_pagina(self.frame, f"Crear {self.tabla}")
+        navegar_a_pagina(self.frame, f"Crear {self.tabla}", tipo_usuario=self.tipo_usuario)
     def obtener_id_seleccionado(self):
         item_id = self.tree.selection()
         if not item_id:
@@ -88,7 +88,7 @@ class ListaUsuarios:
             return
         
         id = self.obtener_id_seleccionado()
-        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado = id)
+        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, tipo_usuario=self.tipo_usuario)
         #ActualizarUsuario(self.frame, self.id_selccionado)
         
         

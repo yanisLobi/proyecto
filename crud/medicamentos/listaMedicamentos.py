@@ -5,7 +5,7 @@ from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro
 
 
 class ListaMedicamentos:
-    def __init__(self, parent, tipo_usuario):
+    def __init__(self, parent, tipo_usuario=None):
         
         self.tabla = 'medicamentos' 
         self.frame = tk.Frame(parent, bg="#f5f5f5")
@@ -88,7 +88,7 @@ class ListaMedicamentos:
             return
         
         id = self.obtener_id_seleccionado()
-        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado = id)
+        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, tipo_usuario=self.tipo_usuario)
         #ActualizarUsuario(self.frame, self.id_selccionado)
         
         

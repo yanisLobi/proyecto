@@ -81,7 +81,7 @@ class CrearMedicamentos:
         insertar_registro(self.tabla, self.nuevo_registro)
      
         messagebox.showinfo("Crear", "Se creó correctamente el medicamento")
-        navegar_a_pagina(self.frame, f"Lista {self.tabla}")
+        navegar_a_pagina(self.frame, f"Lista {self.tabla}", tipo_usuario=self.tipo_usuario)
         #messabox, se actualizo correctamente.
         #regresar a lista usuarios
     
