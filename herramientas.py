@@ -44,6 +44,12 @@ def navegar_a_pagina(frame, nombre_clase: str, valor=None):
     from crud.medicamentos.listaMedicamentos import ListaMedicamentos
     from crud.medicamentos.crearMedicamentos import CrearMedicamentos
     from crud.medicamentos.actualizarMedicamentos import ActualizarMedicamentos
+    from crud.tratamientos.actualizarTratamientos import ActualizarTratamientos
+    from crud.tratamientos.listaTratamientos import ListaTratamientos
+    from crud.tratamientos.crearTratamientos import CrearTratamientos
+    
+    
+    
 
     paginas = {
         "Lista pacientes": ListaPacientes,
@@ -55,6 +61,9 @@ def navegar_a_pagina(frame, nombre_clase: str, valor=None):
         "Crear medicamentos": CrearMedicamentos,
         "Actualizar medicamentos": ActualizarMedicamentos,
         "Actualizar pacientes": ActualizarPacientes,
+        "Lista tratamientos": ListaTratamientos,
+        "Crear tratamientos": CrearTratamientos,
+        "Actualizar tratamientos": ActualizarTratamientos,
     }
 
     for widget in frame.winfo_children():

@@ -11,7 +11,7 @@ class CrearTratamientos:
         #me queda la duda de que es parent
         self.frame = tk.Frame(parent, bg="#f5f5f5")
         self.frame.pack(fill="both", expand=True)
-        self.tabla = 'tratamiento'
+        self.tabla = 'tratamientos'
         
         self.etiqueta = tk.Label(
             self.frame,

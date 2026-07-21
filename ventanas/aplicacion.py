@@ -86,6 +86,11 @@ def iniciar_aplicacion(ventana_login, tipo_usuario, campo_password):
     def cambiar_a_recordatorios():
         navegar_a_pagina(contenido_frame, "Lista mediamentos")
     
+    def cambiar_a_tratamiento():
+        navegar_a_pagina(contenido_frame, "Lista tratamientos", tipo_usuario)
+        
+    
+    
     def cerrar_sesion():
         ventana.destroy()          # Cierra por completo el Dashboard
         ventana_login.deiconify()  # Hace visible otra vez el Login
@@ -100,6 +105,8 @@ def iniciar_aplicacion(ventana_login, tipo_usuario, campo_password):
     if tipo_usuario == "Doctor":
         #tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x")
         tk.Button(menu_frame, text="Medicamentos", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_medicamentos).pack(fill="x")
+        tk.Button(menu_frame, text="Tratamiento", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_tratamiento).pack(fill="x")
+        
     elif tipo_usuario == "Administrador":
         tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x")
         #tk.Button(menu_frame, text="Medicamentos", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_medicamentos).pack(fill="x")

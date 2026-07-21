@@ -7,7 +7,7 @@ from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro
 class ListaTratamientos:
     def __init__(self, parent, tipo_usuario=None):
         
-        self.tabla = 'tratamiento' 
+        self.tabla = 'tratamientos' 
         self.frame = tk.Frame(parent, bg="#f5f5f5")
         self.frame.pack(fill="both", expand=True)
         
