@@ -20,38 +20,51 @@ class CrearMedicamentos:
             bg="#f5f5f5",
             fg="#2c3e50"
         )
-        self.etiqueta.pack(pady=20)
-        
-        tk.Button(self.frame, text="Limpiar campos", command=self.limpiar).pack(pady=10)
-        tk.Button(self.frame, text="Cancelar", command=self.ir_lista).pack(pady=10)
-        tk.Button(self.frame, text="Guardar", command=self.guardar).pack(pady=10)
-    
-        tk.Label(self.frame, text="Nombre comercial").pack(pady=5)
-        self.me_nombre_comercial = tk.Entry(self.frame, width=30)
-        self.me_nombre_comercial.pack(pady=5)
-        
-        tk.Label(self.frame, text="Forma farmacéutica").pack(pady=5)
+        self.etiqueta.pack(pady=(40, 30))
+
+        botones_frame = tk.Frame(self.frame, bg="#f5f5f5")
+        botones_frame.pack(pady=(10, 35), padx=20, fill="x")
+        botones_frame.grid_columnconfigure(0, weight=1)
+        botones_frame.grid_columnconfigure(1, weight=1)
+        botones_frame.grid_columnconfigure(2, weight=1)
+
+        tk.Button(botones_frame, text="Cancelar", command=self.ir_lista).grid(row=0, column=0, sticky="ew", padx=6)
+        tk.Button(botones_frame, text="Limpiar campos", command=self.limpiar).grid(row=0, column=1, sticky="ew", padx=6)
+        tk.Button(botones_frame, text="Guardar", command=self.guardar).grid(row=0, column=2, sticky="ew", padx=6)
+
+        form_frame = tk.Frame(self.frame, bg="#f5f5f5")
+        form_frame.pack(padx=20, pady=(20, 30), fill="x")
+        form_frame.grid_columnconfigure(0, weight=0)
+        form_frame.grid_columnconfigure(1, weight=1)
+        form_frame.grid_columnconfigure(2, weight=0)
+        form_frame.grid_columnconfigure(3, weight=1)
+
+        tk.Label(form_frame, text="Nombre comercial", bg="#f5f5f5").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.me_nombre_comercial = tk.Entry(form_frame, width=30)
+        self.me_nombre_comercial.grid(row=0, column=1, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Forma farmacéutica", bg="#f5f5f5").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.me_forma_farmaceutica = tk.StringVar(value="ninguno")
         self.combo_forma_framaceutica = ttk.Combobox(
-            self.frame,
+            form_frame,
             textvariable=self.me_forma_farmaceutica,
             state="readonly",
             width=27,
             values=["Sólidas", "Semisólidas", "Líquidas","Inhalables"]
         )
-        self.combo_forma_framaceutica.pack(pady=5)
-        
-        tk.Label(self.frame, text="Concentración").pack(pady=5)
-        self.me_concentracion = tk.Entry(self.frame, width=30)
-        self.me_concentracion.pack(pady=5)
-        
-        tk.Label(self.frame, text="Fecha de caducidad").pack(pady=5)
-        self.me_fecha_caducidad = DateEntry(self.frame, year= 2026)
-        self.me_fecha_caducidad.pack(pady=5)
-        
-        tk.Label(self.frame, text="Descripción").pack(pady=5)
-        self.me_descripcion = tk.Text(self.frame, width=40)
-        self.me_descripcion.pack(pady=5)
+        self.combo_forma_framaceutica.grid(row=0, column=3, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Concentración", bg="#f5f5f5").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.me_concentracion = tk.Entry(form_frame, width=30)
+        self.me_concentracion.grid(row=1, column=1, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Fecha de caducidad", bg="#f5f5f5").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.me_fecha_caducidad = DateEntry(form_frame, year= 2026)
+        self.me_fecha_caducidad.grid(row=1, column=3, sticky="w", pady=(0, 16))
+
+        tk.Label(form_frame, text="Descripción", bg="#f5f5f5").grid(row=2, column=0, sticky="nw", padx=(0, 10), pady=(0, 16))
+        self.me_descripcion = tk.Text(form_frame, width=40, height=4)
+        self.me_descripcion.grid(row=2, column=1, columnspan=3, sticky="ew", pady=(0, 16))
         
     def limpiar(self):
         limpiar_frame(self.frame)

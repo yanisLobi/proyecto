@@ -1,6 +1,7 @@
 import tkinter as tk
 
 from herramientas import navegar_a_pagina
+from crud.calendario import GoogleCalendarSemanal
 
 
 def mostrar_contenido(contenido_frame, titulo, texto, clase_contenido= None):
@@ -30,7 +31,7 @@ def mostrar_contenido(contenido_frame, titulo, texto, clase_contenido= None):
         clase_contenido(contenido_frame)
         
         
-def iniciar_aplicacion(ventana_login, tipo_usuario, campo_password):
+def iniciar_aplicacion(ventana_login, tipo_usu, campo_password):
     # Ocultamos la ventana que nos llamó (la ventana de inicio de sesion)
     ventana_login.withdraw()
     ventana = tk.Toplevel()
@@ -70,24 +71,24 @@ def iniciar_aplicacion(ventana_login, tipo_usuario, campo_password):
     
     
     def cambiar_a_calendario():
-        mostrar_contenido(contenido_frame,"Calendario", "Aquí aparecerá la gestión del calendario", )
+        mostrar_contenido(contenido_frame, "Calendario", "", GoogleCalendarSemanal)
 
     
 
     def cambiar_a_usuarios():
-        navegar_a_pagina(contenido_frame, "Lista usuarios", tipo_usuario = tipo_usuario)
+        navegar_a_pagina(contenido_frame, "Lista usuarios", tipo_usuario = tipo_usu)
 
     def cambiar_a_pacientes():
-        navegar_a_pagina(contenido_frame, "Lista pacientes", tipo_usuario=tipo_usuario)
+        navegar_a_pagina(contenido_frame, "Lista pacientes", tipo_usuario=tipo_usu)
 
     def cambiar_a_medicamentos():
-        navegar_a_pagina(contenido_frame, "Lista medicamentos", tipo_usuario=tipo_usuario)
+        navegar_a_pagina(contenido_frame, "Lista medicamentos", tipo_usuario=tipo_usu)
     
     def cambiar_a_recordatorios():
         navegar_a_pagina(contenido_frame, "Lista mediamentos")
     
     def cambiar_a_tratamiento():
-        navegar_a_pagina(contenido_frame, "Lista tratamientos", tipo_usuario=tipo_usuario)
+        navegar_a_pagina(contenido_frame, "Lista tratamientos", tipo_usuario=tipo_usu)
         
     
     
@@ -102,12 +103,12 @@ def iniciar_aplicacion(ventana_login, tipo_usuario, campo_password):
     tk.Button(menu_frame, text="Recordatorios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_recordatorios).pack(fill="x")
     #tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x") 
     # Mostrar los botones especiales segun que tipo de usuario inicio sesion
-    if tipo_usuario == "Doctor":
+    if tipo_usu == "Doctor":
         #tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x")
         tk.Button(menu_frame, text="Medicamentos", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_medicamentos).pack(fill="x")
         tk.Button(menu_frame, text="Tratamiento", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_tratamiento).pack(fill="x")
         
-    elif tipo_usuario == "Administrador":
+    elif tipo_usu == "Administrador":
         tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x")
         #tk.Button(menu_frame, text="Medicamentos", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_medicamentos).pack(fill="x")
     

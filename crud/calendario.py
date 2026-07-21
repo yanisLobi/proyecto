@@ -1,12 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
-import ttkbootstrap as ttkb
 
-class GoogleCalendarSemanal(ttkb.Window):
-    def __init__(self):
-        super().__init__(themename="darkly")
-        self.title("AbueCare - Agenda Semanal")
-        self.geometry("900x600")
+class GoogleCalendarSemanal(ttk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.pack(fill="both", expand=True)
         
         # Parámetros de la interfaz
         self.HORA_INICIO = 8       
@@ -119,5 +117,8 @@ class GoogleCalendarSemanal(ttkb.Window):
         self.dibujar_indicador_tiempo() # Lo llamamos al final para que quede por encima de las líneas y eventos
 
 if __name__ == "__main__":
-    app = GoogleCalendarSemanal()
-    app.mainloop()
+    root = tk.Tk()
+    root.title("AbueCare - Agenda Semanal")
+    root.geometry("900x600")
+    GoogleCalendarSemanal(root)
+    root.mainloop()

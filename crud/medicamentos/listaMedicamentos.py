@@ -11,10 +11,18 @@ class ListaMedicamentos:
         self.frame = tk.Frame(parent, bg="#f5f5f5")
         self.frame.pack(fill="both", expand=True)
         self.tipo_usuario = tipo_usuario
+        self.boton_actualizar = None
         if tipo_usuario in ["Doctor", "Administrador"]:
-            tk.Button(self.frame, text=f"Crear {self.tabla.title()}", command=self.ir_crear).pack(pady=10)
-            tk.Button(self.frame, text="Eliminar", command=self.borrar).pack(pady=10)
-            tk.Button(self.frame, text="Actualizar", command=self.ir_actualizar).pack(pady=10)
+            botones_frame = tk.Frame(self.frame, bg="#f5f5f5")
+            botones_frame.pack(pady=(40, 45), padx=20, fill="x")
+            botones_frame.grid_columnconfigure(0, weight=1)
+            botones_frame.grid_columnconfigure(1, weight=1)
+            botones_frame.grid_columnconfigure(2, weight=1)
+
+            tk.Button(botones_frame, text=f"Crear {self.tabla.title()}", command=self.ir_crear).grid(row=0, column=0, sticky="ew", padx=6)
+            tk.Button(botones_frame, text="Eliminar", command=self.borrar).grid(row=0, column=1, sticky="ew", padx=6)
+            self.boton_actualizar = tk.Button(botones_frame, text="Actualizar", command=self.ir_actualizar, state="disabled")
+            self.boton_actualizar.grid(row=0, column=2, sticky="ew", padx=6)
         
             
         self.etiqueta = tk.Label(
@@ -24,7 +32,7 @@ class ListaMedicamentos:
             bg="#f5f5f5",
             fg="#2c3e50"
         )
-        self.etiqueta.pack(pady=20)
+        self.etiqueta.pack(pady=(40, 30))
         
          
         self.lista_medicamentos = obtener_tabla(self.tabla)
@@ -42,8 +50,10 @@ class ListaMedicamentos:
             self.tree.column(columna, width=ancho_columna, minwidth=30, stretch=False)
         
         self.recargar_tabla()
+        self.tree.bind("<<TreeviewSelect>>", self.on_seleccion)
+        self.on_seleccion()
        
-        self.tree.pack(pady=0)
+        self.tree.pack(pady=(10, 0))
 
     def recargar_tabla(self):
         #limpiar filas
@@ -54,12 +64,18 @@ class ListaMedicamentos:
             valores_tupla =tuple(usuario.values())
              
             self.tree.insert("", tk.END, values=valores_tupla)
+        self.on_seleccion()
     
     
       
     def ir_crear(self):
     
         navegar_a_pagina(self.frame, f"Crear {self.tabla}", tipo_usuario =self.tipo_usuario)
+    def on_seleccion(self, event=None):
+        if self.boton_actualizar is None:
+            return
+        estado = "normal" if self.tree.selection() else "disabled"
+        self.boton_actualizar.config(state=estado)
     def obtener_id_seleccionado(self):
         item_id = self.tree.selection()
         if not item_id:

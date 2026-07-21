@@ -20,40 +20,53 @@ class CrearTratamientos:
             bg="#f5f5f5",
             fg="#2c3e50"
         )
-        self.etiqueta.pack(pady=20)
+        self.etiqueta.pack(pady=(40, 30))
         
         valores_pacientes = obtener_valores("pacientes", "id_pa", "pa_nombre", "pa_apellidos")
         valores_usuarios = obtener_valores("usuarios", "id_usuarios", "us_nombre", "us_apellidos")
-        
-        tk.Button(self.frame, text="Limpiar campos", command=self.limpiar).pack(pady=10)
-        tk.Button(self.frame, text="Cancelar", command=self.ir_lista).pack(pady=10)
-        tk.Button(self.frame, text="Guardar", command=self.guardar).pack(pady=10)
-    
-        tk.Label(self.frame, text="Nombre").pack(pady=5)
-        self.tr_nombre = tk.Entry(self.frame, width=30)
-        self.tr_nombre.pack(pady=5)
-        
-        tk.Label(self.frame, text="Paciente").pack(pady=5)
-        self.id_paciente = ttk.Combobox(self.frame, values= valores_pacientes)
+
+        botones_frame = tk.Frame(self.frame, bg="#f5f5f5")
+        botones_frame.pack(pady=(10, 35), padx=20, fill="x")
+        botones_frame.grid_columnconfigure(0, weight=1)
+        botones_frame.grid_columnconfigure(1, weight=1)
+        botones_frame.grid_columnconfigure(2, weight=1)
+
+        tk.Button(botones_frame, text="Cancelar", command=self.ir_lista).grid(row=0, column=0, sticky="ew", padx=6)
+        tk.Button(botones_frame, text="Limpiar campos", command=self.limpiar).grid(row=0, column=1, sticky="ew", padx=6)
+        tk.Button(botones_frame, text="Guardar", command=self.guardar).grid(row=0, column=2, sticky="ew", padx=6)
+
+        form_frame = tk.Frame(self.frame, bg="#f5f5f5")
+        form_frame.pack(padx=20, pady=(20, 30), fill="x")
+        form_frame.grid_columnconfigure(0, weight=0)
+        form_frame.grid_columnconfigure(1, weight=1)
+        form_frame.grid_columnconfigure(2, weight=0)
+        form_frame.grid_columnconfigure(3, weight=1)
+
+        tk.Label(form_frame, text="Nombre", bg="#f5f5f5").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.tr_nombre = tk.Entry(form_frame, width=30)
+        self.tr_nombre.grid(row=0, column=1, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Paciente", bg="#f5f5f5").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.id_paciente = ttk.Combobox(form_frame, values= valores_pacientes)
         self.id_paciente.current(0)
-        self.id_paciente.pack(pady=5)
-        
-        tk.Label(self.frame, text="Usuario").pack(pady=5)
-        self.id_usuario = ttk.Combobox(self.frame, values= valores_usuarios)
+        self.id_paciente.grid(row=0, column=3, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Usuario", bg="#f5f5f5").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.id_usuario = ttk.Combobox(form_frame, values= valores_usuarios)
         self.id_usuario.current(0)
-        self.id_usuario.pack(pady=5)
-        
-        tk.Label(self.frame, text="Fecha de inicio").pack(pady=5)
-        self.tr_fecha_inicio = DateEntry(self.frame, year= 2026)
-        self.tr_fecha_inicio.pack(pady=5)
-        
-        tk.Label(self.frame, text="Fecha de terminación").pack(pady=5)
-        self.tr_fecha_final = DateEntry(self.frame, year= 2026)
-        self.tr_fecha_final.pack(pady=5)
-        
-        tk.Label(self.frame, text="Descripción").pack(pady=5)
-        self.tr_descripcion = tk.Text(self.frame, width=40, height=20)
-        self.tr_descripcion.pack(pady=5)
+        self.id_usuario.grid(row=1, column=1, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Fecha de inicio", bg="#f5f5f5").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.tr_fecha_inicio = DateEntry(form_frame, year= 2026)
+        self.tr_fecha_inicio.grid(row=1, column=3, sticky="w", pady=(0, 16))
+
+        tk.Label(form_frame, text="Fecha de terminación", bg="#f5f5f5").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.tr_fecha_final = DateEntry(form_frame, year= 2026)
+        self.tr_fecha_final.grid(row=2, column=1, sticky="w", pady=(0, 16))
+
+        tk.Label(form_frame, text="Descripción", bg="#f5f5f5").grid(row=3, column=0, sticky="nw", padx=(0, 10), pady=(0, 16))
+        self.tr_descripcion = tk.Text(form_frame, width=40, height=20)
+        self.tr_descripcion.grid(row=3, column=1, columnspan=3, sticky="ew", pady=(0, 16))
         
         
         

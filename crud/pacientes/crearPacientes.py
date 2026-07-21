@@ -21,32 +21,44 @@ class CrearPacientes:
             bg="#f5f5f5",
             fg="#2c3e50"
         )
-        self.etiqueta.pack(pady=20)
-        
-        tk.Button(self.frame, text="Limpiar campos", command=self.limpiar).pack(pady=10)
-        tk.Button(self.frame, text="Cancelar", command=self.ir_lista).pack(pady=10)
-        tk.Button(self.frame, text="Guardar", command=self.guardar).pack(pady=10)
+        self.etiqueta.pack(pady=(40, 30))
 
+        botones_frame = tk.Frame(self.frame, bg="#f5f5f5")
+        botones_frame.pack(pady=(10, 35), padx=20, fill="x")
+        botones_frame.grid_columnconfigure(0, weight=1)
+        botones_frame.grid_columnconfigure(1, weight=1)
+        botones_frame.grid_columnconfigure(2, weight=1)
 
-        tk.Label(self.frame, text="Nombre").pack(pady=5)
-        self.pa_nombre = tk.Entry(self.frame, width=30)
-        self.pa_nombre.pack(pady=5)
-        
-        tk.Label(self.frame, text="Apellidos").pack(pady=5)
-        self.pa_apellidos = tk.Entry(self.frame, width=30)
-        self.pa_apellidos.pack(pady=5)
-         
-        tk.Label(self.frame, text="Fecha de nacimiento").pack(pady=5)
-        self.pa_fecha_nacimiento = DateEntry(self.frame, year=2026)
-        self.pa_fecha_nacimiento.pack(pady=5)
-        
-        tk.Label(self.frame, text="Nombre del contacto de emergencia").pack(pady=5)
-        self.pa_nombre_contacto_emergencia = tk.Entry(self.frame, width=30)
-        self.pa_nombre_contacto_emergencia.pack(pady=5)
-        
-        tk.Label(self.frame, text="Telefono del Contacto de emergencia").pack(pady=5)
-        self.pa_tel_contacto_emergencia = tk.Entry(self.frame,width=30 )
-        self.pa_tel_contacto_emergencia.pack(pady=5)
+        tk.Button(botones_frame, text="Cancelar", command=self.ir_lista).grid(row=0, column=0, sticky="ew", padx=6)
+        tk.Button(botones_frame, text="Limpiar campos", command=self.limpiar).grid(row=0, column=1, sticky="ew", padx=6)
+        tk.Button(botones_frame, text="Guardar", command=self.guardar).grid(row=0, column=2, sticky="ew", padx=6)
+
+        form_frame = tk.Frame(self.frame, bg="#f5f5f5")
+        form_frame.pack(padx=20, pady=(20, 30), fill="x")
+        form_frame.grid_columnconfigure(0, weight=0)
+        form_frame.grid_columnconfigure(1, weight=1)
+        form_frame.grid_columnconfigure(2, weight=0)
+        form_frame.grid_columnconfigure(3, weight=1)
+
+        tk.Label(form_frame, text="Nombre", bg="#f5f5f5").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.pa_nombre = tk.Entry(form_frame, width=30)
+        self.pa_nombre.grid(row=0, column=1, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Apellidos", bg="#f5f5f5").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.pa_apellidos = tk.Entry(form_frame, width=30)
+        self.pa_apellidos.grid(row=0, column=3, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Fecha de nacimiento", bg="#f5f5f5").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.pa_fecha_nacimiento = DateEntry(form_frame, year=2026)
+        self.pa_fecha_nacimiento.grid(row=1, column=1, sticky="w", pady=(0, 16))
+
+        tk.Label(form_frame, text="Telefono del Contacto de emergencia", bg="#f5f5f5").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.pa_tel_contacto_emergencia = tk.Entry(form_frame, width=30)
+        self.pa_tel_contacto_emergencia.grid(row=1, column=3, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Nombre del contacto de emergencia", bg="#f5f5f5").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.pa_nombre_contacto_emergencia = tk.Entry(form_frame, width=30)
+        self.pa_nombre_contacto_emergencia.grid(row=2, column=1, columnspan=3, sticky="ew", pady=(0, 16))
         
          
     def limpiar(self):

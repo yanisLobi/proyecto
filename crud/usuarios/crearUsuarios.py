@@ -21,61 +21,74 @@ class CrearUsuario:
             bg="#f5f5f5",
             fg="#2c3e50"
         )
-        self.etiqueta.pack(pady=20)
-        
-        tk.Button(self.frame, text="Limpiar campos", command=self.limpiar).pack(pady=10)
-        tk.Button(self.frame, text="Cancelar", command=self.ir_lista).pack(pady=10)
-        tk.Button(self.frame, text="Guardar", command=self.guardar).pack(pady=10)
-        
-        tk.Label(self.frame, text="Tipo de usuario").pack(pady=5)
+        self.etiqueta.pack(pady=(40, 30))
+
+        botones_frame = tk.Frame(self.frame, bg="#f5f5f5")
+        botones_frame.pack(pady=(10, 35), padx=20, fill="x")
+        botones_frame.grid_columnconfigure(0, weight=1)
+        botones_frame.grid_columnconfigure(1, weight=1)
+        botones_frame.grid_columnconfigure(2, weight=1)
+
+        tk.Button(botones_frame, text="Cancelar", command=self.ir_lista).grid(row=0, column=0, sticky="ew", padx=6)
+        tk.Button(botones_frame, text="Limpiar campos", command=self.limpiar).grid(row=0, column=1, sticky="ew", padx=6)
+        tk.Button(botones_frame, text="Guardar", command=self.guardar).grid(row=0, column=2, sticky="ew", padx=6)
+
+        form_frame = tk.Frame(self.frame, bg="#f5f5f5")
+        form_frame.pack(padx=20, pady=(20, 30), fill="x")
+        form_frame.grid_columnconfigure(0, weight=0)
+        form_frame.grid_columnconfigure(1, weight=1)
+        form_frame.grid_columnconfigure(2, weight=0)
+        form_frame.grid_columnconfigure(3, weight=1)
+
+        tk.Label(form_frame, text="Tipo de usuario", bg="#f5f5f5").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.us_tipo_usuario = tk.StringVar(value="ninguno")
         self.combo_tipo_usuario = ttk.Combobox(
-            self.frame,
+            form_frame,
             textvariable=self.us_tipo_usuario,
             state="readonly",
             width=27,
             values=["Administrador", "Doctor", "Enfermera"]
         )
-        self.combo_tipo_usuario.pack(pady=5)
+        self.combo_tipo_usuario.grid(row=0, column=1, sticky="ew", pady=(0, 16))
 
-        tk.Label(self.frame, text="Nombre").pack(pady=5)
-        self.us_nombre = tk.Entry(self.frame, width=30)
-        self.us_nombre.pack(pady=5)
-        
-        tk.Label(self.frame, text="Apellidos").pack(pady=5)
-        self.us_apellidos = tk.Entry(self.frame, width=30)
-        self.us_apellidos.pack(pady=5)
-        
-        tk.Label(self.frame, text="Fecha de nacimiento").pack(pady=5)
-        self.us_fecha_nacimiento = DateEntry(self.frame, year= 2026)
-        self.us_fecha_nacimiento.pack(pady=5)
-        
-        tk.Label(self.frame, text="Especialidad").pack(pady=5)
+        tk.Label(form_frame, text="Correo electrónico", bg="#f5f5f5").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.us_correo_electronico = tk.Entry(form_frame, width=30)
+        self.us_correo_electronico.grid(row=0, column=3, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Nombre", bg="#f5f5f5").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.us_nombre = tk.Entry(form_frame, width=30)
+        self.us_nombre.grid(row=1, column=1, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Contraseña", bg="#f5f5f5").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.us_contra = tk.Entry(form_frame, width=30)
+        self.us_contra.grid(row=1, column=3, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Apellidos", bg="#f5f5f5").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.us_apellidos = tk.Entry(form_frame, width=30)
+        self.us_apellidos.grid(row=2, column=1, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Teléfono", bg="#f5f5f5").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.us_telefono = tk.Entry(form_frame, width=30)
+        self.us_telefono.grid(row=2, column=3, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Fecha de nacimiento", bg="#f5f5f5").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.us_fecha_nacimiento = DateEntry(form_frame, year= 2026)
+        self.us_fecha_nacimiento.grid(row=3, column=1, sticky="w", pady=(0, 16))
+
+        tk.Label(form_frame, text="Dirección", bg="#f5f5f5").grid(row=3, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.us_direccion = tk.Entry(form_frame, width=30)
+        self.us_direccion.grid(row=3, column=3, sticky="ew", pady=(0, 16))
+
+        tk.Label(form_frame, text="Especialidad", bg="#f5f5f5").grid(row=4, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.us_especialidad = tk.StringVar(value="ninguno")
         self.combo_especialidad = ttk.Combobox(
-            self.frame,
+            form_frame,
             textvariable=self.us_especialidad,
             state="readonly",
             width=27,
             values=["Geriatría", "Médico General"]
         )
-        self.combo_especialidad.pack(pady=5)
-        
-        tk.Label(self.frame, text="Correo electrónico").pack(pady=5)
-        self.us_correo_electronico = tk.Entry(self.frame, width=30)
-        self.us_correo_electronico.pack(pady=5)
-        
-        tk.Label(self.frame, text="Contraseña").pack(pady=5)
-        self.us_contra = tk.Entry(self.frame, width=30)
-        self.us_contra.pack(pady=5)
-        
-        tk.Label(self.frame, text="Teléfono").pack(pady=5)
-        self.us_telefono = tk.Entry(self.frame, width=30)
-        self.us_telefono.pack(pady=5)
-        
-        tk.Label(self.frame, text="Dirección").pack(pady=5)
-        self.us_direccion = tk.Entry(self.frame, width=30)
-        self.us_direccion.pack(pady=5)
+        self.combo_especialidad.grid(row=4, column=1, sticky="ew", pady=(0, 16))
         
      
         
