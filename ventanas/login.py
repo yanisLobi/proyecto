@@ -11,6 +11,10 @@ def main():
     # esto se actualizara con datos de la db despues
     # Abre la conexión
     lista_usuarios = obtener_tabla('usuarios')
+
+    def recargar_usuarios():
+        nonlocal lista_usuarios
+        lista_usuarios = obtener_tabla('usuarios')
     
     # temas: minty (verde), cosmo (blanco), darkly (obscuro)
     ventana = ttkb.Window(themename="darkly") 
@@ -69,6 +73,7 @@ def main():
 
     def abrir_registro():
         iniciar_registro(ventana)
+        recargar_usuarios()
         
     botones_frame = tk.Frame(ventana)
     botones_frame.pack(pady=20, padx=30, anchor="w", fill="x")
