@@ -8,11 +8,11 @@ from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro
 
 
 class CrearUsuario:
-    def __init__(self, parent, titulo="Crear"):
+    def __init__(self, parent, titulo="Crear", tipo_usuario=None):
         self.frame = tk.Frame(parent, bg="#f5f5f5")
         self.frame.pack(fill="both", expand=True)
         self.tabla = "usuarios"
-       
+        self.tipo_usuario = tipo_usuario
         
         self.etiqueta = tk.Label(
             self.frame,

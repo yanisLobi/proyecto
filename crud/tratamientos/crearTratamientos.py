@@ -3,16 +3,16 @@ from tkinter import messagebox
 from tkcalendar import DateEntry
 from tkinter import ttk
 from tkcalendar import DateEntry
-from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro
+from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro, obtener_valores
 
 
 class CrearTratamientos:
-    def __init__(self, parent, titulo="Crear"):
+    def __init__(self, parent=None, titulo="Crear", tipo_usuario=None):
         #me queda la duda de que es parent
         self.frame = tk.Frame(parent, bg="#f5f5f5")
         self.frame.pack(fill="both", expand=True)
         self.tabla = 'tratamientos'
-        
+        self.tipo_usuario = tipo_usuario
         self.etiqueta = tk.Label(
             self.frame,
             text=f"{titulo} {self.tabla}",
@@ -22,6 +22,9 @@ class CrearTratamientos:
         )
         self.etiqueta.pack(pady=20)
         
+        valores_pacientes = obtener_valores("pacientes", "id_pa", "pa_nombre", "pa_apellidos")
+        valores_usuarios = obtener_valores("usuarios", "id_usuarios", "us_nombre", "us_apellidos")
+        
         tk.Button(self.frame, text="Limpiar campos", command=self.limpiar).pack(pady=10)
         tk.Button(self.frame, text="Cancelar", command=self.ir_lista).pack(pady=10)
         tk.Button(self.frame, text="Guardar", command=self.guardar).pack(pady=10)
@@ -29,6 +32,16 @@ class CrearTratamientos:
         tk.Label(self.frame, text="Nombre").pack(pady=5)
         self.tr_nombre = tk.Entry(self.frame, width=30)
         self.tr_nombre.pack(pady=5)
+        
+        tk.Label(self.frame, text="Paciente").pack(pady=5)
+        self.id_paciente = ttk.Combobox(self.frame, values= valores_pacientes)
+        self.id_paciente.current(0)
+        self.id_paciente.pack(pady=5)
+        
+        tk.Label(self.frame, text="Usuario").pack(pady=5)
+        self.id_usuario = ttk.Combobox(self.frame, values= valores_usuarios)
+        self.id_usuario.current(0)
+        self.id_usuario.pack(pady=5)
         
         tk.Label(self.frame, text="Fecha de inicio").pack(pady=5)
         self.tr_fecha_inicio = DateEntry(self.frame, year= 2026)
@@ -39,14 +52,16 @@ class CrearTratamientos:
         self.tr_fecha_final.pack(pady=5)
         
         tk.Label(self.frame, text="Descripción").pack(pady=5)
-        self.tr_descripcion = tk.Text(self.frame, width=40)
+        self.tr_descripcion = tk.Text(self.frame, width=40, height=20)
         self.tr_descripcion.pack(pady=5)
+        
+        
         
     def limpiar(self):
         limpiar_frame(self.frame)
     
     def ir_lista(self):
-        navegar_a_pagina(self.frame, f"Lista {self.tabla}")
+        navegar_a_pagina(self.frame, f"Lista {self.tabla}", tipo_usuario = self.tipo_usuario)
         
     def guardar_valores(self):
         #actualizar los valores del diccionario con los valores de lo widgets
@@ -54,13 +69,19 @@ class CrearTratamientos:
                         'tr_nombre': '', 
                         'tr_fecha_inicio': "1980-01-01",
                         'tr_fecha_final': "1980-01-01", 
-                        'tr_descripcion': ''
+                        'tr_descripcion': '',
+                        'id_paciente': "",
+                        'id_usuario' : ""
                         }
         
         self.nuevo_registro["tr_nombre"] = self.tr_nombre.get()
         self.nuevo_registro["tr_fecha_inicio"] = self.tr_fecha_inicio.get_date().strftime("%Y-%m-%d")
         self.nuevo_registro["tr_fecha_final"] = self.tr_fecha_final.get_date().strftime("%Y-%m-%d")
         self.nuevo_registro["tr_descripcion"] = self.tr_descripcion.get("1.0","end-1c")
+        self.nuevo_registro["id_paciente"] = self.id_paciente.get().split(" ")[0]
+        self.nuevo_registro["id_usuario"] = self.id_usuario.get().split(" ")[0]
+        
+        
        
     
     def crear_tratamientos(self):
@@ -74,3 +95,5 @@ class CrearTratamientos:
     
     def guardar(self):
         self.crear_tratamientos()
+    
+    

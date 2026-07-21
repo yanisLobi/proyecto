@@ -25,7 +25,7 @@ class ListaTratamientos:
             fg="#2c3e50"
         )
         self.etiqueta.pack(pady=20)
-        
+        self.tipo_usuario = tipo_usuario
          
         self.lista_tratamiento = obtener_tabla(self.tabla)
         
@@ -59,7 +59,7 @@ class ListaTratamientos:
       
     def ir_crear(self):
     
-        navegar_a_pagina(self.frame, f"Crear {self.tabla}")
+        navegar_a_pagina(self.frame, f"Crear {self.tabla}", tipo_usuario =self.tipo_usuario)
     def obtener_id_seleccionado(self):
         item_id = self.tree.selection()
         if not item_id:
@@ -88,4 +88,4 @@ class ListaTratamientos:
             return
         
         id = self.obtener_id_seleccionado()
-        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id)
+        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id)

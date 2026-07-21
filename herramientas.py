@@ -34,7 +34,7 @@ def limpiar_frame(frame):
     for widget in frame.winfo_children():
         limpiar_widget(widget)
 
-def navegar_a_pagina(frame, nombre_clase: str, valor=None):
+def navegar_a_pagina(frame, nombre_clase, **kwargs):
     from crud.pacientes.listaPacientes import ListaPacientes
     from crud.pacientes.crearPacientes import CrearPacientes
     from crud.pacientes.actualizarPacientes import ActualizarPacientes
@@ -71,12 +71,9 @@ def navegar_a_pagina(frame, nombre_clase: str, valor=None):
 
     clase_instanciar = paginas.get(nombre_clase)
     if not clase_instanciar:
-        raise Exception(f"diccionario paginas no conoce ese archivo: '{nombre_clase}'")
+        raise Exception(f'diccionario paginas no conoce ese archivo: {nombre_clase}')
 
-    if valor is not None:
-        clase_instanciar(frame, valor)
-    else:
-        clase_instanciar(frame)
+    clase_instanciar(frame, **kwargs)
 
 
 def obtener_tabla(nombre_tabla):
@@ -155,6 +152,22 @@ def actualizar_registro(tabla, diccionario_usuario, nombre_columna, valor_column
     
     cursor.close()
     conexion.close()
+
+def obtener_valores(nombre_tabla, nombre_columna, nombre_columna1, nombre_columna2):
+    conexion = conectar()
+    
+    cursor = conexion.cursor()
+    
+    query = f"SELECT {nombre_columna}, {nombre_columna1}, {nombre_columna2} FROM {nombre_tabla} "
+    
+    cursor.execute(query)
+    resultados = cursor.fetchall()
+    cursor.close()
+    conexion.close()
+    print(resultados)
+    return resultados
+
+    
 
 
 

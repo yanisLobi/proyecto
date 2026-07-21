@@ -7,12 +7,12 @@ from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro
 
 
 class CrearMedicamentos:
-    def __init__(self, parent, titulo="Crear"):
+    def __init__(self, parent=None, tipo_usuario=None, titulo="Crear"):
         #me queda la duda de que es parent
         self.frame = tk.Frame(parent, bg="#f5f5f5")
         self.frame.pack(fill="both", expand=True)
         self.tabla = 'medicamentos'
-        
+        self.tipo_usuario = tipo_usuario 
         self.etiqueta = tk.Label(
             self.frame,
             text=f"{titulo} {self.tabla}",
@@ -57,7 +57,7 @@ class CrearMedicamentos:
         limpiar_frame(self.frame)
     
     def ir_lista(self):
-        navegar_a_pagina(self.frame, f"Lista {self.tabla}")
+        navegar_a_pagina(self.frame, f"Lista {self.tabla}", tipo_usuario= self.tipo_usuario)
         
     def guardar_valores(self):
         #actualizar los valores del diccionario con los valores de lo widgets

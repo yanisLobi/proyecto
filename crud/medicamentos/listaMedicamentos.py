@@ -5,12 +5,12 @@ from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro
 
 
 class ListaMedicamentos:
-    def __init__(self, parent, tipo_usuario=None):
+    def __init__(self, parent, tipo_usuario):
         
         self.tabla = 'medicamentos' 
         self.frame = tk.Frame(parent, bg="#f5f5f5")
         self.frame.pack(fill="both", expand=True)
-        
+        self.tipo_usuario = tipo_usuario
         if tipo_usuario in ["Doctor", "Administrador"]:
             tk.Button(self.frame, text=f"Crear {self.tabla.title()}", command=self.ir_crear).pack(pady=10)
             tk.Button(self.frame, text="Eliminar", command=self.borrar).pack(pady=10)
@@ -59,7 +59,7 @@ class ListaMedicamentos:
       
     def ir_crear(self):
     
-        navegar_a_pagina(self.frame, f"Crear {self.tabla}")
+        navegar_a_pagina(self.frame, f"Crear {self.tabla}", tipo_usuario =self.tipo_usuario)
     def obtener_id_seleccionado(self):
         item_id = self.tree.selection()
         if not item_id:
@@ -88,7 +88,7 @@ class ListaMedicamentos:
             return
         
         id = self.obtener_id_seleccionado()
-        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id)
+        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado = id)
         #ActualizarUsuario(self.frame, self.id_selccionado)
         
         

@@ -75,19 +75,19 @@ def iniciar_aplicacion(ventana_login, tipo_usuario, campo_password):
     
 
     def cambiar_a_usuarios():
-        navegar_a_pagina(contenido_frame, "Lista usuarios", tipo_usuario)
+        navegar_a_pagina(contenido_frame, "Lista usuarios", tipo_usuario = tipo_usuario)
 
     def cambiar_a_pacientes():
-        navegar_a_pagina(contenido_frame, "Lista pacientes", tipo_usuario)
+        navegar_a_pagina(contenido_frame, "Lista pacientes", tipo_usuario=tipo_usuario)
 
     def cambiar_a_medicamentos():
-        navegar_a_pagina(contenido_frame, "Lista medicamentos", tipo_usuario)
+        navegar_a_pagina(contenido_frame, "Lista medicamentos", tipo_usuario=tipo_usuario)
     
     def cambiar_a_recordatorios():
         navegar_a_pagina(contenido_frame, "Lista mediamentos")
     
     def cambiar_a_tratamiento():
-        navegar_a_pagina(contenido_frame, "Lista tratamientos", tipo_usuario)
+        navegar_a_pagina(contenido_frame, "Lista tratamientos", tipo_usuario=tipo_usuario)
         
     
     
