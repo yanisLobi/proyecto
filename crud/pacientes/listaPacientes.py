@@ -1,4 +1,5 @@
 import tkinter as tk
+import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
 from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro
@@ -8,29 +9,43 @@ class ListaPacientes:
     def __init__(self, parent, tipo_usuario=None):
         
         self.tabla = 'pacientes' 
-        self.frame = tk.Frame(parent, bg="#f5f5f5")
+        self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
         self.tipo_usuario = tipo_usuario
         self.boton_actualizar = None
         if tipo_usuario in ["Doctor", "Administrador"]:
-            botones_frame = tk.Frame(self.frame, bg="#f5f5f5")
+            botones_frame = ttkb.Frame(self.frame)
             botones_frame.pack(pady=(40, 45), padx=20, fill="x")
             botones_frame.grid_columnconfigure(0, weight=1)
             botones_frame.grid_columnconfigure(1, weight=1)
             botones_frame.grid_columnconfigure(2, weight=1)
 
-            tk.Button(botones_frame, text=f"Crear {self.tabla.title()}", command=self.ir_crear).grid(row=0, column=0, sticky="ew", padx=6)
-            tk.Button(botones_frame, text="Eliminar", command=self.borrar).grid(row=0, column=1, sticky="ew", padx=6)
-            self.boton_actualizar = tk.Button(botones_frame, text="Actualizar", command=self.ir_actualizar, state="disabled")
+            ttkb.Button(
+                botones_frame,
+                text=f"Crear {self.tabla.title()}",
+                command=self.ir_crear,
+                bootstyle="primary",
+            ).grid(row=0, column=0, sticky="ew", padx=6)
+            ttkb.Button(
+                botones_frame,
+                text="Eliminar",
+                command=self.borrar,
+                bootstyle="danger",
+            ).grid(row=0, column=1, sticky="ew", padx=6)
+            self.boton_actualizar = ttkb.Button(
+                botones_frame,
+                text="Actualizar",
+                command=self.ir_actualizar,
+                state="disabled",
+                bootstyle="info",
+            )
             self.boton_actualizar.grid(row=0, column=2, sticky="ew", padx=6)
         
             
-        self.etiqueta = tk.Label(
+        self.etiqueta = ttkb.Label(
             self.frame,
             text=f"lista de {self.tabla}",
-            font=("Arial", 14, "bold"),
-            bg="#f5f5f5",
-            fg="#2c3e50"
+            font=("Arial", 14, "bold")
         )
         self.etiqueta.pack(pady=(40, 30))
         

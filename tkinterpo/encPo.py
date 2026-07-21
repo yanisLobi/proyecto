@@ -4,21 +4,22 @@
 #__atributo
 
 import tkinter as tk
+import ttkbootstrap as ttkb
 
 class Usuario:
     def __init__(self):
         self.__nombre=""
-        self.ventana = tk.Tk()
+        self.ventana = ttkb.Window(themename="darkly")
         self.ventana.title("Encapsulamiento")
         self.ventana.geometry("300x250")
         
-        self.entry = tk.Entry(self.ventana)
+        self.entry = ttkb.Entry(self.ventana)
         self.entry.pack(pady=20)
         
-        self.boton = tk.Button(self.ventana, text="Guardar", command=self.guardar)
+        self.boton = ttkb.Button(self.ventana, text="Guardar", command=self.guardar, bootstyle="primary")
         self.boton.pack(pady=20)
         
-        self.resultado = tk.Label(self.ventana, text="")
+        self.resultado = ttkb.Label(self.ventana, text="")
         self.resultado.pack(pady=20)
         
         self.ventana.mainloop()

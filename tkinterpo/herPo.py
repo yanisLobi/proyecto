@@ -1,5 +1,6 @@
 #Herencia 
 import tkinter as tk
+import ttkbootstrap as ttkb
 
 #Clase Padre
 class Persona:
@@ -18,12 +19,12 @@ class Alumno(Persona):
 #Clase interfaz
 class Ventana:
     def __init__(self):
-        self.ventana = tk.Tk()
+        self.ventana = ttkb.Window(themename="darkly")
         self.ventana.geometry("350x250")
         
         alumno = Alumno("Juan", "DSM") # Crear una instancia de la clase alumno con argumentos
         
-        label = tk.Label(self.ventana, text=alumno.mostrar_nombre())
+        label = ttkb.Label(self.ventana, text=alumno.mostrar_nombre())
         label.pack(pady=50)
         
         self.ventana.mainloop()

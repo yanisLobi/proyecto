@@ -11,6 +11,7 @@ def iniciar_registro(ventana_login):
     ventana = tk.Toplevel()
     ventana.title("AbueCare Registro")
     ventana.geometry("900x650")
+    ventana.resizable(False, False)
 
     ventana.protocol("WM_DELETE_WINDOW", ventana_login.destroy)
 

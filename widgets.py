@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+import ttkbootstrap as ttkb
 
 def mostrar_info():
     info = (
@@ -13,15 +14,15 @@ def mostrar_info():
     )
     messagebox.showinfo("Información", info)
 
-root = tk.Tk()
+root = ttkb.Window(themename="darkly")
 root.title("Cheatsheet Completo Tkinter")
 root.geometry("700x750")
 
 # Label
-tk.Label(root, text="Ejemplo de Label").pack(pady=5)
+ttkb.Label(root, text="Ejemplo de Label").pack(pady=5)
 
 # Entry
-entry = tk.Entry(root, width=30)
+entry = ttkb.Entry(root, width=30)
 entry.pack(pady=5)
 
 # Text
@@ -55,9 +56,9 @@ canvas.create_rectangle(50, 20, 150, 80, fill="blue")
 canvas.pack(pady=5)
 
 # Frame
-frame = tk.Frame(root, bg="lightblue", width=200, height=50)
+frame = ttkb.Frame(root, width=200, height=50)
 frame.pack(pady=5)
-tk.Label(frame, text="Dentro de un Frame").pack()
+ttkb.Label(frame, text="Dentro de un Frame").pack()
 
 # Scale
 scale = tk.Scale(root, from_=0, to=100, orient="horizontal")
@@ -70,12 +71,12 @@ pb["value"] = 70
 
 # Notebook (pestañas)
 notebook = ttk.Notebook(root)
-tab1 = tk.Frame(notebook)
-tab2 = tk.Frame(notebook)
+tab1 = ttkb.Frame(notebook)
+tab2 = ttkb.Frame(notebook)
 notebook.add(tab1, text="Tab 1")
 notebook.add(tab2, text="Tab 2")
-tk.Label(tab1, text="Contenido de Tab 1").pack(pady=10)
-tk.Label(tab2, text="Contenido de Tab 2").pack(pady=10)
+ttkb.Label(tab1, text="Contenido de Tab 1").pack(pady=10)
+ttkb.Label(tab2, text="Contenido de Tab 2").pack(pady=10)
 notebook.pack(pady=5)
 
 # Menú
@@ -86,7 +87,7 @@ file_menu.add_command(label="Salir", command=root.quit)
 menu_bar.add_cascade(label="Archivo", menu=file_menu)
 
 # Scrollbar con Text
-scroll_frame = tk.Frame(root)
+scroll_frame = ttkb.Frame(root)
 scroll_frame.pack(pady=5)
 scrollbar = tk.Scrollbar(scroll_frame)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -103,7 +104,7 @@ tree.insert("", tk.END, values=("Dato 2", "Valor 2"))
 tree.pack(pady=10)
 
 # Button
-btn = tk.Button(root, text="Mostrar información", command=mostrar_info)
+btn = ttkb.Button(root, text="Mostrar información", command=mostrar_info, bootstyle="primary")
 btn.pack(pady=10)
 
 #messabox
@@ -113,7 +114,7 @@ from tkinter import messagebox
 def saludar():
     messagebox.showinfo("Saludo", "¡Hola! Has presionado el botón.")
 
-btn = tk.Button(root, text="Haz clic aquí", command=saludar)
+btn = ttkb.Button(root, text="Haz clic aquí", command=saludar, bootstyle="primary")
 btn.pack(pady=50)
 
 root.mainloop()

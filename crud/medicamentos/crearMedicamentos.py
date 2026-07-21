@@ -1,4 +1,5 @@
 import tkinter as tk
+import ttkbootstrap as ttkb
 from tkinter import messagebox
 from tkcalendar import DateEntry
 from tkinter import ttk
@@ -9,41 +10,54 @@ from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro
 class CrearMedicamentos:
     def __init__(self, parent=None, tipo_usuario=None, titulo="Crear"):
         #me queda la duda de que es parent
-        self.frame = tk.Frame(parent, bg="#f5f5f5")
+        self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
         self.tabla = 'medicamentos'
         self.tipo_usuario = tipo_usuario 
-        self.etiqueta = tk.Label(
+        self.etiqueta = ttkb.Label(
             self.frame,
             text=f"{titulo} {self.tabla}",
-            font=("Arial", 14, "bold"),
-            bg="#f5f5f5",
-            fg="#2c3e50"
+            font=("Arial", 14, "bold")
         )
         self.etiqueta.pack(pady=(40, 30))
 
-        botones_frame = tk.Frame(self.frame, bg="#f5f5f5")
+        botones_frame = ttkb.Frame(self.frame)
         botones_frame.pack(pady=(10, 35), padx=20, fill="x")
         botones_frame.grid_columnconfigure(0, weight=1)
         botones_frame.grid_columnconfigure(1, weight=1)
         botones_frame.grid_columnconfigure(2, weight=1)
 
-        tk.Button(botones_frame, text="Cancelar", command=self.ir_lista).grid(row=0, column=0, sticky="ew", padx=6)
-        tk.Button(botones_frame, text="Limpiar campos", command=self.limpiar).grid(row=0, column=1, sticky="ew", padx=6)
-        tk.Button(botones_frame, text="Guardar", command=self.guardar).grid(row=0, column=2, sticky="ew", padx=6)
+        ttkb.Button(
+            botones_frame,
+            text="Cancelar",
+            command=self.ir_lista,
+            bootstyle="secondary",
+        ).grid(row=0, column=0, sticky="ew", padx=6)
+        ttkb.Button(
+            botones_frame,
+            text="Limpiar campos",
+            command=self.limpiar,
+            bootstyle="warning",
+        ).grid(row=0, column=1, sticky="ew", padx=6)
+        ttkb.Button(
+            botones_frame,
+            text="Guardar",
+            command=self.guardar,
+            bootstyle="primary",
+        ).grid(row=0, column=2, sticky="ew", padx=6)
 
-        form_frame = tk.Frame(self.frame, bg="#f5f5f5")
+        form_frame = ttkb.Frame(self.frame)
         form_frame.pack(padx=20, pady=(20, 30), fill="x")
         form_frame.grid_columnconfigure(0, weight=0)
         form_frame.grid_columnconfigure(1, weight=1)
         form_frame.grid_columnconfigure(2, weight=0)
         form_frame.grid_columnconfigure(3, weight=1)
 
-        tk.Label(form_frame, text="Nombre comercial", bg="#f5f5f5").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.me_nombre_comercial = tk.Entry(form_frame, width=30)
+        ttkb.Label(form_frame, text="Nombre comercial").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.me_nombre_comercial = ttkb.Entry(form_frame, width=30)
         self.me_nombre_comercial.grid(row=0, column=1, sticky="ew", pady=(0, 16))
 
-        tk.Label(form_frame, text="Forma farmacéutica", bg="#f5f5f5").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Forma farmacéutica").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.me_forma_farmaceutica = tk.StringVar(value="ninguno")
         self.combo_forma_framaceutica = ttk.Combobox(
             form_frame,
@@ -54,15 +68,15 @@ class CrearMedicamentos:
         )
         self.combo_forma_framaceutica.grid(row=0, column=3, sticky="ew", pady=(0, 16))
 
-        tk.Label(form_frame, text="Concentración", bg="#f5f5f5").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.me_concentracion = tk.Entry(form_frame, width=30)
+        ttkb.Label(form_frame, text="Concentración").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.me_concentracion = ttkb.Entry(form_frame, width=30)
         self.me_concentracion.grid(row=1, column=1, sticky="ew", pady=(0, 16))
 
-        tk.Label(form_frame, text="Fecha de caducidad", bg="#f5f5f5").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Fecha de caducidad").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.me_fecha_caducidad = DateEntry(form_frame, year= 2026)
         self.me_fecha_caducidad.grid(row=1, column=3, sticky="w", pady=(0, 16))
 
-        tk.Label(form_frame, text="Descripción", bg="#f5f5f5").grid(row=2, column=0, sticky="nw", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Descripción").grid(row=2, column=0, sticky="nw", padx=(0, 10), pady=(0, 16))
         self.me_descripcion = tk.Text(form_frame, width=40, height=4)
         self.me_descripcion.grid(row=2, column=1, columnspan=3, sticky="ew", pady=(0, 16))
         

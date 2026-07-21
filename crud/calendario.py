@@ -12,6 +12,7 @@ class GoogleCalendarSemanal(ttk.Frame):
         self.PIXELS_POR_HORA = 60  
         self.MARGEN_IZQUIERDO = 70 
         self.DIAS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+        self.cabecera_labels = []
         
         # --- DATOS HARDCODEADOS DEL TIEMPO ACTUAL ---
         self.DIA_ACTUAL_INDEX = 2  # 2 = Miércoles (0=Lunes, 1=Martes...)
@@ -50,13 +51,22 @@ class GoogleCalendarSemanal(ttk.Frame):
         ]
 
     def configurar_cabecera_dias(self):
+        self.cabecera_labels = []
         for i in range(7):
             self.cabecera.columnconfigure(i, weight=1)
             # Resaltamos visualmente el texto del día actual si coincide
             color_texto = "#29b6f6" if i == self.DIA_ACTUAL_INDEX else "white"
             lbl = ttk.Label(self.cabecera, text=self.DIAS[i], anchor="center", 
-                            font=("Arial", 10, "bold"), foreground=color_texto)
+                            font=("Arial", 10, "bold"), foreground=color_texto,
+                            justify="center")
             lbl.grid(row=0, column=i, pady=10, sticky="ew")
+            self.cabecera_labels.append(lbl)
+
+    def actualizar_cabecera(self, ancho_ventana):
+        ancho_util = max(ancho_ventana - self.MARGEN_IZQUIERDO - 10, 0)
+        ancho_columna = max(int(ancho_util / 7) - 4, 0)
+        for lbl in self.cabecera_labels:
+            lbl.configure(wraplength=ancho_columna)
 
     def dibujar_cuadricula(self, ancho_ventana):
         self.canvas.delete("all") 
@@ -115,6 +125,7 @@ class GoogleCalendarSemanal(ttk.Frame):
         self.dibujar_cuadricula(event.width)
         self.dibujar_eventos()
         self.dibujar_indicador_tiempo() # Lo llamamos al final para que quede por encima de las líneas y eventos
+        self.actualizar_cabecera(event.width)
 
 if __name__ == "__main__":
     root = tk.Tk()

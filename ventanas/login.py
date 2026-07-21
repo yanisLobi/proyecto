@@ -19,27 +19,31 @@ def main():
     # temas: minty (verde), cosmo (blanco), darkly (obscuro)
     ventana = ttkb.Window(themename="darkly") 
     ventana.title("AbueCare Login")
-    ventana.geometry("300x580")
+    ventana.geometry("360x550")
     ventana.pack_propagate(False)
+    ventana.resizable(False, False)
     imagen_original = tk.PhotoImage(file="recursos/1.png")
     ventana.iconphoto(True, imagen_original)
 
     imagen_original = tk.PhotoImage(file="recursos/1.png")
     imagen_pequena = imagen_original.subsample(10)
     
-    etiqueta_logo = tk.Label(ventana, image=imagen_pequena)
-    etiqueta_logo.pack(pady=50, padx=45, anchor="w")
+    etiqueta_logo = ttkb.Label(ventana, image=imagen_pequena)
+    etiqueta_logo.pack(pady=(50, 30))
         
+    contenido_frame = ttkb.Frame(ventana)
+    contenido_frame.pack(padx=30, fill="x")
+    contenido_frame.grid_columnconfigure(0, weight=1)
+
     # Entry para correo
-    tk.Label(ventana, text="Correo:").pack(pady=5, padx=30, anchor="w")
-    correo = tk.Entry(ventana, width=25)
-    correo.pack(pady=5, padx=30, anchor="w")
-     
+    ttkb.Label(contenido_frame, text="Correo:").grid(row=0, column=0, sticky="w", pady=(5, 2))
+    correo = ttkb.Entry(contenido_frame)
+    correo.grid(row=1, column=0, sticky="ew", pady=(0, 10))
     
     # Entry para contraseña
-    tk.Label(ventana, text="Contraseña:").pack(pady=5, padx=30, anchor="w")
-    contra = tk.Entry(ventana, width=25)
-    contra.pack(pady=5, padx=30, anchor="w")
+    ttkb.Label(contenido_frame, text="Contraseña:").grid(row=2, column=0, sticky="w", pady=(5, 2))
+    contra = ttkb.Entry(contenido_frame)
+    contra.grid(row=3, column=0, sticky="ew", pady=(0, 10))
     #-------------------------------------------------------------------------------
     
 
@@ -75,16 +79,22 @@ def main():
         iniciar_registro(ventana)
         recargar_usuarios()
         
-    botones_frame = tk.Frame(ventana)
-    botones_frame.pack(pady=20, padx=30, anchor="w", fill="x")
+    botones_frame = ttkb.Frame(contenido_frame)
+    botones_frame.grid(row=4, column=0, sticky="ew", pady=(20, 30))
+    botones_frame.grid_columnconfigure(0, weight=1)
+    botones_frame.grid_columnconfigure(1, weight=1)
 
     # Botón 1: Columna 0 ----- Boton de iniciar sesion
-    iniciar = tk.Button(botones_frame, text="Iniciar Sesion", command=intentar_login)
-    iniciar.grid(row=0, column=0, sticky="ew", padx=10, pady=10)
+    iniciar = ttkb.Button(
+        botones_frame, text="Iniciar Sesion", command=intentar_login, bootstyle="primary"
+    )
+    iniciar.grid(row=0, column=0, sticky="ew", padx=(0, 8))
 
     # Botón 2: Columna 1 ----- Boton de registro
-    registrar = tk.Button(botones_frame, text="Registrarse", command=abrir_registro)
-    registrar.grid(row=0, column=1, sticky="ew",padx=10, pady=10 )
+    registrar = ttkb.Button(
+        botones_frame, text="Registrarse", command=abrir_registro, bootstyle="secondary"
+    )
+    registrar.grid(row=0, column=1, sticky="ew", padx=(8, 0))
 
     # Ejecutar la aplicación
     ventana.mainloop()
