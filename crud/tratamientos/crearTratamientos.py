@@ -4,7 +4,7 @@ from tkinter import messagebox
 from tkcalendar import DateEntry
 from tkinter import ttk
 from tkcalendar import DateEntry
-from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro, obtener_valores
+from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro, obtener_valores, obtener_valores_usuarios
 
 
 class CrearTratamientos:
@@ -22,7 +22,8 @@ class CrearTratamientos:
         self.etiqueta.pack(pady=(40, 30))
         
         valores_pacientes = obtener_valores("pacientes", "id_pa", "pa_nombre", "pa_apellidos")
-        valores_usuarios = obtener_valores("usuarios", "id_usuarios", "us_nombre", "us_apellidos")
+        valores_doctor = obtener_valores_usuarios("id_usuarios", "us_nombre", "us_apellidos", "Doctor")
+        valores_enfermera = obtener_valores_usuarios("id_usuarios", "us_nombre", "us_apellidos", "Enfermera")
 
         botones_frame = ttkb.Frame(self.frame)
         botones_frame.pack(pady=(10, 35), padx=20, fill="x")
@@ -65,11 +66,16 @@ class CrearTratamientos:
         self.id_paciente.current(0)
         self.id_paciente.grid(row=0, column=3, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Usuario").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.id_usuario = ttk.Combobox(form_frame, values= valores_usuarios)
-        self.id_usuario.current(0)
-        self.id_usuario.grid(row=1, column=1, sticky="ew", pady=(0, 16))
+        ttkb.Label(form_frame, text="Doctor").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.id_doctor = ttk.Combobox(form_frame, values= valores_doctor)
+        self.id_doctor.current(0)
+        self.id_doctor.grid(row=1, column=1, sticky="ew", pady=(0, 16))
 
+        ttkb.Label(form_frame, text="Enfermera").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.id_enfermera = ttk.Combobox(form_frame, values= valores_enfermera)
+        self.id_enfermera.current(0)
+        self.id_enfermera.grid(row=1, column=1, sticky="ew", pady=(0, 16))
+        
         ttkb.Label(form_frame, text="Fecha de inicio").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.tr_fecha_inicio = DateEntry(form_frame, year= 2026)
         self.tr_fecha_inicio.grid(row=1, column=3, sticky="w", pady=(0, 16))

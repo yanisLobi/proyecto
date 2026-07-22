@@ -88,6 +88,7 @@ def main():
     iniciar = ttkb.Button(
         botones_frame, text="Iniciar Sesion", command=intentar_login, bootstyle="primary"
     )
+    #que es bootstyle
     iniciar.grid(row=0, column=0, sticky="ew", padx=(0, 8))
 
     # Botón 2: Columna 1 ----- Boton de registro

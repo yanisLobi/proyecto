@@ -167,6 +167,19 @@ def obtener_valores(nombre_tabla, nombre_columna, nombre_columna1, nombre_column
     print(resultados)
     return resultados
 
+def obtener_valores_usuarios( nombre_columna, nombre_columna1, nombre_columna2, tipo_usuario):
+    conexion = conectar()
+    
+    cursor = conexion.cursor()
+    
+    query = f"SELECT {nombre_columna}, {nombre_columna1}, {nombre_columna2} FROM usuarios WHERE us_tipo_usuario = '{tipo_usuario}'"
+    
+    cursor.execute(query)
+    resultados = cursor.fetchall()
+    cursor.close()
+    conexion.close()
+    print(resultados)
+    return resultados
     
 
 

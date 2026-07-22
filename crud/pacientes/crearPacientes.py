@@ -4,7 +4,7 @@ import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkcalendar import DateEntry
 from tkinter import messagebox
-from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro
+from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro, obtener_valores_usuarios
 
 
 class CrearPacientes:
@@ -72,7 +72,19 @@ class CrearPacientes:
 
         ttkb.Label(form_frame, text="Nombre del contacto de emergencia").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.pa_nombre_contacto_emergencia = ttkb.Entry(form_frame, width=30)
-        self.pa_nombre_contacto_emergencia.grid(row=2, column=1, columnspan=3, sticky="ew", pady=(0, 16))
+        self.pa_nombre_contacto_emergencia.grid(row=2, column=1, sticky="ew", pady=(0, 16))
+        # columnspan es para definir cuantas seldad de ancho
+        ttkb.Label(form_frame, text="Enfermera a cargo").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        enfermeras = obtener_valores_usuarios("id_usuarios", "us_apellidos", "us_tipo_usuario", "Enfermera")
+        self.id_enfermera = tk.StringVar(value="ninguno")
+        self.combo_id_enfermera = ttk.Combobox(
+            form_frame,
+            textvariable=self.id_enfermera,
+            state="readonly",
+            width=27,
+            values= enfermeras,
+        )
+        self.combo_id_enfermera.grid(row=2, column=3, sticky="ew", pady=(0, 16))
         
          
     def limpiar(self):
@@ -89,6 +101,9 @@ class CrearPacientes:
                         'pa_fecha_nacimiento': "1980-01-01", 
                         'pa_nombre_contacto_emergencia': '',
                         'pa_tel_contacto_emergencia': '',
+                        'id_enfermera_principal': '',
+                        
+                        
                         }
         
         self.nuevo_registro["pa_nombre"] = self.pa_nombre.get()
@@ -96,6 +111,8 @@ class CrearPacientes:
         self.nuevo_registro["pa_fecha_nacimiento"] = self.pa_fecha_nacimiento.get_date().strftime("%Y-%m-%d")
         self.nuevo_registro["pa_nombre_contacto_emergencia"] = self.pa_nombre_contacto_emergencia.get()
         self.nuevo_registro["pa_tel_contacto_emergencia"] = self.pa_tel_contacto_emergencia.get()
+        self.nuevo_registro["id_enfermera_principal"] = self.id_enfermera.get().split()[0] #sirve para sacar el id, dentro de muchos valores
+        
         
         
     
