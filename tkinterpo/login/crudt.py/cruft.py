@@ -7,6 +7,7 @@
 #eliminar
 
 import tkinter as tk
+import ttkbootstrap as ttkb
 
 # 1. FUNCIÓN PARA CREAR (Añadir a la lista)
 def crear():
@@ -39,17 +40,32 @@ def eliminar():
         entrada.delete(0, tk.END)          # Limpia el cuadro de texto
 
 # --- INTERFAZ GRÁFICA ---
-ventana = tk.Tk()
+ventana = ttkb.Window(themename="darkly")
 ventana.title("Mi CRUD Simple")
 
 # Cuadro para escribir
-entrada = tk.Entry(ventana)
+entrada = ttkb.Entry(ventana)
 entrada.pack()
 
 # Botones de acción
-tk.Button(ventana, text="1. Añadir (Crear)", command=crear).pack()
-tk.Button(ventana, text="3. Cambiar (Actualizar)", command=actualizar).pack()
-tk.Button(ventana, text="4. Borrar (Eliminar)", command=eliminar).pack()
+ttkb.Button(
+    ventana,
+    text="1. Añadir (Crear)",
+    command=crear,
+    bootstyle="primary",
+).pack()
+ttkb.Button(
+    ventana,
+    text="3. Cambiar (Actualizar)",
+    command=actualizar,
+    bootstyle="info",
+).pack()
+ttkb.Button(
+    ventana,
+    text="4. Borrar (Eliminar)",
+    command=eliminar,
+    bootstyle="danger",
+).pack()
 
 # La lista visual en pantalla
 lista_visual = tk.Listbox(ventana)

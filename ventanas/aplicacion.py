@@ -1,4 +1,5 @@
 import tkinter as tk
+import ttkbootstrap as ttkb
 
 from herramientas import navegar_a_pagina
 from crud.calendario import GoogleCalendarSemanal
@@ -10,19 +11,15 @@ def mostrar_contenido(contenido_frame, titulo, texto, clase_contenido= None):
         widget.destroy()
         pass
 
-    tk.Label(
+    ttkb.Label(
         contenido_frame,
         text=titulo,
-        bg="#ecf0f1",
-        fg="#2c3e50",
         font=("Arial", 18, "bold")
     ).pack(pady=(40, 10))
 
-    tk.Label(
+    ttkb.Label(
         contenido_frame,
         text=texto,
-        bg="#ecf0f1",
-        fg="#34495e",
         font=("Arial", 12)
     ).pack()
     
@@ -37,6 +34,7 @@ def iniciar_aplicacion(ventana_login, tipo_usu, campo_password):
     ventana = tk.Toplevel()
     ventana.title("AbueCare")
     ventana.geometry("1500x900")
+    ventana.resizable(False, False)
     imagen_original = tk.PhotoImage(file="recursos/1.png")
     ventana.iconphoto(True, imagen_original)
     
@@ -51,20 +49,20 @@ def iniciar_aplicacion(ventana_login, tipo_usu, campo_password):
 # 1. FRAME DEL MENÚ LATERAL (Ocupa la columna 0)
 # Se usa 'sticky="nsew"' para que el frame se estire en todas direcciones,
 # pero con un ancho fijo para que no cambie al cargar tablas.
-    menu_frame = tk.Frame(ventana, bg="#2c3e50", width=300)
+    menu_frame = ttkb.Frame(ventana, width=300)
     menu_frame.grid(row=0, column=0, sticky="nsew")
     menu_frame.grid_propagate(False)
 
     imagen_original = tk.PhotoImage(file="recursos/1.png")
     imagen_pequena = imagen_original.subsample(10)
 # Crear una etiqueta (Label) y asignarle la imagen
-    etiqueta_logo = tk.Label(menu_frame, image=imagen_pequena)
+    etiqueta_logo = ttkb.Label(menu_frame, image=imagen_pequena)
     etiqueta_logo.pack(pady=50)
    
    
         
 # 2. FRAME DEL CONTENIDO (Ocupa la columna 1)
-    contenido_frame = tk.Frame(ventana, bg="#ecf0f1")
+    contenido_frame = ttkb.Frame(ventana)
     contenido_frame.grid(row=0, column=1, sticky="nsew")
 
     mostrar_contenido(contenido_frame, "Área de Contenido", "Selecciona una opción del menú")
@@ -98,21 +96,73 @@ def iniciar_aplicacion(ventana_login, tipo_usu, campo_password):
         campo_password.delete(0, tk.END) # borra la contraseña de ulimo inicio de sesion
 
     # Aqui van los botones del menu que se muestran para todos los tipos de usuarios
-    tk.Button(menu_frame, text="Calendario", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_calendario).pack(fill="x")    
-    tk.Button(menu_frame, text="Pacientes", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_pacientes).pack(fill="x")    
-    tk.Button(menu_frame, text="Recordatorios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_recordatorios).pack(fill="x")
+    menu_button_style = "Menu.TButton"
+    menu_button_padding = (12, 12)
+    ttkb.Style().configure(menu_button_style, font=("Arial", 12, "bold"))
+    ttkb.Button(
+        menu_frame,
+        text="Calendario",
+        command=cambiar_a_calendario,
+        bootstyle="secondary",
+        padding=menu_button_padding,
+        style=menu_button_style,
+    ).pack(fill="x")
+    ttkb.Button(
+        menu_frame,
+        text="Pacientes",
+        command=cambiar_a_pacientes,
+        bootstyle="secondary",
+        padding=menu_button_padding,
+        style=menu_button_style,
+    ).pack(fill="x")
+    ttkb.Button(
+        menu_frame,
+        text="Recordatorios",
+        command=cambiar_a_recordatorios,
+        bootstyle="secondary",
+        padding=menu_button_padding,
+        style=menu_button_style,
+    ).pack(fill="x")
     #tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x") 
     # Mostrar los botones especiales segun que tipo de usuario inicio sesion
     if tipo_usu == "Doctor":
         #tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x")
-        tk.Button(menu_frame, text="Medicamentos", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_medicamentos).pack(fill="x")
-        tk.Button(menu_frame, text="Tratamiento", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_tratamiento).pack(fill="x")
+        ttkb.Button(
+            menu_frame,
+            text="Medicamentos",
+            command=cambiar_a_medicamentos,
+            bootstyle="secondary",
+            padding=menu_button_padding,
+            style=menu_button_style,
+        ).pack(fill="x")
+        ttkb.Button(
+            menu_frame,
+            text="Tratamiento",
+            command=cambiar_a_tratamiento,
+            bootstyle="secondary",
+            padding=menu_button_padding,
+            style=menu_button_style,
+        ).pack(fill="x")
         
     elif tipo_usu == "Administrador":
-        tk.Button(menu_frame, text="Usuarios", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_usuarios).pack(fill="x")
+        ttkb.Button(
+            menu_frame,
+            text="Usuarios",
+            command=cambiar_a_usuarios,
+            bootstyle="secondary",
+            padding=menu_button_padding,
+            style=menu_button_style,
+        ).pack(fill="x")
         #tk.Button(menu_frame, text="Medicamentos", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_medicamentos).pack(fill="x")
     
-    tk.Button(menu_frame, text="Cerrar sesión", height=3,font=("Arial", 10, "bold"), fg="black", command=cerrar_sesion).pack(fill="x")
+    ttkb.Button(
+        menu_frame,
+        text="Cerrar sesión",
+        command=cerrar_sesion,
+        bootstyle="danger",
+        padding=menu_button_padding,
+        style=menu_button_style,
+    ).pack(fill="x")
     
     # Ejecutar la aplicación
     ventana.mainloop()

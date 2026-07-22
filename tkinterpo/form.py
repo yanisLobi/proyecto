@@ -1,27 +1,28 @@
 #Crear una clase que pida un nombre y muestre un saludo
 
 import tkinter as tk
+import ttkbootstrap as ttkb
 
 class Formulario():
     def __init__(self):
-        self.ventana = tk.Tk()
+        self.ventana = ttkb.Window(themename="darkly")
         self.ventana.title("Formulario")
         self.ventana.geometry("350x250")
         
         #Label
-        self.label = tk.Label(self.ventana, text="Nombre")
+        self.label = ttkb.Label(self.ventana, text="Nombre")
         self.label.pack(pady=10)
         
         #Entry
-        self.entry = tk.Entry(self.ventana)
+        self.entry = ttkb.Entry(self.ventana)
         self.entry.pack(pady=20)
         
         #Boton
-        self.boton = tk.Button(self.ventana, text="Mostrar", command=self.mostrar)
+        self.boton = ttkb.Button(self.ventana, text="Mostrar", command=self.mostrar, bootstyle="primary")
         self.boton.pack(pady=10)
         
         #Resultado
-        self.resultado = tk.Label(self.ventana, text="")
+        self.resultado = ttkb.Label(self.ventana, text="")
         self.resultado.pack(pady=10)
         
         self.ventana.mainloop()

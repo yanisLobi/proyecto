@@ -1,5 +1,6 @@
 from datetime import datetime
 import tkinter as tk
+import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkcalendar import DateEntry
 from tkinter import messagebox
@@ -9,38 +10,51 @@ from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro
 
 class CrearUsuario:
     def __init__(self, parent, titulo="Crear", tipo_usuario=None):
-        self.frame = tk.Frame(parent, bg="#f5f5f5")
+        self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
         self.tabla = "usuarios"
         self.tipo_usuario = tipo_usuario
         
-        self.etiqueta = tk.Label(
+        self.etiqueta = ttkb.Label(
             self.frame,
             text=f"{titulo} {self.tabla}",
-            font=("Arial", 14, "bold"),
-            bg="#f5f5f5",
-            fg="#2c3e50"
+            font=("Arial", 14, "bold")
         )
         self.etiqueta.pack(pady=(40, 30))
 
-        botones_frame = tk.Frame(self.frame, bg="#f5f5f5")
+        botones_frame = ttkb.Frame(self.frame)
         botones_frame.pack(pady=(10, 35), padx=20, fill="x")
         botones_frame.grid_columnconfigure(0, weight=1)
         botones_frame.grid_columnconfigure(1, weight=1)
         botones_frame.grid_columnconfigure(2, weight=1)
 
-        tk.Button(botones_frame, text="Cancelar", command=self.ir_lista).grid(row=0, column=0, sticky="ew", padx=6)
-        tk.Button(botones_frame, text="Limpiar campos", command=self.limpiar).grid(row=0, column=1, sticky="ew", padx=6)
-        tk.Button(botones_frame, text="Guardar", command=self.guardar).grid(row=0, column=2, sticky="ew", padx=6)
+        ttkb.Button(
+            botones_frame,
+            text="Cancelar",
+            command=self.ir_lista,
+            bootstyle="secondary",
+        ).grid(row=0, column=0, sticky="ew", padx=6)
+        ttkb.Button(
+            botones_frame,
+            text="Limpiar campos",
+            command=self.limpiar,
+            bootstyle="warning",
+        ).grid(row=0, column=1, sticky="ew", padx=6)
+        ttkb.Button(
+            botones_frame,
+            text="Guardar",
+            command=self.guardar,
+            bootstyle="primary",
+        ).grid(row=0, column=2, sticky="ew", padx=6)
 
-        form_frame = tk.Frame(self.frame, bg="#f5f5f5")
+        form_frame = ttkb.Frame(self.frame)
         form_frame.pack(padx=20, pady=(20, 30), fill="x")
         form_frame.grid_columnconfigure(0, weight=0)
         form_frame.grid_columnconfigure(1, weight=1)
         form_frame.grid_columnconfigure(2, weight=0)
         form_frame.grid_columnconfigure(3, weight=1)
 
-        tk.Label(form_frame, text="Tipo de usuario", bg="#f5f5f5").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Tipo de usuario").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.us_tipo_usuario = tk.StringVar(value="ninguno")
         self.combo_tipo_usuario = ttk.Combobox(
             form_frame,
@@ -51,35 +65,35 @@ class CrearUsuario:
         )
         self.combo_tipo_usuario.grid(row=0, column=1, sticky="ew", pady=(0, 16))
 
-        tk.Label(form_frame, text="Correo electrónico", bg="#f5f5f5").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
-        self.us_correo_electronico = tk.Entry(form_frame, width=30)
+        ttkb.Label(form_frame, text="Correo electrónico").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.us_correo_electronico = ttkb.Entry(form_frame, width=30)
         self.us_correo_electronico.grid(row=0, column=3, sticky="ew", pady=(0, 16))
 
-        tk.Label(form_frame, text="Nombre", bg="#f5f5f5").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.us_nombre = tk.Entry(form_frame, width=30)
+        ttkb.Label(form_frame, text="Nombre").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.us_nombre = ttkb.Entry(form_frame, width=30)
         self.us_nombre.grid(row=1, column=1, sticky="ew", pady=(0, 16))
 
-        tk.Label(form_frame, text="Contraseña", bg="#f5f5f5").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
-        self.us_contra = tk.Entry(form_frame, width=30)
+        ttkb.Label(form_frame, text="Contraseña").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.us_contra = ttkb.Entry(form_frame, width=30)
         self.us_contra.grid(row=1, column=3, sticky="ew", pady=(0, 16))
 
-        tk.Label(form_frame, text="Apellidos", bg="#f5f5f5").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.us_apellidos = tk.Entry(form_frame, width=30)
+        ttkb.Label(form_frame, text="Apellidos").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.us_apellidos = ttkb.Entry(form_frame, width=30)
         self.us_apellidos.grid(row=2, column=1, sticky="ew", pady=(0, 16))
 
-        tk.Label(form_frame, text="Teléfono", bg="#f5f5f5").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
-        self.us_telefono = tk.Entry(form_frame, width=30)
+        ttkb.Label(form_frame, text="Teléfono").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.us_telefono = ttkb.Entry(form_frame, width=30)
         self.us_telefono.grid(row=2, column=3, sticky="ew", pady=(0, 16))
 
-        tk.Label(form_frame, text="Fecha de nacimiento", bg="#f5f5f5").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Fecha de nacimiento").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.us_fecha_nacimiento = DateEntry(form_frame, year= 2026)
         self.us_fecha_nacimiento.grid(row=3, column=1, sticky="w", pady=(0, 16))
 
-        tk.Label(form_frame, text="Dirección", bg="#f5f5f5").grid(row=3, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
-        self.us_direccion = tk.Entry(form_frame, width=30)
+        ttkb.Label(form_frame, text="Dirección").grid(row=3, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.us_direccion = ttkb.Entry(form_frame, width=30)
         self.us_direccion.grid(row=3, column=3, sticky="ew", pady=(0, 16))
 
-        tk.Label(form_frame, text="Especialidad", bg="#f5f5f5").grid(row=4, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Especialidad").grid(row=4, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.us_especialidad = tk.StringVar(value="ninguno")
         self.combo_especialidad = ttk.Combobox(
             form_frame,
