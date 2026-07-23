@@ -180,6 +180,22 @@ def obtener_valores_usuarios( nombre_columna, nombre_columna1, nombre_columna2, 
     conexion.close()
     print(resultados)
     return resultados
+
+def regresar_string(titulos):
+    if titulos.startswith("tr_"):
+        titulos = titulos.replace("tr", "",1)
+    
+    resultado = titulos.replace("_", " ")
+    resultado = resultado.title()
+    resultado = " ".join(resultado.split())
+    return resultado
+
+print(regresar_string("tr_tratamiento_final "))
+
+    
+    
+    
+    
     
 
 
