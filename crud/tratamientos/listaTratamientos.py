@@ -51,6 +51,15 @@ class ListaTratamientos:
         self.tipo_usuario = tipo_usuario
          
         self.lista_tratamiento = obtener_tabla(self.tabla)
+
+        # Si no hay registros, evitar error con self.lista_tratamiento[0]
+        if not self.lista_tratamiento:
+            ttkb.Label(
+                self.frame,
+                text="Sin registros",
+                font=("Arial", 12, "italic"),
+            ).pack(pady=(20, 0))
+            return
         
         usuario = self.lista_tratamiento[0]
         self.columnas = usuario.keys()
@@ -63,6 +72,14 @@ class ListaTratamientos:
             
             self.tree.heading(columna, text=columna)
             self.tree.column(columna, width=ancho_columna, minwidth=30, stretch=False)
+
+        # Mapear la foreign key con la pagina que se abre cuando le damos doble clic
+        self.fk_paginas = {
+            "id_paciente": "Actualizar pacientes",
+            "id_usuario": "Actualizar usuarios",
+        }
+        self.tree.bind("<Double-1>", self.on_doble_click)
+        self.tree.bind("<Motion>", self.on_mouse_move)
         
         self.recargar_tabla()
         self.tree.bind("<<TreeviewSelect>>", self.on_seleccion)
@@ -120,3 +137,56 @@ class ListaTratamientos:
         
         id = self.obtener_id_seleccionado()
         navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, tipo_usuario=self.tipo_usuario)
+
+    def obtener_celda_evento(self, event):
+        region = self.tree.identify_region(event.x, event.y)
+        if region != "cell":
+            return None
+
+        row_id = self.tree.identify_row(event.y)
+        col_id = self.tree.identify_column(event.x)
+
+        if not row_id or not col_id:
+            return None
+
+        try:
+            col_index = int(col_id.lstrip("#")) - 1
+        except ValueError:
+            return None
+
+        if col_index < 0 or col_index >= len(self.columnas_tupla):
+            return None
+
+        col_name = self.columnas_tupla[col_index]
+        values = self.tree.item(row_id, "values")
+        if not values:
+            return None
+
+        return row_id, col_name, values[col_index]
+
+    def on_doble_click(self, event):
+        info = self.obtener_celda_evento(event)
+        if not info:
+            return
+
+        _, col_name, cell_value = info
+        pagina = self.fk_paginas.get(col_name)
+        if not pagina:
+            return
+
+        if cell_value in (None, ""):
+            return
+
+        navegar_a_pagina(
+            self.frame,
+            pagina,
+            id_seleccionado=cell_value,
+            tipo_usuario=self.tipo_usuario,
+        )
+
+    def on_mouse_move(self, event):
+        info = self.obtener_celda_evento(event)
+        if info and info[1] in self.fk_paginas:
+            self.tree.configure(cursor="hand2")
+        else:
+            self.tree.configure(cursor="")
