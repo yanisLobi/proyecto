@@ -21,7 +21,7 @@ class CrearTratamientos:
         )
         self.etiqueta.pack(pady=(40, 30))
         
-        valores_pacientes = obtener_valores("pacientes", "id_pa", "pa_nombre", "pa_apellidos")
+        valores_pacientes = obtener_valores("pacientes", "id_pacientes", "pa_nombre", "pa_apellidos")
         valores_doctor = obtener_valores_usuarios("id_usuarios", "us_nombre", "us_apellidos", "Doctor")
         valores_enfermera = obtener_valores_usuarios("id_usuarios", "us_nombre", "us_apellidos", "Enfermera")
 
