@@ -126,7 +126,10 @@ INSERT INTO `usuarios` (`id_usuarios`, `us_tipo_usuario`, `us_nombre`, `us_apell
 (16, 'Administrador', 'Pedro', 'García', '2026-07-15', '12345', 4455667788, 'pedro@garcia', 'calle falsa', 'Geriatría'),
 (17, 'Enfermera', 'Juan carlos', 'Lopez velazsquez', '2026-07-08', '12345', 1122334455, 'carlos@gamil.com', 'calle falsa', ''),
 (18, 'Doctor', 'Paola', 'Montayo Nose', '2026-07-15', '12345', 5537196729, 'paola@montayo', 'calle falsa', 'Geriatría'),
-(19, 'Enfermera', 'Manuel', 'Santiago Garcia', '2091-07-18', '12345', 1122334455, 'santi@gmail', 'calle 1 de enero ', '');
+(19, 'Enfermera', 'Manuel', 'Santiago Garcia', '2091-07-18', '12345', 1122334455, 'santi@gmail', 'calle 1 de enero ', ''),
+(20, 'Doctor', 'a', 'a', '2026-07-16', 'a', 1, 'a', 'a1', ',Médico General'),
+(22, 'Enfermera', 'e', 'e', '2026-07-16', 'e', 2, 'e', 'e1', ',Médico General'),
+(23, 'Administrador', 'b', 'b', '2026-07-16', 'b', 1, 'b', 'b1', 'Geriatría');
 
 --
 -- Índices para tablas volcadas
