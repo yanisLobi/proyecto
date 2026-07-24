@@ -9,7 +9,7 @@ class ActualizarPacientes(CrearPacientes):
     def __init__(self, parent, id_seleccionado, tipo_usuario=None):
         super().__init__(parent, "Actualizar", tipo_usuario=tipo_usuario)
         self.id_seleccionado=id_seleccionado
-        self.pacientes = obtener_registro(self.tabla, "id_pa", id_seleccionado)
+        self.pacientes = obtener_registro(self.tabla, "id_pacientes", id_seleccionado)
         if not self.pacientes:
             messagebox.showinfo("Sin datos", "No se encontró el usuario seleccionado")
             return
@@ -28,7 +28,7 @@ class ActualizarPacientes(CrearPacientes):
     
     def actualizar_pacientes(self):
         self.guardar_valores()
-        actualizar_registro(self.tabla, self.nuevo_registro, "id_pa", self.id_seleccionado)
+        actualizar_registro(self.tabla, self.nuevo_registro, "id_pacientes", self.id_seleccionado)
      
         messagebox.showinfo("Actualización", "Se actualizo correctamente")
         navegar_a_pagina(self.frame, "Lista pacientes", tipo_usuario=self.tipo_usuario)

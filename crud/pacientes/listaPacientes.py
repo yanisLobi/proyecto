@@ -13,6 +13,7 @@ class ListaPacientes:
         self.frame.pack(fill="both", expand=True)
         self.tipo_usuario = tipo_usuario
         self.boton_actualizar = None
+        self.boton_eliminar = None
         if tipo_usuario in ["Doctor", "Administrador"]:
             botones_frame = ttkb.Frame(self.frame)
             botones_frame.pack(pady=(40, 45), padx=20, fill="x")
@@ -26,12 +27,14 @@ class ListaPacientes:
                 command=self.ir_crear,
                 bootstyle="primary",
             ).grid(row=0, column=0, sticky="ew", padx=6)
-            ttkb.Button(
+            self.boton_eliminar = ttkb.Button(
                 botones_frame,
                 text="Eliminar",
                 command=self.borrar,
+                state="disabled",
                 bootstyle="danger",
-            ).grid(row=0, column=1, sticky="ew", padx=6)
+            )
+            self.boton_eliminar.grid(row=0, column=1, sticky="ew", padx=6)
             self.boton_actualizar = ttkb.Button(
                 botones_frame,
                 text="Actualizar",
@@ -87,10 +90,13 @@ class ListaPacientes:
     
         navegar_a_pagina(self.frame, f"Crear {self.tabla}", tipo_usuario=self.tipo_usuario)
     def on_seleccion(self, event=None):
-        if self.boton_actualizar is None:
+        if self.boton_actualizar is None and self.boton_eliminar is None:
             return
         estado = "normal" if self.tree.selection() else "disabled"
-        self.boton_actualizar.config(state=estado)
+        if self.boton_actualizar is not None:
+            self.boton_actualizar.config(state=estado)
+        if self.boton_eliminar is not None:
+            self.boton_eliminar.config(state=estado)
     def obtener_id_seleccionado(self):
         item_id = self.tree.selection()
         if not item_id:

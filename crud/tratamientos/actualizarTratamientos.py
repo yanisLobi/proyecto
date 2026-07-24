@@ -10,7 +10,7 @@ class ActualizarTratamientos(CrearTratamientos):
     def __init__(self, parent, id_seleccionado, tipo_usuario=None):
         super().__init__(parent, "Actualizar", tipo_usuario=tipo_usuario)
         self.id_seleccionado=id_seleccionado
-        self.tratamientos = cast(dict[str, Any], obtener_registro(self.tabla, "id_tratamiento", id_seleccionado) or {})
+        self.tratamientos = cast(dict[str, Any], obtener_registro(self.tabla, "id_tratamientos", id_seleccionado) or {})
         if not self.tratamientos:
             messagebox.showinfo("Sin datos", "No se encontró el usuario seleccionado")
             return
@@ -33,7 +33,7 @@ class ActualizarTratamientos(CrearTratamientos):
     
     def actualizar_tratamientos(self):
         self.guardar_valores()
-        actualizar_registro(self.tabla, self.nuevo_registro, "id_tratamiento", self.id_seleccionado)
+        actualizar_registro(self.tabla, self.nuevo_registro, "id_tratamientos", self.id_seleccionado)
      
         messagebox.showinfo("Actualización", "Se actualizo correctamente")
         navegar_a_pagina(self.frame, "Lista tratamientos", tipo_usuario=self.tipo_usuario)
