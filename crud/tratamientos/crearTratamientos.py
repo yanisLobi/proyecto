@@ -104,7 +104,7 @@ class CrearTratamientos:
                         'tr_fecha_final': "1980-01-01", 
                         'tr_descripcion': '',
                         'id_paciente': "",
-                        'id_usuario' : ""
+                        'id_doctor' : ""
                         }
         
         self.nuevo_registro["tr_nombre"] = self.tr_nombre.get()
@@ -112,7 +112,7 @@ class CrearTratamientos:
         self.nuevo_registro["tr_fecha_final"] = self.tr_fecha_final.get_date().strftime("%Y-%m-%d")
         self.nuevo_registro["tr_descripcion"] = self.tr_descripcion.get()
         self.nuevo_registro["id_paciente"] = self.id_paciente.get().split(" ")[0]
-        self.nuevo_registro["id_usuario"] = self.id_usuario.get().split(" ")[0]
+        self.nuevo_registro["id_doctor"] = self.id_doctor.get().split(" ")[0]
         
         
        

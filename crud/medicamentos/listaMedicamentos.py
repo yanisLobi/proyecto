@@ -2,7 +2,7 @@ import tkinter as tk
 import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
-from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro
+from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro, regresar_string
 
 
 class ListaMedicamentos:
@@ -63,8 +63,7 @@ class ListaMedicamentos:
         self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")
         ancho_columna =int(1000/len(self.columnas))
         for columna in self.columnas:
-            
-            self.tree.heading(columna, text=columna)
+            self.tree.heading(columna, text=regresar_string(columna))
             self.tree.column(columna, width=ancho_columna, minwidth=30, stretch=False)
         
         self.recargar_tabla()

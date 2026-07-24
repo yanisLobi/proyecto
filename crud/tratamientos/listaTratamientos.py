@@ -3,7 +3,7 @@ import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
 from typing import Any, cast
-from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro, obtener_valores
+from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro, obtener_valores, regresar_string
 
 
 class ListaTratamientos:
@@ -73,24 +73,19 @@ class ListaTratamientos:
         self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")
         ancho_columna =int(1000/len(self.columnas))
         for columna in self.columnas:
-
-            encabezados = {
-                "id_paciente": "Paciente",
-                "id_usuario": "Usuario",
-            }
-            self.tree.heading(columna, text=encabezados.get(columna, columna), anchor="center")
+            self.tree.heading(columna, text=regresar_string(columna), anchor="center")
             self.tree.column(columna, width=ancho_columna, minwidth=30, stretch=False, anchor="center")
 
         # Mapear la foreign key con la pagina que se abre cuando le damos doble clic
         self.fk_paginas = {
             "id_paciente": "Actualizar pacientes",
-            "id_usuario": "Actualizar usuarios",
+            "id_doctor": "Actualizar usuarios",
         }
 
         # Mapas para mostrar nombres en lugar de IDs
         self.fk_display_map = {
             "id_paciente": self._cargar_display_map_pacientes(),
-            "id_usuario": self._cargar_display_map_usuarios(),
+            "id_doctor": self._cargar_display_map_usuarios(),
         }
         # Guardar el id real por fila/columna (porque en la tabla se mostrará el nombre)
         self.fk_ids_por_fila = {}
