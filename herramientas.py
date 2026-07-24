@@ -196,6 +196,21 @@ def regresar_string(titulos):
 
 print(regresar_string("tr_tratamiento_final "))
 
+def obtener_tabla_condicion(nombre_tabla, columna_condicion, valor_condicion):
+    conexion = conectar()
+    
+    cursor = conexion.cursor(dictionary=True)
+    
+    query = f"SELECT * FROM {nombre_tabla} WHERE {columna_condicion} = '{valor_condicion}'"
+    
+    cursor.execute(query)
+    resultados = cursor.fetchall()
+    cursor.close()
+    conexion.close()
+    print(resultados)
+    return resultados
+
+
     
     
     

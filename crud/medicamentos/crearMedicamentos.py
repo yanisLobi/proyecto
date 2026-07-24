@@ -41,7 +41,7 @@ class CrearMedicamentos:
         ).grid(row=0, column=1, sticky="ew", padx=6)
         ttkb.Button(
             botones_frame,
-            text="Guardar",
+            text="Guardar cambios",
             command=self.guardar,
             bootstyle="primary",
         ).grid(row=0, column=2, sticky="ew", padx=6)

@@ -37,7 +37,7 @@ class ListaMedicamentos:
             self.boton_eliminar.grid(row=0, column=1, sticky="ew", padx=6)
             self.boton_actualizar = ttkb.Button(
                 botones_frame,
-                text="Actualizar",
+                text="Ver detalles",
                 command=self.ir_actualizar,
                 state="disabled",
                 bootstyle="info",

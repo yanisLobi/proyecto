@@ -16,7 +16,7 @@ class Usuario:
         self.entry = ttkb.Entry(self.ventana)
         self.entry.pack(pady=20)
         
-        self.boton = ttkb.Button(self.ventana, text="Guardar", command=self.guardar, bootstyle="primary")
+        self.boton = ttkb.Button(self.ventana, text="Guardar cambios", command=self.guardar, bootstyle="primary")
         self.boton.pack(pady=20)
         
         self.resultado = ttkb.Label(self.ventana, text="")

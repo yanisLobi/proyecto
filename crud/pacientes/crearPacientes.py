@@ -75,14 +75,14 @@ class CrearPacientes:
         self.pa_nombre_contacto_emergencia.grid(row=2, column=1, sticky="ew", pady=(0, 16))
         # columnspan es para definir cuantas seldad de ancho
         ttkb.Label(form_frame, text="Enfermera a cargo").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
-        enfermeras = obtener_valores_usuarios("id_usuarios", "us_apellidos", "us_tipo_usuario", "Enfermera")
+        self.enfermeras = obtener_valores_usuarios("id_usuarios", "us_apellidos", "us_tipo_usuario", "Enfermera")
         self.id_enfermera = tk.StringVar(value="ninguno")
         self.combo_id_enfermera = ttk.Combobox(
             form_frame,
             textvariable=self.id_enfermera,
             state="readonly",
             width=27,
-            values= enfermeras,
+            values= self.enfermeras,
         )
         self.combo_id_enfermera.grid(row=2, column=3, sticky="ew", pady=(0, 16))
         

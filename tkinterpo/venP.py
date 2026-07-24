@@ -25,7 +25,7 @@ class Aplicacion:
     #Metodos
     def cambiar_texto(self):
         self.label.config(text="Texto modificado")
-    
+   
 #crear objeto
 objeto = Aplicacion()
         
