@@ -7,7 +7,7 @@ from herramientas import obtener_registro, navegar_a_pagina, actualizar_registro
 
 class ActualizarMedicamentos(CrearMedicamentos):
     def __init__(self, parent, id_seleccionado, tipo_usuario=None):
-        super().__init__(parent, "Actualizar", tipo_usuario=tipo_usuario)
+        super().__init__(parent, "Actualizar")
         self.id_seleccionado=id_seleccionado
         self.medicamento = obtener_registro(self.tabla, "id_me", id_seleccionado)
         if not self.medicamento:
