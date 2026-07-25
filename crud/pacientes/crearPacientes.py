@@ -9,7 +9,7 @@ from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro, obt
 
 class CrearPacientes:
     def __init__(self, parent, titulo="Crear", tipo_usuario=None):
-        #me queda la duda de que es parent
+        
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
         self.tabla = "pacientes"

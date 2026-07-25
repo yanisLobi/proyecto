@@ -9,7 +9,7 @@ class ActualizarMedicamentos(CrearMedicamentos):
     def __init__(self, parent, id_seleccionado, tipo_usuario=None):
         super().__init__(parent, "Actualizar")
         self.id_seleccionado=id_seleccionado
-        self.medicamento = obtener_registro(self.tabla, "id_me", id_seleccionado)
+        self.medicamento = obtener_registro(self.tabla, "id_medicamentos", id_seleccionado)
         if not self.medicamento:
             messagebox.showinfo("Sin datos", "No se encontró el usuario seleccionado")
             return

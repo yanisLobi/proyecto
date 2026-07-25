@@ -210,6 +210,14 @@ def obtener_tabla_condicion(nombre_tabla, columna_condicion, valor_condicion):
     print(resultados)
     return resultados
 
+def obtener_indice(id_enfermera, enfermeras):
+    
+    
+    
+    return 
+    
+    
+
 
     
     
