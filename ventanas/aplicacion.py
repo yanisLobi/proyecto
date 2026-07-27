@@ -28,7 +28,7 @@ def mostrar_contenido(contenido_frame, titulo, texto, clase_contenido= None):
         
         
 def iniciar_aplicacion(ventana_login, usuario, campo_password):
-    tipo_usu = usuario.get("us_nombre")
+    tipo_usu = usuario.get("us_tipo_usuario")
     
     # Ocultamos la ventana que nos llamó (la ventana de inicio de sesion)
     ventana_login.withdraw()
@@ -84,7 +84,7 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
         navegar_a_pagina(contenido_frame, "Lista medicamentos", usuario=usuario)
     
     def cambiar_a_recordatorios():
-        navegar_a_pagina(contenido_frame, "Lista mediamentos")
+        navegar_a_pagina(contenido_frame, "Lista medicamentos")
     
     def cambiar_a_tratamiento():
         navegar_a_pagina(contenido_frame, "Lista tratamientos", usuario=usuario)
@@ -98,8 +98,9 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
 
 
     ttkb.Label(
-            contenido_frame,
-            text=f"Hola, {usuario.get("us_nombre").title()}",
+            menu_frame,
+            
+            text=f"Hola,{tipo_usu} {usuario.get("us_nombre").title()}",
             font=("Arial", 12)
         ).pack()
     # Aqui van los botones del menu que se muestran para todos los tipos de usuarios

@@ -86,7 +86,11 @@ def obtener_tabla(nombre_tabla, solo_activos=True):
         query = f"SELECT * FROM {nombre_tabla} WHERE {valor_columna} = 1"
     else: # todos, no solo los activos
         query = f"SELECT * FROM {nombre_tabla}"
-        
+    print("obteniendo tablando")
+    print(solo_activos)
+    
+    print(query)
+    
     cursor.execute(query)
     resultados = cursor.fetchall()
     cursor.close()

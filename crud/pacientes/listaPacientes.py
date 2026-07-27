@@ -12,7 +12,7 @@ class ListaPacientes:
         self.tabla = 'pacientes' 
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
-        self.tipo_usuario = usuario.get("us_get_usuario")
+        self.tipo_usuario = usuario.get("us_tipo_usuario")
         self.boton_actualizar = None
         self.boton_eliminar = None
         if self.tipo_usuario in ["Doctor", "Administrador"]:
@@ -44,14 +44,8 @@ class ListaPacientes:
             )
             self.boton_actualizar.grid(row=0, column=2, sticky="ew", padx=6)
         
-        id_usuario = usuario.get("id_usuarios")
-        if self.tipo_usuario == "Doctor":
-            self.lista_pacientes = obtener_tabla(self.tabla)
-        elif self.tipo_usuario == "Administrador":
-            self.lista_pacientes = obtener_tabla(self.tabla, solo_activos=False)
-        else: # Enfermeras
-            self.lista_pacientes = obtener_registros(self.tabla, "id_enfermera_principal", id_usuario)
-            
+        self.id_usuario = usuario.get("id_usuarios")
+        
         self.etiqueta = ttkb.Label(
             self.frame,
             text=f"lista de {self.tabla}",
@@ -59,7 +53,14 @@ class ListaPacientes:
         )
         self.etiqueta.pack(pady=(40, 30))
         
-         
+          
+        if self.tipo_usuario == "Doctor":
+            self.lista_pacientes = obtener_tabla(self.tabla)
+        elif self.tipo_usuario == "Administrador":
+            self.lista_pacientes = obtener_tabla(self.tabla, solo_activos=False)
+            
+        else: # Enfermeras
+            lista_pacientes = obtener_registros(self.tabla, "id_enfermera_principal", self.id_usuario)
         
         try:
             usuario = self.lista_pacientes[0]
@@ -106,13 +107,24 @@ class ListaPacientes:
         self.tree.pack(pady=(10, 0))
 
     def recargar_tabla(self):
+        
+        if self.tipo_usuario == "Doctor":
+            lista_pacientes = obtener_tabla(self.tabla)
+        elif self.tipo_usuario == "Administrador":
+            lista_pacientes = obtener_tabla(self.tabla, solo_activos=False)
+            
+        else: # Enfermeras
+            lista_pacientes = obtener_registros(self.tabla, "id_enfermera_principal", self.id_usuario)
+            
+            
+            
         # limpiar filas
         for item in self.tree.get_children():
             self.tree.delete(item)
 
         self.fk_ids_por_fila = {}
         # llenar tabla
-        for registro in obtener_tabla(self.tabla):
+        for registro in lista_pacientes:
             registro = cast(dict[str, Any], registro)
             valores = []
             fk_ids = {}
