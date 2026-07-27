@@ -48,7 +48,7 @@ class ListaPacientes:
         if self.tipo_usuario == "Doctor":
             self.lista_pacientes = obtener_tabla(self.tabla)
         elif self.tipo_usuario == "Administrador":
-            self.lista_pacientes = obtener_tabla(self.tabla, 0)
+            self.lista_pacientes = obtener_tabla(self.tabla, solo_activos=False)
         else: # Enfermeras
             self.lista_pacientes = obtener_registros(self.tabla, "id_enfermera_principal", id_usuario)
             
