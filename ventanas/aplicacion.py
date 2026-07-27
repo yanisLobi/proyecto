@@ -6,7 +6,6 @@ from crud.calendario import GoogleCalendarSemanal
 
 
 def mostrar_contenido(contenido_frame, titulo, texto, clase_contenido= None):
-    
     for widget in contenido_frame.winfo_children():
         widget.destroy()
         pass
@@ -28,7 +27,9 @@ def mostrar_contenido(contenido_frame, titulo, texto, clase_contenido= None):
         clase_contenido(contenido_frame)
         
         
-def iniciar_aplicacion(ventana_login, tipo_usu, campo_password):
+def iniciar_aplicacion(ventana_login, usuario, campo_password):
+    tipo_usu = usuario.get("us_nombre")
+    
     # Ocultamos la ventana que nos llamó (la ventana de inicio de sesion)
     ventana_login.withdraw()
     ventana = tk.Toplevel()
@@ -74,19 +75,19 @@ def iniciar_aplicacion(ventana_login, tipo_usu, campo_password):
     
 
     def cambiar_a_usuarios():
-        navegar_a_pagina(contenido_frame, "Lista usuarios", tipo_usuario = tipo_usu)
+        navegar_a_pagina(contenido_frame, "Lista usuarios", usuario = usuario)
 
     def cambiar_a_pacientes():
-        navegar_a_pagina(contenido_frame, "Lista pacientes", tipo_usuario=tipo_usu)
+        navegar_a_pagina(contenido_frame, "Lista pacientes", usuario=usuario)
 
     def cambiar_a_medicamentos():
-        navegar_a_pagina(contenido_frame, "Lista medicamentos", tipo_usuario=tipo_usu)
+        navegar_a_pagina(contenido_frame, "Lista medicamentos", usuario=usuario)
     
     def cambiar_a_recordatorios():
         navegar_a_pagina(contenido_frame, "Lista mediamentos")
     
     def cambiar_a_tratamiento():
-        navegar_a_pagina(contenido_frame, "Lista tratamientos", tipo_usuario=tipo_usu)
+        navegar_a_pagina(contenido_frame, "Lista tratamientos", usuario=usuario)
         
     
     
@@ -95,6 +96,12 @@ def iniciar_aplicacion(ventana_login, tipo_usu, campo_password):
         ventana_login.deiconify()  # Hace visible otra vez el Login
         campo_password.delete(0, tk.END) # borra la contraseña de ulimo inicio de sesion
 
+
+    ttkb.Label(
+            contenido_frame,
+            text=f"Hola, {usuario.get("us_nombre").title()}",
+            font=("Arial", 12)
+        ).pack()
     # Aqui van los botones del menu que se muestran para todos los tipos de usuarios
     menu_button_style = "Menu.TButton"
     menu_button_padding = (12, 12)

@@ -7,15 +7,15 @@ from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro, obten
 
 
 class ListaTratamientos:
-    def __init__(self, parent, tipo_usuario=None):
+    def __init__(self, parent, usuario={}):
         
         self.tabla = 'tratamientos' 
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
         self.boton_actualizar = None
         self.boton_eliminar = None
-        
-        if tipo_usuario in ["Doctor", "Administrador"]:
+        self.tipo_usuario = usuario.get("us_tipo_usuario")
+        if self.tipo_usuario in ["Doctor", "Administrador"]:
             botones_frame = ttkb.Frame(self.frame)
             botones_frame.pack(pady=(40, 45), padx=20, fill="x")
             botones_frame.grid_columnconfigure(0, weight=1)
@@ -52,7 +52,6 @@ class ListaTratamientos:
             font=("Arial", 14, "bold")
         )
         self.etiqueta.pack(pady=(40, 30))
-        self.tipo_usuario = tipo_usuario
          
         self.lista_tratamiento = obtener_tabla(self.tabla)
 

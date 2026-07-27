@@ -70,10 +70,10 @@ def main():
             messagebox.showinfo("Error al iniciar sesion", "La contrasena es incorrecta")
             return
         
-        tipo_usuario = [usuario.get("us_tipo_usuario") for usuario in lista_usuarios if usuario.get("us_correo_electronico") == correo_introducido ][0]
+        usuario = [usuario for usuario in lista_usuarios if usuario.get("us_correo_electronico") == correo_introducido ][0]
         nombre_usuario = [usuario.get("us_nombre") for usuario in lista_usuarios if usuario.get("us_correo_electronico") == correo_introducido ][0]
         messagebox.showinfo("Inicio de sesion exitoso", f"Bienvenido a Abuecare {nombre_usuario}")
-        iniciar_aplicacion(ventana, tipo_usuario, contra)
+        iniciar_aplicacion(ventana, usuario, contra)
 
     def abrir_registro():
         iniciar_registro(ventana)

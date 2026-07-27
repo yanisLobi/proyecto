@@ -7,15 +7,15 @@ from herramientas import navegar_a_pagina, obtener_registros, obtener_tabla, bor
 
 
 class ListaPacientes:
-    def __init__(self, parent, tipo_usuario=None):
+    def __init__(self, parent, usuario={}):
         
         self.tabla = 'pacientes' 
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
-        self.tipo_usuario = tipo_usuario
+        self.tipo_usuario = usuario.get("us_get_usuario")
         self.boton_actualizar = None
         self.boton_eliminar = None
-        if tipo_usuario in ["Doctor", "Administrador"]:
+        if self.tipo_usuario in ["Doctor", "Administrador"]:
             botones_frame = ttkb.Frame(self.frame)
             botones_frame.pack(pady=(40, 45), padx=20, fill="x")
             botones_frame.grid_columnconfigure(0, weight=1)
@@ -44,17 +44,13 @@ class ListaPacientes:
             )
             self.boton_actualizar.grid(row=0, column=2, sticky="ew", padx=6)
         
-        if tipo_usuario == "Doctor":
-            self.lista_pacientes = obtener_registros(self.tabla)
-        elif tipo_usuario == "Administrador":
+        id_usuario = usuario.get("id_usuarios")
+        if self.tipo_usuario == "Doctor":
             self.lista_pacientes = obtener_tabla(self.tabla)
-        else:
-            self.lista_pacientes = obtener_registros(self.tabla, "id_enfermera_principal")
-            
-        
-            
-            
-            
+        elif self.tipo_usuario == "Administrador":
+            self.lista_pacientes = obtener_tabla(self.tabla, 0)
+        else: # Enfermeras
+            self.lista_pacientes = obtener_registros(self.tabla, "id_enfermera_principal", id_usuario)
             
         self.etiqueta = ttkb.Label(
             self.frame,
@@ -65,8 +61,17 @@ class ListaPacientes:
         
          
         
+        try:
+            usuario = self.lista_pacientes[0]
+        except Exception as e:
+            self.etiqueta_error = ttkb.Label(
+                        self.frame,
+                        text=f"No se encontraron registros",
+                        font=("Arial", 14, "bold")
+                    )
+            self.etiqueta_error.pack(pady=(40, 30))
+            return
         
-        usuario = self.lista_pacientes[0]
         self.columnas = usuario.keys()
         
 

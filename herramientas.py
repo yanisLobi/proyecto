@@ -76,14 +76,17 @@ def navegar_a_pagina(frame, nombre_clase, **kwargs):
     clase_instanciar(frame, **kwargs)
 
 
-def obtener_tabla(nombre_tabla):
+def obtener_tabla(nombre_tabla, solo_activos=True):
     conexion = conectar()
     
     cursor = conexion.cursor(dictionary=True)
     letras = nombre_tabla[:2]
     valor_columna=letras+"_activo"
-    query = f"SELECT * FROM {nombre_tabla} WHERE {valor_columna} = 1"
-    
+    if solo_activos:
+        query = f"SELECT * FROM {nombre_tabla} WHERE {valor_columna} = 1"
+    else: # todos, no solo los activos
+        query = f"SELECT * FROM {nombre_tabla}"
+        
     cursor.execute(query)
     resultados = cursor.fetchall()
     cursor.close()
