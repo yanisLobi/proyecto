@@ -2,14 +2,14 @@ from datetime import datetime
 from crud.usuarios.crearUsuarios import CrearUsuario
 import tkinter as tk
 from tkinter import messagebox
-from herramientas import obtener_registro, navegar_a_pagina, actualizar_registro
+from herramientas import obtener_registros, navegar_a_pagina, actualizar_registro
 
 
 class ActualizarUsuarios(CrearUsuario):
     def __init__(self, parent, id_seleccionado, tipo_usuario=None):
         super().__init__(parent, "Actualizar", tipo_usuario=tipo_usuario)
         self.id_seleccionado=id_seleccionado
-        self.usuario = obtener_registro(self.tabla, "id_usuarios", id_seleccionado)
+        self.usuario = obtener_registros(self.tabla, "id_usuarios", id_seleccionado)[0]
         if not self.usuario:
             messagebox.showinfo("Sin datos", "No se encontró el usuario seleccionado")
             return

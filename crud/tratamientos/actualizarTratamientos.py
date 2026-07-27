@@ -3,14 +3,14 @@ from crud.tratamientos.crearTratamientos import CrearTratamientos
 from tkinter import messagebox
 import tkinter as tk
 from typing import Any, cast
-from herramientas import obtener_registro, navegar_a_pagina, actualizar_registro
+from herramientas import obtener_registros, navegar_a_pagina, actualizar_registro
 
 
 class ActualizarTratamientos(CrearTratamientos):
     def __init__(self, parent, id_seleccionado, tipo_usuario=None):
         super().__init__(parent, "Actualizar", tipo_usuario=tipo_usuario)
         self.id_seleccionado=id_seleccionado
-        self.tratamientos = cast(dict[str, Any], obtener_registro(self.tabla, "id_tratamientos", id_seleccionado) or {})
+        self.tratamientos = cast(dict[str, Any], obtener_registros(self.tabla, "id_tratamientos", id_seleccionado) or {})[0]
         if not self.tratamientos:
             messagebox.showinfo("Sin datos", "No se encontró el usuario seleccionado")
             return

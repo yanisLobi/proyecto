@@ -2,7 +2,7 @@ from datetime import datetime
 from crud.pacientes.crearPacientes import CrearPacientes
 from tkinter import messagebox, ttk
 import tkinter as tk
-from herramientas import obtener_indice, obtener_registro, navegar_a_pagina, actualizar_registro, obtener_tabla, obtener_tabla_condicion, regresar_string
+from herramientas import obtener_indice, obtener_registros, navegar_a_pagina, actualizar_registro, obtener_tabla, obtener_tabla_condicion, regresar_string
 
 
 class ActualizarPacientes(CrearPacientes):
@@ -10,7 +10,7 @@ class ActualizarPacientes(CrearPacientes):
         super().__init__(parent, "Actualizar", tipo_usuario=tipo_usuario)
         self.id_seleccionado=id_seleccionado
         
-        self.pacientes = obtener_registro(self.tabla, "id_pacientes", id_seleccionado)
+        self.pacientes = obtener_registros(self.tabla, "id_pacientes", id_seleccionado)[0]
         if not self.pacientes:
             messagebox.showinfo("Sin datos", "No se encontró el usuario seleccionado")
             return

@@ -3,7 +3,7 @@ import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
 from typing import Any, cast
-from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro, regresar_string, obtener_valores_usuarios
+from herramientas import navegar_a_pagina, obtener_registros, obtener_tabla, borrar_registro, regresar_string, obtener_valores_usuarios
 
 
 class ListaPacientes:
@@ -21,7 +21,6 @@ class ListaPacientes:
             botones_frame.grid_columnconfigure(0, weight=1)
             botones_frame.grid_columnconfigure(1, weight=1)
             botones_frame.grid_columnconfigure(2, weight=1)
-
             ttkb.Button(
                 botones_frame,
                 text=f"Crear {self.tabla.title()}",
@@ -45,6 +44,17 @@ class ListaPacientes:
             )
             self.boton_actualizar.grid(row=0, column=2, sticky="ew", padx=6)
         
+        if tipo_usuario == "Doctor":
+            self.lista_pacientes = obtener_registros(self.tabla)
+        elif tipo_usuario == "Administrador":
+            self.lista_pacientes = obtener_tabla(self.tabla)
+        else:
+            self.lista_pacientes = obtener_registros(self.tabla, "id_enfermera_principal")
+            
+        
+            
+            
+            
             
         self.etiqueta = ttkb.Label(
             self.frame,
@@ -54,7 +64,7 @@ class ListaPacientes:
         self.etiqueta.pack(pady=(40, 30))
         
          
-        self.lista_pacientes = obtener_tabla(self.tabla)
+        
         
         usuario = self.lista_pacientes[0]
         self.columnas = usuario.keys()

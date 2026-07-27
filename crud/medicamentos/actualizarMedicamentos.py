@@ -2,14 +2,14 @@ from datetime import datetime
 from crud.medicamentos.crearMedicamentos import CrearMedicamentos
 from tkinter import messagebox
 import tkinter as tk
-from herramientas import obtener_registro, navegar_a_pagina, actualizar_registro
+from herramientas import obtener_registros, navegar_a_pagina, actualizar_registro
 
 
 class ActualizarMedicamentos(CrearMedicamentos):
     def __init__(self, parent, id_seleccionado, tipo_usuario=None):
         super().__init__(parent, "Actualizar")
         self.id_seleccionado=id_seleccionado
-        self.medicamento = obtener_registro(self.tabla, "id_medicamentos", id_seleccionado)
+        self.medicamento = obtener_registros(self.tabla, "id_medicamentos", id_seleccionado)[0]
         if not self.medicamento:
             messagebox.showinfo("Sin datos", "No se encontró el usuario seleccionado")
             return

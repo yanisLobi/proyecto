@@ -125,7 +125,7 @@ def borrar_registro(nombre_tabla,nombre_columna, valor_columna):
 
     
 
-def obtener_registro(nombre_tabla, nombre_columna, valor_columna):
+def obtener_registros(nombre_tabla, nombre_columna, valor_columna):
     conexion = conectar()
     
     cursor = conexion.cursor(dictionary=True)
@@ -133,7 +133,7 @@ def obtener_registro(nombre_tabla, nombre_columna, valor_columna):
     query = f"SELECT * FROM {nombre_tabla} WHERE {nombre_columna} = {valor_columna}"
     
     cursor.execute(query)
-    resultados = cursor.fetchone()
+    resultados = cursor.fetchall()
     cursor.close()
     conexion.close()
     print(resultados)
