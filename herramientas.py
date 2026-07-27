@@ -80,8 +80,9 @@ def obtener_tabla(nombre_tabla):
     conexion = conectar()
     
     cursor = conexion.cursor(dictionary=True)
-    
-    query = f"SELECT * FROM {nombre_tabla}"
+    letras = nombre_tabla[:2]
+    valor_columna=letras+"_activo"
+    query = f"SELECT * FROM {nombre_tabla} WHERE {valor_columna} = 1"
     
     cursor.execute(query)
     resultados = cursor.fetchall()
@@ -90,7 +91,7 @@ def obtener_tabla(nombre_tabla):
     print(resultados)
     return resultados
 
-def borrar_registro(nombre_tabla, nombre_columna, valor_columna):
+def borrar_registro_fisico(nombre_tabla, nombre_columna, valor_columna):
     conexion = conectar()
     
     cursor = conexion.cursor()
@@ -102,6 +103,27 @@ def borrar_registro(nombre_tabla, nombre_columna, valor_columna):
     conexion.commit()
     cursor.close()
     conexion.close()
+
+def borrar_registro(nombre_tabla,nombre_columna, valor_columna):
+    letras = nombre_tabla[:2]
+    columna_activo=letras+"_activo"
+    
+    sql = f"UPDATE {nombre_tabla} set {columna_activo} = 0 WHERE {nombre_columna} = {valor_columna}"
+    print(sql)
+    
+    conexion = conectar()
+    
+    cursor = conexion.cursor()
+
+    cursor.execute(sql)
+
+    
+    conexion.commit()
+    
+    cursor.close()
+    conexion.close()
+
+    
 
 def obtener_registro(nombre_tabla, nombre_columna, valor_columna):
     conexion = conectar()
@@ -209,12 +231,17 @@ def obtener_tabla_condicion(nombre_tabla, columna_condicion, valor_condicion):
     conexion.close()
     print(resultados)
     return resultados
-
-def obtener_indice(id_enfermera, enfermeras):
-    
-    
-    
-    return 
+#id_registo = 5,  opciones = ["1 juan", "5 yanet", "3 lazaro"], resultado o indice encontrado igual a 1
+def obtener_indice(id_registro:int, opciones:list[tuple]):
+    indice_encontrado = 0
+    for opcion in opciones:
+        if id_registro == opcion[0]:
+            
+            return indice_encontrado
+        else:
+            indice_encontrado = indice_encontrado + 1
+        
+            
     
     
 

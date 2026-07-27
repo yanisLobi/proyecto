@@ -2,7 +2,7 @@ from datetime import datetime
 from crud.pacientes.crearPacientes import CrearPacientes
 from tkinter import messagebox, ttk
 import tkinter as tk
-from herramientas import obtener_registro, navegar_a_pagina, actualizar_registro, obtener_tabla, obtener_tabla_condicion, regresar_string
+from herramientas import obtener_indice, obtener_registro, navegar_a_pagina, actualizar_registro, obtener_tabla, obtener_tabla_condicion, regresar_string
 
 
 class ActualizarPacientes(CrearPacientes):
@@ -27,7 +27,7 @@ class ActualizarPacientes(CrearPacientes):
         self.pa_nombre_contacto_emergencia.insert(0, self.pacientes.get("pa_nombre_contacto_emergencia", ""))
         self.id_enfermera_seleccionado = self.pacientes.get("id_enfermera_principal")
         self.pa_tel_contacto_emergencia.insert(0, str(self.pacientes.get("pa_tel_contacto_emergencia", "")))
-        self.combo_id_enfermera.current(1)
+        self.combo_id_enfermera.current(obtener_indice(self.id_enfermera_seleccionado, self.enfermeras ))
        
         
         
