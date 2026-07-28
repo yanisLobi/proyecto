@@ -75,8 +75,7 @@ class CrearEventosMongo:
         self.re_titulo.grid(row=1, column=1, columnspan=3, sticky="ew", pady=(0, 16))
 
         ttkb.Label(form_frame, text="Fecha").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.re_fecha = DateEntry(form_frame, year=2020)
-        self.re_fecha.set_date("2020-07-11")
+        self.re_fecha = DateEntry(form_frame)
         self.re_fecha.grid(row=2, column=1, sticky="w", pady=(0, 16))
 
         ttkb.Label(form_frame, text="Hora inicio").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
