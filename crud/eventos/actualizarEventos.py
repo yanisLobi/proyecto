@@ -21,12 +21,8 @@ class ActualizarEventosMongo(CrearEventosMongo):
 			return
 
 
-		id_tr_evento = str(self.evento.get("id_tr", ""))
-		display_tratamiento = self._tratamientos_map.get(id_tr_evento)
-		if display_tratamiento:
-			self.id_tr.set(display_tratamiento)
-		else:
-			self.id_tr.set(id_tr_evento)
+		self.id_tr.delete(0, tk.END)
+		self.id_tr.insert(0, str(self.evento.get("id_tr", "")))
 
 		self.re_estado.set(str(self.evento.get("re_estado", "Pendiente")))
 

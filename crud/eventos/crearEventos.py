@@ -54,15 +54,12 @@ class CrearEventosMongo:
         form_frame.grid_columnconfigure(2, weight=0)
         form_frame.grid_columnconfigure(3, weight=1)
 
-
-
-        ttkb.Label(form_frame, text="Tratamiento").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Tratamiento").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.id_tr = ttkb.Entry(form_frame, width=30)
-        self.id_tr.insert(0, "Llave foranea de tratamientos")
-        self.id_tr.grid(row=0, column=3, sticky="ew", pady=(0, 16))
+        self._tratamientos_map = {}
+        self.id_tr.grid(row=0, column=1, sticky="ew", pady=(0, 16))
 
-
-        ttkb.Label(form_frame, text="Estado").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Estado").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.re_estado = ttk.Combobox(
             form_frame,
             values=["Pendiente", "Completado", "Cancelado"],
@@ -70,12 +67,12 @@ class CrearEventosMongo:
             width=27,
         )
         self.re_estado.set("Pendiente")
-        self.re_estado.grid(row=1, column=1, sticky="ew", pady=(0, 16))
+        self.re_estado.grid(row=0, column=3, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Titulo").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Titulo").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_titulo = ttkb.Entry(form_frame, width=30)
         self.re_titulo.insert(0, "Título de la consulta")
-        self.re_titulo.grid(row=1, column=3, sticky="ew", pady=(0, 16))
+        self.re_titulo.grid(row=1, column=1, columnspan=3, sticky="ew", pady=(0, 16))
 
         ttkb.Label(form_frame, text="Fecha").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_fecha = DateEntry(form_frame, year=2020)
@@ -92,7 +89,7 @@ class CrearEventosMongo:
         self.re_hora_fin.insert(0, "15:05")
         self.re_hora_fin.grid(row=3, column=1, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="re_observaciones").grid(row=3, column=2, sticky="nw", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Observaciones").grid(row=3, column=2, sticky="nw", padx=(20, 10), pady=(0, 16))
         self.re_observaciones = tk.Text(form_frame, height=4, width=40)
         self.re_observaciones.insert("1.0", "Escribe aquí las observaciones")
         self.re_observaciones.grid(row=3, column=3, sticky="ew", pady=(0, 16))
@@ -104,10 +101,7 @@ class CrearEventosMongo:
         navegar_a_pagina(self.frame, "Lista eventos", usuario=self.usuario)
 
     def guardar_valores(self):
-        id_tr_seleccionado = self.id_tr.get().strip()
-        id_tr_valor = ""
-        if id_tr_seleccionado and id_tr_seleccionado != "ninguno":
-            id_tr_valor = id_tr_seleccionado.split(" ")[0]
+        id_tr_valor = self.id_tr.get().strip()
 
         self.nuevo_registro = {
             "id_tr": id_tr_valor,
