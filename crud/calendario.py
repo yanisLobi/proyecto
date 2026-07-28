@@ -1,62 +1,108 @@
 import tkinter as tk
 from tkinter import ttk
+from datetime import datetime, timedelta, date
+
+try:
+    from db_mongo import obtener_tabla
+except Exception:
+    obtener_tabla = None
+
+_COLORES_EVENTO = ["#26a69a", "#29b6f6", "#ab47bc", "#ff7043", "#66bb6a", "#ffa726", "#ec407a"]
+_NOMBRES_DIA = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
+
 
 class GoogleCalendarSemanal(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.pack(fill="both", expand=True)
-        
+
         # Parámetros de la interfaz
-        self.HORA_INICIO = 8       
-        self.HORA_FIN = 20         
-        self.PIXELS_POR_HORA = 60  
-        self.MARGEN_IZQUIERDO = 70 
-        self.DIAS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+        self.HORA_INICIO = 8
+        self.HORA_FIN = 20
+        self.PIXELS_POR_HORA = 60
+        self.MARGEN_IZQUIERDO = 70
         self.cabecera_labels = []
-        
-        # --- DATOS HARDCODEADOS DEL TIEMPO ACTUAL ---
-        self.DIA_ACTUAL_INDEX = 2  # 2 = Miércoles (0=Lunes, 1=Martes...)
-        self.HORA_ACTUAL = 13.5     # 13.5 = 1:30 PM (Representación decimal de la hora)
-        # --------------------------------------------
+
+        # Semana dinámica: hoy es siempre la columna 0
+        self.DIA_ACTUAL_INDEX = 0
+        self._actualizar_semana()
 
         self.rowconfigure(1, weight=1)
         self.columnconfigure(0, weight=1)
-        
+
         # 1. CABECERA FIJA
         self.cabecera = ttk.Frame(self)
         self.cabecera.grid(row=0, column=0, sticky="ew", padx=(self.MARGEN_IZQUIERDO, 20))
         self.configurar_cabecera_dias()
-        
+
         # 2. CONTENEDOR CON SCROLL
         self.contenedor = ttk.Frame(self)
         self.contenedor.grid(row=1, column=0, sticky="nsew")
-        
+
         self.canvas = tk.Canvas(self.contenedor, bg="#1e1e1e", highlightthickness=0)
         self.scrollbar = ttk.Scrollbar(self.contenedor, orient="vertical", command=self.canvas.yview)
-        
+
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
-        
+
         altura_total = (self.HORA_FIN - self.HORA_INICIO + 1) * self.PIXELS_POR_HORA
         self.canvas.configure(scrollregion=(0, 0, 900, altura_total))
-        
+
         self.canvas.bind("<Configure>", self.al_redimensionar)
-        
-        self.eventos = [
-            ("Llamada Familiar", 0, 9.0, 10.5, "#26a69a"),   
-            ("Chequeo Médico", 2, 11.0, 13.0, "#29b6f6"),   
-            ("Terapia Física", 4, 15.5, 17.0, "#ab47bc"),   
-            ("Llamada Soporte", 6, 10.0, 11.5, "#ff7043"),  
+
+        # Cargar eventos reales desde MongoDB
+        self.eventos = self._cargar_eventos_mongo()
+
+    def _actualizar_semana(self):
+        """Construye la ventana de 7 días desde hoy y actualiza la hora actual."""
+        hoy = date.today()
+        self.semana_fechas = [hoy + timedelta(days=i) for i in range(7)]
+        self.fecha_a_columna = {
+            d.strftime("%Y-%m-%d"): i for i, d in enumerate(self.semana_fechas)
+        }
+        self.DIAS = [
+            f"{_NOMBRES_DIA[d.weekday()]}\n{d.strftime('%d/%m')}"
+            for d in self.semana_fechas
         ]
+        now = datetime.now()
+        self.HORA_ACTUAL = now.hour + now.minute / 60
+
+    def _hora_a_float(self, hora_str):
+        try:
+            partes = str(hora_str).strip().split(":")
+            return int(partes[0]) + int(partes[1]) / 60 if len(partes) >= 2 else int(partes[0])
+        except Exception:
+            return None
+
+    def _cargar_eventos_mongo(self):
+        if obtener_tabla is None:
+            return []
+        eventos = []
+        try:
+            registros = obtener_tabla("consultas")
+            for i, reg in enumerate(registros):
+                fecha_str = str(reg.get("re_fecha", ""))
+                col_idx = self.fecha_a_columna.get(fecha_str)
+                if col_idx is None:
+                    continue
+                h_inicio = self._hora_a_float(reg.get("re_hora_inicio", ""))
+                h_fin = self._hora_a_float(reg.get("re_hora_fin", ""))
+                if h_inicio is None or h_fin is None or h_fin <= h_inicio:
+                    continue
+                titulo = reg.get("re_titulo", "Sin título")
+                color = _COLORES_EVENTO[i % len(_COLORES_EVENTO)]
+                eventos.append((titulo, col_idx, h_inicio, h_fin, color))
+        except Exception:
+            pass
+        return eventos
 
     def configurar_cabecera_dias(self):
         self.cabecera_labels = []
         for i in range(7):
             self.cabecera.columnconfigure(i, weight=1)
-            # Resaltamos visualmente el texto del día actual si coincide
             color_texto = "#29b6f6" if i == self.DIA_ACTUAL_INDEX else "white"
-            lbl = ttk.Label(self.cabecera, text=self.DIAS[i], anchor="center", 
+            lbl = ttk.Label(self.cabecera, text=self.DIAS[i], anchor="center",
                             font=("Arial", 10, "bold"), foreground=color_texto,
                             justify="center")
             lbl.grid(row=0, column=i, pady=10, sticky="ew")
@@ -122,9 +168,11 @@ class GoogleCalendarSemanal(ttk.Frame):
         )
 
     def al_redimensionar(self, event):
+        now = datetime.now()
+        self.HORA_ACTUAL = now.hour + now.minute / 60
         self.dibujar_cuadricula(event.width)
         self.dibujar_eventos()
-        self.dibujar_indicador_tiempo() # Lo llamamos al final para que quede por encima de las líneas y eventos
+        self.dibujar_indicador_tiempo()
         self.actualizar_cabecera(event.width)
 
 if __name__ == "__main__":
