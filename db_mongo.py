@@ -43,40 +43,20 @@ def _normalizar_documento(documento):
     return doc
 
 
-def obtener_tabla(nombre_tabla, solo_activos=True):
+def obtener_tabla(nombre_tabla):
     coleccion = _obtener_coleccion(nombre_tabla)
-    if solo_activos:
-        query = {
-            "$or": [
-                {"re_activo": {"$exists": False}},
-                {"re_activo": True},
-            ]
-        }
-    else:
-        query = {}
-
     resultados = [
         _normalizar_documento(doc)
-        for doc in coleccion.find(query)
+        for doc in coleccion.find({})
     ]
     return resultados
-
-
-def borrar_registro_fisico(nombre_tabla, nombre_columna, valor_columna):
-    coleccion = _obtener_coleccion(nombre_tabla)
-    valor = _transformar_id(valor_columna) if nombre_columna in ["id", "_id"] else valor_columna
-    columna = "_id" if nombre_columna == "id" else nombre_columna
-    coleccion.delete_one({columna: valor})
 
 
 def borrar_registro(nombre_tabla, nombre_columna, valor_columna):
     coleccion = _obtener_coleccion(nombre_tabla)
     valor = _transformar_id(valor_columna) if nombre_columna in ["id", "_id"] else valor_columna
     columna = "_id" if nombre_columna == "id" else nombre_columna
-
-    resultado = coleccion.update_one({columna: valor}, {"$set": {"re_activo": False}})
-    if resultado.matched_count == 0:
-        coleccion.delete_one({columna: valor})
+    coleccion.delete_one({columna: valor})
 
 
 def obtener_registros(nombre_tabla, nombre_columna, valor_columna):

@@ -81,7 +81,7 @@ class GoogleCalendarSemanal(ttk.Frame):
             print("[Calendario] db_mongo no disponible")
             return []
         try:
-            registros = obtener_tabla("consultas", solo_activos=False)
+            registros = obtener_tabla("consultas")
             print(f"[Calendario] {len(registros)} registros obtenidos de MongoDB")
         except Exception as e:
             print(f"[Calendario] Error al obtener registros: {e}")
@@ -156,10 +156,10 @@ class GoogleCalendarSemanal(ttk.Frame):
 
     def dibujar_eventos(self):
         for titulo, dia_idx, h_inicio, h_fin, color in self.eventos:
-            x_inicial = self.MARGEN_IZQUIERDO + (dia_idx * self.ancho_columna) + 4
-            x_final = x_inicial + self.ancho_columna - 8
-            y_inicial = (h_inicio - self.HORA_INICIO) * self.PIXELS_POR_HORA + 2
-            y_final = (h_fin - self.HORA_INICIO) * self.PIXELS_POR_HORA - 2
+            x_inicial = self.MARGEN_IZQUIERDO + (dia_idx * self.ancho_columna)
+            x_final = x_inicial + self.ancho_columna
+            y_inicial = (h_inicio - self.HORA_INICIO) * self.PIXELS_POR_HORA
+            y_final = (h_fin - self.HORA_INICIO) * self.PIXELS_POR_HORA
             y_final = max(y_final, y_inicial + 20)  # altura mínima visible
             
             self.canvas.create_rectangle(x_inicial, y_inicial, x_final, y_final, fill=color, outline="", width=0)
