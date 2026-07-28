@@ -108,7 +108,7 @@ class GoogleCalendarSemanal(ttk.Frame):
                 if h_fin is None or h_fin <= h_inicio:
                     h_fin = h_inicio + 1.0
 
-                titulo = reg.get("re_titulo") or "Sin título"
+                titulo = (reg.get("re_titulo") or "Sin título").strip('"').strip()
                 color = reg.get("re_color") or random.choice(_COLORES_EVENTO)
                 eventos.append((titulo, col_idx, h_inicio, h_fin, color))
                 print(f"[Calendario] Evento añadido: '{titulo}' col={col_idx} {h_inicio}-{h_fin}")
@@ -160,6 +160,7 @@ class GoogleCalendarSemanal(ttk.Frame):
             x_final = x_inicial + self.ancho_columna - 8
             y_inicial = (h_inicio - self.HORA_INICIO) * self.PIXELS_POR_HORA + 2
             y_final = (h_fin - self.HORA_INICIO) * self.PIXELS_POR_HORA - 2
+            y_final = max(y_final, y_inicial + 20)  # altura mínima visible
             
             self.canvas.create_rectangle(x_inicial, y_inicial, x_final, y_final, fill=color, outline="", width=0)
             
