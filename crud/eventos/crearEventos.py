@@ -5,7 +5,7 @@ from tkcalendar import DateEntry
 from tkinter import ttk
 
 from herramients import limpiar_frame, navegar_a_pagina_mongo as navegar_a_pagina
-from db_mongo import insertar_registro
+from db_mongo import insertar_registro, obtener_valores
 
 class CrearEventos:
     def __init__(self, parent):
@@ -89,15 +89,23 @@ class CrearEventosMongo:
         form_frame.grid_columnconfigure(2, weight=0)
         form_frame.grid_columnconfigure(3, weight=1)
 
-        ttkb.Label(form_frame, text="id").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.id = ttkb.Entry(form_frame, width=30)
-        self.id.insert(0, "6a52e54d9f004e0c00499e17")
-        self.id.grid(row=0, column=1, sticky="ew", pady=(0, 16))
 
         ttkb.Label(form_frame, text="id_tr").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
-        self.id_tr = ttkb.Entry(form_frame, width=30)
-        self.id_tr.insert(0, "Llave foranea de tratamientos")
-        self.id_tr.grid(row=0, column=3, sticky="ew", pady=(0, 16))
+        self.tratamientos = self._cargar_tratamientos_combo()
+        self._tratamientos_map = {}
+        for id_tr, tr_nombre, tr_detalle in self.tratamientos:
+            etiqueta = f"{id_tr} {tr_nombre} {tr_detalle}".strip()
+            self._tratamientos_map[str(id_tr)] = etiqueta
+
+        self.id_tr = tk.StringVar(value="ninguno")
+        self.combo_id_tr = ttk.Combobox(
+            form_frame,
+            textvariable=self.id_tr,
+            state="readonly",
+            width=27,
+            values=list(self._tratamientos_map.values()),
+        )
+        self.combo_id_tr.grid(row=0, column=3, sticky="ew", pady=(0, 16))
 
         ttkb.Label(form_frame, text="re_estado").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_estado = ttk.Combobox(
@@ -141,9 +149,13 @@ class CrearEventosMongo:
         navegar_a_pagina(self.frame, "Lista eventos", usuario=self.usuario)
 
     def guardar_valores(self):
+        id_tr_seleccionado = self.id_tr.get().strip()
+        id_tr_valor = ""
+        if id_tr_seleccionado and id_tr_seleccionado != "ninguno":
+            id_tr_valor = id_tr_seleccionado.split(" ")[0]
+
         self.nuevo_registro = {
-            "id": self.id.get().strip(),
-            "id_tr": self.id_tr.get().strip(),
+            "id_tr": id_tr_valor,
             "re_estado": self.re_estado.get().strip() or "Pendiente",
             "re_observaciones": self.re_observaciones.get("1.0", tk.END).strip(),
             "re_titulo": self.re_titulo.get().strip(),
@@ -153,8 +165,12 @@ class CrearEventosMongo:
             "re_activo": True,
         }
 
-        if not self.nuevo_registro["id"]:
-            del self.nuevo_registro["id"]
+
+    def _cargar_tratamientos_combo(self):
+        try:
+            return obtener_valores("tratamientos", "id", "tr_nombre", "tr_descripcion")
+        except Exception:
+            return []
 
     def crear_evento(self):
         self.guardar_valores()

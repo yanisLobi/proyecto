@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+from tkcalendar import DateEntry
 
 from crud.eventos.crearEventos import CrearEventosMongo
 from herramients import navegar_a_pagina_mongo as navegar_a_pagina
@@ -19,11 +20,13 @@ class ActualizarEventosMongo(CrearEventosMongo):
 			navegar_a_pagina(self.frame, "Lista eventos", usuario=self.usuario)
 			return
 
-		self.id.delete(0, tk.END)
-		self.id.insert(0, str(self.evento.get("id", "")))
 
-		self.id_tr.delete(0, tk.END)
-		self.id_tr.insert(0, str(self.evento.get("id_tr", "")))
+		id_tr_evento = str(self.evento.get("id_tr", ""))
+		display_tratamiento = self._tratamientos_map.get(id_tr_evento)
+		if display_tratamiento:
+			self.id_tr.set(display_tratamiento)
+		else:
+			self.id_tr.set(id_tr_evento)
 
 		self.re_estado.set(str(self.evento.get("re_estado", "Pendiente")))
 
@@ -40,7 +43,7 @@ class ActualizarEventosMongo(CrearEventosMongo):
 		self.re_observaciones.insert("1.0", str(self.evento.get("re_observaciones", "")))
 
 		fecha = self.evento.get("re_fecha")
-		if fecha:
+		if fecha and isinstance(self.re_fecha, DateEntry):
 			try:
 				self.re_fecha.set_date(str(fecha))
 			except Exception:
