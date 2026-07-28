@@ -2,9 +2,11 @@ import tkinter as tk
 import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
+from typing import Any, cast
 
-from herramients import navegar_a_pagina_mongo as navegar_a_pagina, regresar_string
+from herramients import navegar_a_pagina_mongo as navegar_a_pagina, navegar_a_pagina as navegar_mysql, regresar_string
 from db_mongo import obtener_tabla, borrar_registro
+from db_mysql import obtener_valores as obtener_valores_mysql
 
 
 class ListaEventos:
@@ -87,6 +89,17 @@ class ListaEventosMongo:
             self.tree.heading(columna, text=regresar_string(columna), anchor="center")
             self.tree.column(columna, width=ancho_columna, minwidth=50, stretch=False, anchor="center")
 
+        self.fk_paginas = {
+            "id_tr": "Actualizar tratamientos",
+        }
+        self.fk_display_map = {
+            "id_tr": self._cargar_display_map_tratamientos(),
+        }
+        self.fk_ids_por_fila = {}
+
+        self.tree.bind("<Double-1>", self.on_doble_click)
+        self.tree.bind("<Motion>", self.on_mouse_move)
+
         self.recargar_tabla()
         self.tree.bind("<<TreeviewSelect>>", self.on_seleccion)
         self.on_seleccion()
@@ -96,9 +109,25 @@ class ListaEventosMongo:
         for item in self.tree.get_children():
             self.tree.delete(item)
 
+        self.fk_ids_por_fila = {}
         for registro in obtener_tabla(self.tabla):
-            valores = tuple(registro.get(col, "") for col in self.columnas_tupla)
-            self.tree.insert("", tk.END, values=valores)
+            registro = cast(dict[str, Any], registro)
+            valores = []
+            fk_ids = {}
+
+            for col in self.columnas_tupla:
+                val = registro.get(col)
+                if col in self.fk_paginas:
+                    fk_ids[col] = val
+                    display = self.fk_display_map.get(col, {}).get(str(val))
+                    if display is None:
+                        display = str(val) if val is not None else ""
+                    valores.append(display)
+                else:
+                    valores.append(val)
+
+            iid = self.tree.insert("", tk.END, values=tuple(valores))
+            self.fk_ids_por_fila[iid] = fk_ids
 
         self.on_seleccion()
 
@@ -148,3 +177,63 @@ class ListaEventosMongo:
             id_seleccionado=id_seleccionado,
             usuario=self.usuario,
         )
+
+    def _cargar_display_map_tratamientos(self):
+        try:
+            filas = obtener_valores_mysql("tratamientos", "id", "tr_nombre", "tr_descripcion")
+        except Exception:
+            return {}
+        return {str(id_tr): str(nombre) for id_tr, nombre, _ in filas}
+
+    def obtener_celda_evento(self, event):
+        region = self.tree.identify_region(event.x, event.y)
+        if region != "cell":
+            return None
+
+        row_id = self.tree.identify_row(event.y)
+        col_id = self.tree.identify_column(event.x)
+        if not row_id or not col_id:
+            return None
+
+        try:
+            col_index = int(col_id.lstrip("#")) - 1
+        except ValueError:
+            return None
+
+        if col_index < 0 or col_index >= len(self.columnas_tupla):
+            return None
+
+        col_name = self.columnas_tupla[col_index]
+        values = self.tree.item(row_id, "values")
+        if not values:
+            return None
+
+        return row_id, col_name, values[col_index]
+
+    def on_doble_click(self, event):
+        info = self.obtener_celda_evento(event)
+        if not info:
+            return
+
+        row_iid, col_name, _ = info
+        pagina = self.fk_paginas.get(col_name)
+        if not pagina:
+            return
+
+        id_real = self.fk_ids_por_fila.get(row_iid, {}).get(col_name)
+        if id_real in (None, ""):
+            return
+
+        navegar_mysql(
+            self.frame,
+            pagina,
+            id_seleccionado=id_real,
+            tipo_usuario=self.tipo_usuario,
+        )
+
+    def on_mouse_move(self, event):
+        info = self.obtener_celda_evento(event)
+        if info and info[1] in self.fk_paginas:
+            self.tree.configure(cursor="hand2")
+        else:
+            self.tree.configure(cursor="")

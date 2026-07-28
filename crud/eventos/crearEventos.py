@@ -6,6 +6,7 @@ from tkinter import ttk
 
 from herramients import limpiar_frame, navegar_a_pagina_mongo as navegar_a_pagina
 from db_mongo import insertar_registro, obtener_valores
+from db_mysql import obtener_valores as obtener_valores_mysql
 
 
 class CrearEventosMongo:
@@ -55,9 +56,16 @@ class CrearEventosMongo:
         form_frame.grid_columnconfigure(3, weight=1)
 
         ttkb.Label(form_frame, text="Tratamiento").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.id_tr = ttkb.Entry(form_frame, width=30)
-        self._tratamientos_map = {}
-        self.id_tr.grid(row=0, column=1, sticky="ew", pady=(0, 16))
+        self.tratamientos = self._cargar_tratamientos_combo()
+        self.id_tr = tk.StringVar(value="ninguno")
+        self.combo_id_tr = ttk.Combobox(
+            form_frame,
+            textvariable=self.id_tr,
+            state="readonly",
+            width=27,
+            values=self.tratamientos,
+        )
+        self.combo_id_tr.grid(row=0, column=1, sticky="ew", pady=(0, 16))
 
         ttkb.Label(form_frame, text="Estado").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.re_estado = ttk.Combobox(
@@ -100,7 +108,8 @@ class CrearEventosMongo:
         navegar_a_pagina(self.frame, "Lista eventos", usuario=self.usuario)
 
     def guardar_valores(self):
-        id_tr_valor = self.id_tr.get().strip()
+        id_tr_seleccionado = self.id_tr.get().strip()
+        id_tr_valor = id_tr_seleccionado.split()[0] if id_tr_seleccionado and id_tr_seleccionado != "ninguno" else ""
 
         self.nuevo_registro = {
             "id_tr": id_tr_valor,
@@ -110,13 +119,12 @@ class CrearEventosMongo:
             "re_hora_fin": self.re_hora_fin.get().strip(),
             "re_hora_inicio": self.re_hora_inicio.get().strip(),
             "re_fecha": self.re_fecha.get_date().strftime("%Y-%m-%d"),
-            "re_activo": True,
         }
 
 
     def _cargar_tratamientos_combo(self):
         try:
-            return obtener_valores("tratamientos", "id", "tr_nombre", "tr_descripcion")
+            return obtener_valores_mysql("tratamientos", "id", "tr_nombre", "tr_descripcion")
         except Exception:
             return []
 

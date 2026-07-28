@@ -3,7 +3,7 @@ from tkinter import messagebox
 from tkcalendar import DateEntry
 
 from crud.eventos.crearEventos import CrearEventosMongo
-from herramients import navegar_a_pagina_mongo as navegar_a_pagina
+from herramients import obtener_indice, navegar_a_pagina_mongo as navegar_a_pagina
 from db_mongo import actualizar_registro, obtener_registros
 
 
@@ -21,8 +21,7 @@ class ActualizarEventosMongo(CrearEventosMongo):
 			return
 
 
-		self.id_tr.delete(0, tk.END)
-		self.id_tr.insert(0, str(self.evento.get("id_tr", "")))
+		self.combo_id_tr.current(obtener_indice(str(self.evento.get("id_tr", "")), self.tratamientos))
 
 		self.re_estado.set(str(self.evento.get("re_estado", "Pendiente")))
 

@@ -56,7 +56,12 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
 
     imagen_original = tk.PhotoImage(file="recursos/1.png")
     imagen_pequena = imagen_original.subsample(10)
-# Crear una etiqueta (Label) y asignarle la imagen
+    ttkb.Label(
+                menu_frame,
+                
+                text=f"Hola, {tipo_usu}(a) {usuario.get("us_nombre").title()}",
+                font=("Arial", 12)
+            ).pack(padx=15)
     etiqueta_logo = ttkb.Label(menu_frame, image=imagen_pequena)
     etiqueta_logo.pack(pady=50)
    
@@ -102,12 +107,7 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
         campo_password.delete(0, tk.END) # borra la contraseña de ulimo inicio de sesion
 
 
-    ttkb.Label(
-            menu_frame,
-            
-            text=f"Hola,{tipo_usu} {usuario.get("us_nombre").title()}",
-            font=("Arial", 12)
-        ).pack()
+   
     # Aqui van los botones del menu que se muestran para todos los tipos de usuarios
     menu_button_style = "Menu.TButton"
     menu_button_padding = (12, 12)
