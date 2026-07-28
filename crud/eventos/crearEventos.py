@@ -7,41 +7,6 @@ from tkinter import ttk
 from herramients import limpiar_frame, navegar_a_pagina_mongo as navegar_a_pagina
 from db_mongo import insertar_registro, obtener_valores
 
-class CrearEventos:
-    def __init__(self, parent):
-        self.frame = ttkb.Frame(parent)
-        self.frame.pack(fill="both", expand=True)
-    
-        self.etiqueta = ttkb.Label(
-            self.frame,
-            text="Crear pacientes",
-            font=("Arial", 14, "bold")
-        )
-        self.etiqueta.pack(pady=(40, 30))
-
-        form_frame = ttkb.Frame(self.frame)
-        form_frame.pack(padx=20, pady=(20, 30), fill="x")
-        form_frame.grid_columnconfigure(0, weight=0)
-        form_frame.grid_columnconfigure(1, weight=1)
-        form_frame.grid_columnconfigure(2, weight=0)
-        form_frame.grid_columnconfigure(3, weight=1)
-
-        ttkb.Label(form_frame, text="Nombre").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.tr_nombre = ttkb.Entry(form_frame, width=30)
-        self.tr_nombre.grid(row=0, column=1, sticky="ew", pady=(0, 16))
-
-        ttkb.Label(form_frame, text="Fecha de inicio del tratamiento").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
-        self.tr_fecha_inicio = DateEntry(form_frame, year= 2026)
-        self.tr_fecha_inicio.grid(row=0, column=3, sticky="w", pady=(0, 16))
-
-        ttkb.Label(form_frame, text="Fecha de final del tratamiento").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.tr_fecha_final = DateEntry(form_frame, year= 2026)
-        self.tr_fecha_final.grid(row=1, column=1, sticky="w", pady=(0, 16))
-
-        ttkb.Label(form_frame, text="Descripción").grid(row=2, column=0, sticky="nw", padx=(0, 10), pady=(0, 16))
-        tr_descripcion = tk.Text(form_frame, height=4, width=40)
-        tr_descripcion.grid(row=2, column=1, columnspan=3, sticky="ew", pady=(0, 16))
-
 
 class CrearEventosMongo:
     def __init__(self, parent=None, titulo="Crear", usuario=None):
@@ -90,24 +55,14 @@ class CrearEventosMongo:
         form_frame.grid_columnconfigure(3, weight=1)
 
 
-        ttkb.Label(form_frame, text="id_tr").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
-        self.tratamientos = self._cargar_tratamientos_combo()
-        self._tratamientos_map = {}
-        for id_tr, tr_nombre, tr_detalle in self.tratamientos:
-            etiqueta = f"{id_tr} {tr_nombre} {tr_detalle}".strip()
-            self._tratamientos_map[str(id_tr)] = etiqueta
 
-        self.id_tr = tk.StringVar(value="ninguno")
-        self.combo_id_tr = ttk.Combobox(
-            form_frame,
-            textvariable=self.id_tr,
-            state="readonly",
-            width=27,
-            values=list(self._tratamientos_map.values()),
-        )
-        self.combo_id_tr.grid(row=0, column=3, sticky="ew", pady=(0, 16))
+        ttkb.Label(form_frame, text="Tratamiento").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.id_tr = ttkb.Entry(form_frame, width=30)
+        self.id_tr.insert(0, "Llave foranea de tratamientos")
+        self.id_tr.grid(row=0, column=3, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="re_estado").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+
+        ttkb.Label(form_frame, text="Estado").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_estado = ttk.Combobox(
             form_frame,
             values=["Pendiente", "Completado", "Cancelado"],
@@ -117,22 +72,22 @@ class CrearEventosMongo:
         self.re_estado.set("Pendiente")
         self.re_estado.grid(row=1, column=1, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="re_titulo").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Titulo").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.re_titulo = ttkb.Entry(form_frame, width=30)
         self.re_titulo.insert(0, "Título de la consulta")
         self.re_titulo.grid(row=1, column=3, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="re_fecha").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Fecha").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_fecha = DateEntry(form_frame, year=2020)
         self.re_fecha.set_date("2020-07-11")
         self.re_fecha.grid(row=2, column=1, sticky="w", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="re_hora_inicio").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Hora inicio").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.re_hora_inicio = ttkb.Entry(form_frame, width=30)
         self.re_hora_inicio.insert(0, "15:00")
         self.re_hora_inicio.grid(row=2, column=3, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="re_hora_fin").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Hora Fin").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_hora_fin = ttkb.Entry(form_frame, width=30)
         self.re_hora_fin.insert(0, "15:05")
         self.re_hora_fin.grid(row=3, column=1, sticky="ew", pady=(0, 16))
