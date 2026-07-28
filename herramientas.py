@@ -239,6 +239,7 @@ def obtener_tabla_condicion(nombre_tabla, columna_condicion, valor_condicion):
     print(resultados)
     return resultados
 #id_registo = 5,  opciones = ["1 juan", "5 yanet", "3 lazaro"], resultado o indice encontrado igual a 1
+
 def obtener_indice(id_registro:int, opciones:list[tuple]):
     indice_encontrado = 0
     for opcion in opciones:

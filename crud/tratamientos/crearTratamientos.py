@@ -21,8 +21,8 @@ class CrearTratamientos:
         )
         self.etiqueta.pack(pady=(40, 30))
         
-        valores_pacientes = obtener_valores("pacientes", "id_pacientes", "pa_nombre", "pa_apellidos")
-        valores_doctor = obtener_valores_usuarios("id_usuarios", "us_nombre", "us_apellidos", "Doctor")
+        self.valores_pacientes = obtener_valores("pacientes", "id_pacientes", "pa_nombre", "pa_apellidos")
+        self.valores_doctor = obtener_valores_usuarios("id_usuarios", "us_nombre", "us_apellidos", "Doctor")
         valores_enfermera = obtener_valores_usuarios("id_usuarios", "us_nombre", "us_apellidos", "Enfermera")
 
         botones_frame = ttkb.Frame(self.frame)
@@ -62,19 +62,35 @@ class CrearTratamientos:
         self.tr_nombre.grid(row=0, column=1, sticky="ew", pady=(0, 16))
 
         ttkb.Label(form_frame, text="Paciente").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
-        self.id_paciente = ttk.Combobox(form_frame, values= valores_pacientes)
-        self.id_paciente.current(0)
-        self.id_paciente.grid(row=0, column=3, sticky="ew", pady=(0, 16))
+        self.paciente = self.valores_pacientes
+        self.id_paciente = tk.StringVar(value="ninguno")
+        self.combo_id_paciente = ttk.Combobox(
+            form_frame, 
+            textvariable=self.id_paciente,
+            state="readonly",
+            width=27,
+            values= self.paciente)
+        #self.id_paciente.current(0)
+        self.combo_id_paciente.grid(row=0, column=3, sticky="ew", pady=(0, 16))
 
         ttkb.Label(form_frame, text="Doctor").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.id_doctor = ttk.Combobox(form_frame, values= valores_doctor)
-        self.id_doctor.current(0)
-        self.id_doctor.grid(row=1, column=1, sticky="ew", pady=(0, 16))
+        self.doctor = self.valores_doctor
+        self.id_doctor = tk.StringVar(value="ninguno")
+        self.combo_id_doctor = ttk.Combobox(
+            form_frame, 
+            textvariable=self.id_doctor,
+            state="readonly",
+            width=27,
+            values= self.doctor,
+        )
+        #self.id_doctor.current(0)
+        self.combo_id_doctor.grid(row=1, column=1, sticky="ew", pady=(0, 16))
+        
 
-        ttkb.Label(form_frame, text="Enfermera").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.id_enfermera = ttk.Combobox(form_frame, values= valores_enfermera)
-        self.id_enfermera.current(0)
-        self.id_enfermera.grid(row=1, column=1, sticky="ew", pady=(0, 16))
+        #ttkb.Label(form_frame, text="Enfermera").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        #self.id_enfermera = ttk.Combobox(form_frame, values= valores_enfermera)
+        #self.id_enfermera.current(0)
+        #self.id_enfermera.grid(row=1, column=1, sticky="ew", pady=(0, 16))
         
         ttkb.Label(form_frame, text="Fecha de inicio").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.tr_fecha_inicio = DateEntry(form_frame, year= 2026)

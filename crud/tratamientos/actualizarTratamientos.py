@@ -3,7 +3,7 @@ from crud.tratamientos.crearTratamientos import CrearTratamientos
 from tkinter import messagebox
 import tkinter as tk
 from typing import Any, cast
-from herramientas import obtener_registros, navegar_a_pagina, actualizar_registro
+from herramientas import obtener_registros, navegar_a_pagina, actualizar_registro, obtener_indice
 
 
 class ActualizarTratamientos(CrearTratamientos):
@@ -30,6 +30,15 @@ class ActualizarTratamientos(CrearTratamientos):
             self.tr_fecha_final.set_date(fecha_final)
 
         self.tr_descripcion.insert(tk.END, str(self.tratamientos.get("tr_descripcion", "")))
+        
+        self.id_doctor_seleccionado = self.tratamientos.get("id_doctor")
+        self.id_paciente_seleccionado = self.tratamientos.get("id_paciente")
+        
+        self.id_paciente_seleccionado = self.tratamientos.get("id_paciente")
+        self.combo_id_paciente.current(obtener_indice(self.id_paciente_seleccionado, self.valores_pacientes ))
+        
+        self.id_doctor_seleccionado = self.tratamientos.get("id_doctor")
+        self.combo_id_doctor.current(obtener_indice(self.id_doctor_seleccionado, self.valores_doctor ))
     
     def actualizar_tratamientos(self):
         self.guardar_valores()

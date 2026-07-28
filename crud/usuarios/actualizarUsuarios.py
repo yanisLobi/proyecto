@@ -2,7 +2,7 @@ from datetime import datetime
 from crud.usuarios.crearUsuarios import CrearUsuario
 import tkinter as tk
 from tkinter import messagebox
-from herramientas import obtener_registros, navegar_a_pagina, actualizar_registro
+from herramientas import obtener_registros, navegar_a_pagina, actualizar_registro, obtener_indice
 
 
 class ActualizarUsuarios(CrearUsuario):
@@ -25,10 +25,11 @@ class ActualizarUsuarios(CrearUsuario):
             self.us_fecha_nacimiento.set_date(fecha_nacimiento)
 
         self.us_contra.insert(0, self.usuario.get("us_contraseña", ""))
+        self.us_cedula.insert(0, str(self.usuario.get("us_cedula", "")))
         self.us_telefono.insert(0, str(self.usuario.get("us_telefono", "")))
         self.us_correo_electronico.insert(0, self.usuario.get("us_correo_electronico", ""))
         self.us_direccion.insert(0, self.usuario.get("us_direccion", ""))
-        self.us_especialidad.set(0, self.usuario.get("us_especialidad", "ninguno"))
+        self.us_especialidad.set(self.usuario.get("us_especialidad", "ninguno"))
     
     def actualizar_usuario(self):
         self.guardar_valores()

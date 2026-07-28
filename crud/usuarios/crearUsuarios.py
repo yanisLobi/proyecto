@@ -80,18 +80,22 @@ class CrearUsuario:
         ttkb.Label(form_frame, text="Apellidos").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.us_apellidos = ttkb.Entry(form_frame, width=30)
         self.us_apellidos.grid(row=2, column=1, sticky="ew", pady=(0, 16))
+        
+        ttkb.Label(form_frame, text="Cédula").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.us_cedula = ttkb.Entry(form_frame, width=30)
+        self.us_cedula.grid(row=2, column=3, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Teléfono").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Teléfono").grid(row=3, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.us_telefono = ttkb.Entry(form_frame, width=30)
-        self.us_telefono.grid(row=2, column=3, sticky="ew", pady=(0, 16))
+        self.us_telefono.grid(row=3, column=3, sticky="ew", pady=(0, 16))
 
         ttkb.Label(form_frame, text="Fecha de nacimiento").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.us_fecha_nacimiento = DateEntry(form_frame, year= 2026)
         self.us_fecha_nacimiento.grid(row=3, column=1, sticky="w", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Dirección").grid(row=3, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Dirección").grid(row=4, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.us_direccion = ttkb.Entry(form_frame, width=30)
-        self.us_direccion.grid(row=3, column=3, sticky="ew", pady=(0, 16))
+        self.us_direccion.grid(row=4, column=3, sticky="ew", pady=(0, 16))
 
         ttkb.Label(form_frame, text="Especialidad").grid(row=4, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.us_especialidad = tk.StringVar(value="ninguno")
@@ -120,6 +124,7 @@ class CrearUsuario:
                         'us_apellidos': '', 
                         'us_fecha_nacimiento': "1980-01-01", 
                         'us_contraseña': '',
+                        'us_cedula': '',
                         'us_telefono': '',
                         'us_correo_electronico': '',
                         'us_direccion': '',
@@ -131,9 +136,10 @@ class CrearUsuario:
         self.nuevo_registro["us_fecha_nacimiento"] = self.us_fecha_nacimiento.get_date().strftime("%Y-%m-%d")
         self.nuevo_registro["us_contraseña"] = self.us_contra.get()
         self.nuevo_registro["us_telefono"] = self.us_telefono.get() 
+        self.nuevo_registro["us_cedula"] = self.us_cedula.get() 
         self.nuevo_registro["us_correo_electronico"] = self.us_correo_electronico.get() 
         self.nuevo_registro["us_direccion"] = self.us_direccion.get() 
-        self.nuevo_registro["us_especialidad"] = self.us_especialidad.get()      
+        self.nuevo_registro["us_especialidad"] = self.us_especialidad.get()   
         
     
     def crear_usuario(self):
