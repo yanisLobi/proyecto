@@ -78,16 +78,18 @@ class GoogleCalendarSemanal(ttk.Frame):
 
     def _cargar_eventos_mongo(self):
         if obtener_tabla is None:
+            print("[Calendario] db_mongo no disponible")
             return []
         try:
-            registros = obtener_tabla("consultas")
-        except Exception:
+            registros = obtener_tabla("consultas", solo_activos=False)
+            print(f"[Calendario] {len(registros)} registros obtenidos de MongoDB")
+        except Exception as e:
+            print(f"[Calendario] Error al obtener registros: {e}")
             return []
 
         eventos = []
         for i, reg in enumerate(registros):
             try:
-                # re_fecha puede llegar como str, datetime o date
                 fecha_val = reg.get("re_fecha", "")
                 if hasattr(fecha_val, "strftime"):
                     fecha_str = fecha_val.strftime("%Y-%m-%d")
@@ -96,6 +98,7 @@ class GoogleCalendarSemanal(ttk.Frame):
 
                 col_idx = self.fecha_a_columna.get(fecha_str)
                 if col_idx is None:
+                    print(f"[Calendario] Evento {i}: fecha '{fecha_str}' fuera de la semana actual")
                     continue
 
                 h_inicio = self._hora_a_float(reg.get("re_hora_inicio", ""))
@@ -108,7 +111,9 @@ class GoogleCalendarSemanal(ttk.Frame):
                 titulo = reg.get("re_titulo") or "Sin título"
                 color = reg.get("re_color") or random.choice(_COLORES_EVENTO)
                 eventos.append((titulo, col_idx, h_inicio, h_fin, color))
-            except Exception:
+                print(f"[Calendario] Evento añadido: '{titulo}' col={col_idx} {h_inicio}-{h_fin}")
+            except Exception as e:
+                print(f"[Calendario] Error procesando evento {i}: {e}")
                 continue
         return eventos
 
