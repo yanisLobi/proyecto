@@ -6,7 +6,7 @@ from typing import Any, cast
 
 from herramients import navegar_a_pagina_mongo as navegar_a_pagina, navegar_a_pagina as navegar_mysql, regresar_string
 from db_mongo import obtener_tabla, borrar_registro
-from db_mysql import obtener_valores as obtener_valores_mysql
+from db_mysql import obtener_valores as obtener_valores_mysql, obtener_tabla as obtener_tabla_mysql
 
 
 class ListaEventos:
@@ -180,10 +180,22 @@ class ListaEventosMongo:
 
     def _cargar_display_map_tratamientos(self):
         try:
-            filas = obtener_valores_mysql("tratamientos", "id", "tr_nombre", "tr_descripcion")
+            tratamientos = obtener_tabla_mysql("tratamientos", solo_activos=False)
+            pacientes = obtener_tabla_mysql("pacientes", solo_activos=False)
+            mapa_pacientes = {
+                str(p.get("id_pacientes", "")): f"{p.get('pa_nombre', '')} {p.get('pa_apellidos', '')}".strip()
+                for p in pacientes
+            }
+            resultado = {}
+            for tr in tratamientos:
+                id_tr = str(tr.get("id_tratamientos", ""))
+                nombre_tr = str(tr.get("tr_nombre", ""))
+                id_pac = str(tr.get("id_paciente", ""))
+                nombre_pac = mapa_pacientes.get(id_pac, "")
+                resultado[id_tr] = f"{nombre_tr} - {nombre_pac}" if nombre_pac else nombre_tr
+            return resultado
         except Exception:
             return {}
-        return {str(id_tr): str(nombre) for id_tr, nombre, _ in filas}
 
     def obtener_celda_evento(self, event):
         region = self.tree.identify_region(event.x, event.y)
