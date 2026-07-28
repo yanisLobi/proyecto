@@ -124,7 +124,7 @@ class CrearEventosMongo:
 
     def _cargar_tratamientos_combo(self):
         try:
-            return obtener_valores_mysql("tratamientos", "id", "tr_nombre", "tr_descripcion")
+            return obtener_valores_mysql("tratamientos", "id_tratamientos", "tr_nombre", "tr_descripcion")
         except Exception:
             return []
 
