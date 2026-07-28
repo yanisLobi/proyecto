@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from datetime import datetime, timedelta, date
+import random
 
 try:
     from db_mongo import obtener_tabla
@@ -78,33 +79,52 @@ class GoogleCalendarSemanal(ttk.Frame):
     def _cargar_eventos_mongo(self):
         if obtener_tabla is None:
             return []
-        eventos = []
         try:
             registros = obtener_tabla("consultas")
-            for i, reg in enumerate(registros):
-                fecha_str = str(reg.get("re_fecha", ""))
+        except Exception:
+            return []
+
+        eventos = []
+        for i, reg in enumerate(registros):
+            try:
+                # re_fecha puede llegar como str, datetime o date
+                fecha_val = reg.get("re_fecha", "")
+                if hasattr(fecha_val, "strftime"):
+                    fecha_str = fecha_val.strftime("%Y-%m-%d")
+                else:
+                    fecha_str = str(fecha_val).split(" ")[0].split("T")[0]
+
                 col_idx = self.fecha_a_columna.get(fecha_str)
                 if col_idx is None:
                     continue
+
                 h_inicio = self._hora_a_float(reg.get("re_hora_inicio", ""))
                 h_fin = self._hora_a_float(reg.get("re_hora_fin", ""))
-                if h_inicio is None or h_fin is None or h_fin <= h_inicio:
-                    continue
-                titulo = reg.get("re_titulo", "Sin título")
-                color = _COLORES_EVENTO[i % len(_COLORES_EVENTO)]
+                if h_inicio is None:
+                    h_inicio = 9.0
+                if h_fin is None or h_fin <= h_inicio:
+                    h_fin = h_inicio + 1.0
+
+                titulo = reg.get("re_titulo") or "Sin título"
+                color = reg.get("re_color") or random.choice(_COLORES_EVENTO)
                 eventos.append((titulo, col_idx, h_inicio, h_fin, color))
-        except Exception:
-            pass
+            except Exception:
+                continue
         return eventos
 
     def configurar_cabecera_dias(self):
         self.cabecera_labels = []
         for i in range(7):
             self.cabecera.columnconfigure(i, weight=1)
-            color_texto = "#29b6f6" if i == self.DIA_ACTUAL_INDEX else "white"
-            lbl = ttk.Label(self.cabecera, text=self.DIAS[i], anchor="center",
-                            font=("Arial", 10, "bold"), foreground=color_texto,
-                            justify="center")
+            kwargs = {
+                "text": self.DIAS[i],
+                "anchor": "center",
+                "font": ("Arial", 10, "bold"),
+                "justify": "center",
+            }
+            if i == self.DIA_ACTUAL_INDEX:
+                kwargs["foreground"] = "#29b6f6"
+            lbl = ttk.Label(self.cabecera, **kwargs)
             lbl.grid(row=0, column=i, pady=10, sticky="ew")
             self.cabecera_labels.append(lbl)
 

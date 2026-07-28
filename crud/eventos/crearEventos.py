@@ -8,6 +8,16 @@ from herramients import limpiar_frame, navegar_a_pagina_mongo as navegar_a_pagin
 from db_mongo import insertar_registro, obtener_valores
 from db_mysql import obtener_valores as obtener_valores_mysql
 
+COLORES_EVENTO = {
+    "Azul":          "#29b6f6",
+    "Verde agua":    "#26a69a",
+    "Morado":        "#ab47bc",
+    "Naranja rojizo":"#ff7043",
+    "Verde":         "#66bb6a",
+    "Naranja":       "#ffa726",
+    "Rosa":          "#ec407a",
+}
+
 
 class CrearEventosMongo:
     def __init__(self, parent=None, titulo="Crear", usuario=None):
@@ -79,7 +89,6 @@ class CrearEventosMongo:
 
         ttkb.Label(form_frame, text="Titulo").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_titulo = ttkb.Entry(form_frame, width=30)
-        self.re_titulo.insert(0, "Título de la consulta")
         self.re_titulo.grid(row=1, column=1, columnspan=3, sticky="ew", pady=(0, 16))
 
         ttkb.Label(form_frame, text="Fecha").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
@@ -88,18 +97,26 @@ class CrearEventosMongo:
 
         ttkb.Label(form_frame, text="Hora inicio").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.re_hora_inicio = ttkb.Entry(form_frame, width=30)
-        self.re_hora_inicio.insert(0, "15:00")
         self.re_hora_inicio.grid(row=2, column=3, sticky="ew", pady=(0, 16))
 
         ttkb.Label(form_frame, text="Hora Fin").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_hora_fin = ttkb.Entry(form_frame, width=30)
-        self.re_hora_fin.insert(0, "15:05")
         self.re_hora_fin.grid(row=3, column=1, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Observaciones").grid(row=3, column=2, sticky="nw", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Color").grid(row=3, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.re_color = tk.StringVar(value=list(COLORES_EVENTO.keys())[0])
+        self.combo_color = ttk.Combobox(
+            form_frame,
+            textvariable=self.re_color,
+            state="readonly",
+            values=list(COLORES_EVENTO.keys()),
+            width=27,
+        )
+        self.combo_color.grid(row=3, column=3, sticky="ew", pady=(0, 16))
+
+        ttkb.Label(form_frame, text="Observaciones").grid(row=4, column=0, sticky="nw", padx=(0, 10), pady=(0, 16))
         self.re_observaciones = tk.Text(form_frame, height=4, width=40)
-        self.re_observaciones.insert("1.0", "Escribe aquí las observaciones")
-        self.re_observaciones.grid(row=3, column=3, sticky="ew", pady=(0, 16))
+        self.re_observaciones.grid(row=4, column=1, columnspan=3, sticky="ew", pady=(0, 16))
 
     def limpiar(self):
         limpiar_frame(self.frame)
@@ -119,6 +136,7 @@ class CrearEventosMongo:
             "re_hora_fin": self.re_hora_fin.get().strip(),
             "re_hora_inicio": self.re_hora_inicio.get().strip(),
             "re_fecha": self.re_fecha.get_date().strftime("%Y-%m-%d"),
+            "re_color": COLORES_EVENTO.get(self.re_color.get(), "#29b6f6"),
         }
 
 

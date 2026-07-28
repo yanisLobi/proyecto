@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tkcalendar import DateEntry
 
-from crud.eventos.crearEventos import CrearEventosMongo
+from crud.eventos.crearEventos import CrearEventosMongo, COLORES_EVENTO
 from herramients import obtener_indice, navegar_a_pagina_mongo as navegar_a_pagina
 from db_mongo import actualizar_registro, obtener_registros
 
@@ -37,10 +37,18 @@ class ActualizarEventosMongo(CrearEventosMongo):
 		self.re_observaciones.delete("1.0", tk.END)
 		self.re_observaciones.insert("1.0", str(self.evento.get("re_observaciones", "")))
 
+		color_guardado = str(self.evento.get("re_color", ""))
+		nombre_color = next((k for k, v in COLORES_EVENTO.items() if v == color_guardado), list(COLORES_EVENTO.keys())[0])
+		self.re_color.set(nombre_color)
+
 		fecha = self.evento.get("re_fecha")
 		if fecha and isinstance(self.re_fecha, DateEntry):
 			try:
-				self.re_fecha.set_date(str(fecha))
+				from datetime import date as _date
+				if isinstance(fecha, str):
+					partes = fecha.split("-")
+					fecha = _date(int(partes[0]), int(partes[1]), int(partes[2]))
+				self.re_fecha.set_date(fecha)
 			except Exception:
 				pass
 
