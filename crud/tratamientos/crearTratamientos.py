@@ -4,7 +4,8 @@ from tkinter import messagebox
 from tkcalendar import DateEntry
 from tkinter import ttk
 from tkcalendar import DateEntry
-from herramientas import navegar_a_pagina, limpiar_frame, insertar_registro, obtener_valores, obtener_valores_usuarios
+from herramients import navegar_a_pagina, limpiar_frame
+from db_mysql import insertar_registro, obtener_valores, obtener_valores_usuarios
 
 
 class CrearTratamientos:

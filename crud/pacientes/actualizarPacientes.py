@@ -2,7 +2,8 @@ from datetime import datetime
 from crud.pacientes.crearPacientes import CrearPacientes
 from tkinter import messagebox, ttk
 import tkinter as tk
-from herramientas import obtener_indice, obtener_registros, navegar_a_pagina, actualizar_registro, obtener_tabla, obtener_tabla_condicion, regresar_string
+from herramients import obtener_indice, navegar_a_pagina, regresar_string
+from db_mysql import obtener_registros, actualizar_registro, obtener_tabla, obtener_tabla_condicion
 
 
 class ActualizarPacientes(CrearPacientes):

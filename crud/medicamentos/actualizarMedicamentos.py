@@ -2,7 +2,8 @@ from datetime import datetime
 from crud.medicamentos.crearMedicamentos import CrearMedicamentos
 from tkinter import messagebox
 import tkinter as tk
-from herramientas import obtener_registros, navegar_a_pagina, actualizar_registro, obtener_indice
+from herramients import navegar_a_pagina, obtener_indice
+from db_mysql import obtener_registros, actualizar_registro
 
 
 class ActualizarMedicamentos(CrearMedicamentos):

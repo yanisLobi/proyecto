@@ -2,7 +2,8 @@ from datetime import datetime
 from crud.usuarios.crearUsuarios import CrearUsuario
 import tkinter as tk
 from tkinter import messagebox
-from herramientas import obtener_registros, navegar_a_pagina, actualizar_registro, obtener_indice
+from herramients import navegar_a_pagina, obtener_indice
+from db_mysql import obtener_registros, actualizar_registro
 
 
 class ActualizarUsuarios(CrearUsuario):

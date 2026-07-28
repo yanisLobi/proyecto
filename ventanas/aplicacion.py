@@ -1,7 +1,7 @@
 import tkinter as tk
 import ttkbootstrap as ttkb
 
-from herramientas import navegar_a_pagina
+from herramients import navegar_a_pagina, navegar_a_pagina_mongo
 from crud.calendario import GoogleCalendarSemanal
 
 
@@ -85,6 +85,11 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
     
     def cambiar_a_recordatorios():
         navegar_a_pagina(contenido_frame, "Lista medicamentos")
+
+    def cambiar_a_recordatorios_mongo():
+        navegar_a_pagina_mongo(contenido_frame, "Lista eventos", usuario=usuario)
+
+    cambiar_a_recordatorios = cambiar_a_recordatorios_mongo
     
     def cambiar_a_tratamiento():
         navegar_a_pagina(contenido_frame, "Lista tratamientos", usuario=usuario)

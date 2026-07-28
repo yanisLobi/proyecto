@@ -2,7 +2,8 @@ import tkinter as tk
 import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
-from herramientas import navegar_a_pagina, obtener_tabla, borrar_registro, regresar_string
+from herramients import navegar_a_pagina, regresar_string
+from db_mysql import obtener_tabla, borrar_registro
 
 
 class ListaMedicamentos:

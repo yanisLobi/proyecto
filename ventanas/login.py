@@ -4,7 +4,7 @@ from tkinter import messagebox
 from conexion import conectar
 from ventanas.aplicacion import iniciar_aplicacion
 from ventanas.registro import iniciar_registro
-from herramientas import obtener_tabla
+from db_mysql import obtener_tabla
 import ttkbootstrap as ttkb
         
 def main():
