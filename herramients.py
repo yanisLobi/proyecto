@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from tkcalendar import DateEntry
+import threading
+import time
 
 
 def limpiar_widget(widget):
@@ -45,6 +47,15 @@ def navegar_a_pagina(frame, nombre_clase, **kwargs):
     from crud.tratamientos.actualizarTratamientos import ActualizarTratamientos
     from crud.tratamientos.listaTratamientos import ListaTratamientos
     from crud.tratamientos.crearTratamientos import CrearTratamientos
+    from crud.eventos.actualizarEventos import ActualizarEventosMongo
+    from crud.eventos.consultarEventos import ConsultarEventosMongo
+    from crud.eventos.crearEventos import CrearEventosMongo
+    from crud.eventos.listaEventos import ListaEventosMongo
+    
+    
+    
+    
+    from crud.calendario import CalendarioRecordatorios
 
     paginas = {
         "Lista pacientes": ListaPacientes,
@@ -59,29 +70,11 @@ def navegar_a_pagina(frame, nombre_clase, **kwargs):
         "Lista tratamientos": ListaTratamientos,
         "Crear tratamientos": CrearTratamientos,
         "Actualizar tratamientos": ActualizarTratamientos,
-    }
-
-    for widget in frame.winfo_children():
-        widget.destroy()
-
-    clase_instanciar = paginas.get(nombre_clase)
-    if not clase_instanciar:
-        raise Exception(f"diccionario paginas no conoce ese archivo: {nombre_clase}")
-
-    clase_instanciar(frame, **kwargs)
-
-
-def navegar_a_pagina_mongo(frame, nombre_clase, **kwargs):
-    from crud.eventos.listaEventos import ListaEventosMongo
-    from crud.eventos.crearEventos import CrearEventosMongo
-    from crud.eventos.actualizarEventos import ActualizarEventosMongo
-    from crud.eventos.consultarEventos import ConsultarEventosMongo
-
-    paginas = {
+        "Calendario": CalendarioRecordatorios,
         "Lista eventos": ListaEventosMongo,
-        "Crear eventos": CrearEventosMongo,
         "Actualizar eventos": ActualizarEventosMongo,
-        "Consultar eventos": ConsultarEventosMongo,
+        "Crear eventos": CrearEventosMongo,
+        "Consultar eventos": ConsultarEventosMongo
     }
 
     for widget in frame.winfo_children():
@@ -92,6 +85,10 @@ def navegar_a_pagina_mongo(frame, nombre_clase, **kwargs):
         raise Exception(f"diccionario paginas no conoce ese archivo: {nombre_clase}")
 
     clase_instanciar(frame, **kwargs)
+
+ 
+
+    
 
 
 def regresar_string(titulos):
@@ -118,3 +115,8 @@ def obtener_indice(id_registro: int, opciones: list[tuple]):
             indice_encontrado = indice_encontrado + 1
 
     return 0
+
+def mostrar_recordatorios():
+    print("Inicio de la tarea...")
+    time.sleep(2)  # Simulando una espera de I/O
+    print("Tarea finalizada.")

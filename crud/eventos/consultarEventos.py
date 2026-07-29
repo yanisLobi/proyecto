@@ -1,7 +1,8 @@
 import ttkbootstrap as ttkb
 
-from herramients import navegar_a_pagina_mongo as navegar_a_pagina
+
 from db_mongo import obtener_registros
+from herramients import navegar_a_pagina
 
 
 class ConsultarEventosMongo:

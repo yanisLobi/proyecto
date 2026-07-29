@@ -1,11 +1,14 @@
 import tkinter as tk
 import ttkbootstrap as ttkb
+import threading
+import time
 
-from herramients import navegar_a_pagina, navegar_a_pagina_mongo
-from crud.calendario import GoogleCalendarSemanal
+from herramients import navegar_a_pagina, navegar_a_pagina_mongo, mostrar_recordatorios
+from crud.calendario import CalendarioRecordatorios
 
 
-def mostrar_contenido(contenido_frame, titulo, texto, clase_contenido= None):
+
+def mostrar_contenido(contenido_frame, titulo, texto, clase_contenido= None ):
     for widget in contenido_frame.winfo_children():
         widget.destroy()
         pass
@@ -25,10 +28,20 @@ def mostrar_contenido(contenido_frame, titulo, texto, clase_contenido= None):
     
     if clase_contenido:
         clase_contenido(contenido_frame)
-        
+
         
 def iniciar_aplicacion(ventana_login, usuario, campo_password):
     tipo_usu = usuario.get("us_tipo_usuario")
+    
+   
+
+    # Crear el hilo indicando la función objetivo
+    hilo = threading.Thread(target=mostrar_recordatorios)
+
+    # Iniciar el hilo
+    hilo.start()
+   
+
     
     # Ocultamos la ventana que nos llamó (la ventana de inicio de sesion)
     ventana_login.withdraw()
@@ -71,7 +84,7 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
     contenido_frame = ttkb.Frame(ventana)
     contenido_frame.grid(row=0, column=1, sticky="nsew")
 
-    mostrar_contenido(contenido_frame, "Área de Contenido", "Selecciona una opción del menú")
+    
     
     
     def cambiar_a_calendario():
@@ -82,8 +95,9 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
                 navegar_a_pagina(contenido_frame, nombre_clase,
                                  tipo_usuario=usuario.get("us_tipo_usuario"), **kwargs)
         mostrar_contenido(contenido_frame, "Calendario", "",
-                          lambda f: GoogleCalendarSemanal(f, navegar_cb=navegar_cb, usuario=usuario))
+                          lambda f: CalendarioRecordatorios(f, navegar_cb=navegar_cb, usuario=usuario))
 
+    cambiar_a_calendario()
     
 
     def cambiar_a_usuarios():
@@ -96,12 +110,9 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
         navegar_a_pagina(contenido_frame, "Lista medicamentos", usuario=usuario)
     
     def cambiar_a_recordatorios():
-        navegar_a_pagina(contenido_frame, "Lista medicamentos")
+        navegar_a_pagina(contenido_frame, "Lista eventos", usuario=usuario)
 
-    def cambiar_a_recordatorios_mongo():
-        navegar_a_pagina_mongo(contenido_frame, "Lista eventos", usuario=usuario)
 
-    cambiar_a_recordatorios = cambiar_a_recordatorios_mongo
     
     def cambiar_a_tratamiento():
         navegar_a_pagina(contenido_frame, "Lista tratamientos", usuario=usuario)
@@ -184,6 +195,16 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
         style=menu_button_style,
     ).pack(fill="x", side="bottom")
     ttkb.Separator(menu_frame).pack(fill="x", side="bottom", pady=(10, 0))
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     # Ejecutar la aplicación
     ventana.mainloop()

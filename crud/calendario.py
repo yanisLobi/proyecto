@@ -16,8 +16,7 @@ except Exception:
 _COLORES_EVENTO = ["#26a69a", "#29b6f6", "#ab47bc", "#ff7043", "#66bb6a", "#ffa726", "#ec407a"]
 _NOMBRES_DIA = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
 
-
-class GoogleCalendarSemanal(ttk.Frame):
+class CalendarioRecordatorios(ttk.Frame):
     def __init__(self, parent, navegar_cb=None, usuario=None):
         super().__init__(parent)
         self.pack(fill="both", expand=True)
@@ -380,5 +379,5 @@ if __name__ == "__main__":
     root = tk.Tk()
     root.title("AbueCare - Agenda Semanal")
     root.geometry("900x600")
-    GoogleCalendarSemanal(root)
+    CalendarioRecordatorios(root)
     root.mainloop()
