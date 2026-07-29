@@ -4,9 +4,10 @@ from datetime import datetime, timedelta, date
 import random
 
 try:
-    from db_mongo import obtener_tabla
+    from db_mongo import obtener_tabla, actualizar_registro as _mongo_actualizar
 except Exception:
     obtener_tabla = None
+    _mongo_actualizar = None
 
 try:
     from db_mysql import obtener_registros as _mysql_get
@@ -15,6 +16,20 @@ except Exception:
 
 _COLORES_EVENTO = ["#26a69a", "#29b6f6", "#ab47bc", "#ff7043", "#66bb6a", "#ffa726", "#ec407a"]
 _NOMBRES_DIA = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
+
+
+def _mezclar_color(hex_color, bg="#1e1e1e", factor=0.45):
+    """Mezcla hex_color con bg al factor dado (0=todo bg, 1=color original)."""
+    try:
+        r1, g1, b1 = int(hex_color[1:3], 16), int(hex_color[3:5], 16), int(hex_color[5:7], 16)
+        r2, g2, b2 = int(bg[1:3], 16), int(bg[3:5], 16), int(bg[5:7], 16)
+        r = int(r1 * factor + r2 * (1 - factor))
+        g = int(g1 * factor + g2 * (1 - factor))
+        b = int(b1 * factor + b2 * (1 - factor))
+        return f"#{r:02x}{g:02x}{b:02x}"
+    except Exception:
+        return hex_color
+
 
 class CalendarioRecordatorios(ttk.Frame):
     def __init__(self, parent, navegar_cb=None, usuario=None):
@@ -123,7 +138,21 @@ class CalendarioRecordatorios(ttk.Frame):
                 color = reg.get("re_color") or random.choice(_COLORES_EVENTO)
                 id_evento = reg.get("id", "")
                 id_tr = str(reg.get("id_tr", ""))
-                eventos.append((titulo, col_idx, h_inicio, h_fin, color, id_evento, id_tr))
+                # Buscar nombre del paciente vía tratamiento
+                nombre_paciente = ""
+                if _mysql_get and id_tr:
+                    try:
+                        trat_l = _mysql_get("tratamientos", "id_tratamientos", id_tr)
+                        if trat_l:
+                            id_pac = trat_l[0].get("id_paciente")
+                            if id_pac:
+                                pac_l = _mysql_get("pacientes", "id_pacientes", id_pac)
+                                if pac_l:
+                                    p = pac_l[0]
+                                    nombre_paciente = f"{p.get('pa_nombre', '')} {p.get('pa_apellidos', '')}".strip()
+                    except Exception:
+                        pass
+                eventos.append((titulo, col_idx, h_inicio, h_fin, color, id_evento, id_tr, nombre_paciente))
                 self._eventos_raw.append(reg)
                 print(f"[Calendario] Evento añadido: '{titulo}' col={col_idx} {h_inicio}-{h_fin}")
             except Exception as e:
@@ -170,23 +199,34 @@ class CalendarioRecordatorios(ttk.Frame):
 
     def dibujar_eventos(self):
         self.evento_rects = []
-        for idx, (titulo, dia_idx, h_inicio, h_fin, color, id_evento, id_tr) in enumerate(self.eventos):
+        for idx, (titulo, dia_idx, h_inicio, h_fin, color, id_evento, id_tr, nombre_paciente) in enumerate(self.eventos):
             x_inicial = self.MARGEN_IZQUIERDO + (dia_idx * self.ancho_columna)
             x_final = x_inicial + self.ancho_columna
             y_inicial = (h_inicio - self.HORA_INICIO) * self.PIXELS_POR_HORA
             y_final = (h_fin - self.HORA_INICIO) * self.PIXELS_POR_HORA
-            y_final = max(y_final, y_inicial + 20)  # altura mínima visible
+            y_final = max(y_final, y_inicial + 30)  # altura mínima para dos líneas
 
             self.evento_rects.append((x_inicial, y_inicial, x_final, y_final, idx))
 
-            self.canvas.create_rectangle(x_inicial, y_inicial, x_final, y_final, fill=color, outline="", width=0)
+            completado = self._eventos_raw[idx].get("re_estado", "") == "Completado"
+            color_rect = _mezclar_color(color) if completado else color
+            texto_fill = "#888888" if completado else "white"
+            sub_fill   = "#555555" if completado else "#d0d0d0"
 
-            ancho_texto_maximo = int(self.ancho_columna - 15)
+            self.canvas.create_rectangle(x_inicial, y_inicial, x_final, y_final, fill=color_rect, outline="", width=0)
+
+            ancho_texto_maximo = int(self.ancho_columna - 10)
             self.canvas.create_text(
-                x_inicial + 6, y_inicial + 12,
-                text=titulo, anchor="w", fill="white",
+                x_inicial + 5, y_inicial + 10,
+                text=titulo, anchor="w", fill=texto_fill,
                 font=("Arial", 9, "bold"), width=ancho_texto_maximo
             )
+            if nombre_paciente:
+                self.canvas.create_text(
+                    x_inicial + 5, y_inicial + 22,
+                    text=nombre_paciente, anchor="w", fill=sub_fill,
+                    font=("Arial", 8), width=ancho_texto_maximo
+                )
 
     def dibujar_indicador_tiempo(self):
         # 1. Calcular la posición Y basada en la hora hardcodeada
@@ -268,7 +308,7 @@ class CalendarioRecordatorios(ttk.Frame):
         self._cerrar_popup()
 
         raw = self._eventos_raw[idx]
-        titulo, col_idx, h_inicio, h_fin, color, id_evento, id_tr = self.eventos[idx]
+        titulo, col_idx, h_inicio, h_fin, color, id_evento, id_tr, nombre_paciente = self.eventos[idx]
 
         # ── Cargar datos relacionados desde MySQL ──
         trat, pac, doc, enf = {}, {}, {}, {}
@@ -320,6 +360,31 @@ class CalendarioRecordatorios(ttk.Frame):
                               font=("Arial", 11), padx=10, cursor="hand2")
         close_lbl.pack(side="right")
         close_lbl.bind("<Button-1>", lambda e: self._cerrar_popup())
+
+        # Botón “Marcar como completado” (solo si no está ya completado)
+        if raw.get("re_estado", "") != "Completado" and _mongo_actualizar:
+            def _marcar_completado(iv=id_evento, _idx=idx):
+                try:
+                    _mongo_actualizar("consultas", {"re_estado": "Completado"}, "id", iv)
+                    self._eventos_raw[_idx]["re_estado"] = "Completado"
+                except Exception as ex:
+                    print(f"[Popup] Error al marcar completado: {ex}")
+                    return
+                self._cerrar_popup()
+                self.eventos = self._cargar_eventos_mongo()
+                ancho = self.canvas.winfo_width()
+                if ancho > 1:
+                    self.dibujar_cuadricula(ancho)
+                    self.dibujar_eventos()
+                    self.dibujar_indicador_tiempo()
+            btn_completar = tk.Button(
+                popup, text="✓ Marcar como completado",
+                bg="#2e7d32", fg="white", relief="flat",
+                font=("Arial", 9, "bold"), cursor="hand2",
+                activebackground="#1b5e20", activeforeground="white",
+                command=_marcar_completado, pady=6,
+            )
+            btn_completar.pack(fill="x", padx=0)
 
         # Área scrollable interna
         sc_canvas = tk.Canvas(popup, bg=BG, highlightthickness=0)
@@ -381,3 +446,4 @@ if __name__ == "__main__":
     root.geometry("900x600")
     CalendarioRecordatorios(root)
     root.mainloop()
+    
