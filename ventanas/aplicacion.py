@@ -3,7 +3,7 @@ import ttkbootstrap as ttkb
 import threading
 import time
 
-from herramients import navegar_a_pagina, navegar_a_pagina_mongo, mostrar_recordatorios
+from herramients import navegar_a_pagina, navegar_a_pagina, mostrar_recordatorios
 from crud.calendario import CalendarioRecordatorios
 
 
@@ -90,7 +90,7 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
     def cambiar_a_calendario():
         def navegar_cb(tipo, nombre_clase, **kwargs):
             if tipo == "mongo":
-                navegar_a_pagina_mongo(contenido_frame, nombre_clase, usuario=usuario, **kwargs)
+                navegar_a_pagina(contenido_frame, nombre_clase, usuario=usuario, **kwargs)
             else:
                 navegar_a_pagina(contenido_frame, nombre_clase,
                                  tipo_usuario=usuario.get("us_tipo_usuario"), **kwargs)
