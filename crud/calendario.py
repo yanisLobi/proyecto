@@ -42,8 +42,8 @@ class CalendarioRecordatorios(ttk.Frame):
         self._eventos_raw = []
 
         # Parámetros de la interfaz
-        self.HORA_INICIO = 8
-        self.HORA_FIN = 20
+        self.HORA_INICIO = 0
+        self.HORA_FIN = 24
         self.PIXELS_POR_HORA = 60
         self.MARGEN_IZQUIERDO = 70
         self.cabecera_labels = []

@@ -53,7 +53,7 @@ def main():
         contrasena_introducida  = contra.get().strip()
         
         if correo_introducido == "":
-            messagebox.showinfo("Error al iniciar sesion", "Debes introducir correo y contraseña")
+            messagebox.showinfo("Error al iniciar sesion", "Debes introducir correo\n nmhjmjmjm\n thhththth\n hngngn \n\n\n y contraseña")
             return
         
         correos = [usuario.get("us_correo_electronico") for usuario in lista_usuarios]

@@ -117,6 +117,7 @@ class CrearEventosMongo:
         ttkb.Label(form_frame, text="Observaciones").grid(row=4, column=0, sticky="nw", padx=(0, 10), pady=(0, 16))
         self.re_observaciones = tk.Text(form_frame, height=4, width=40)
         self.re_observaciones.grid(row=4, column=1, columnspan=3, sticky="ew", pady=(0, 16))
+        
 
     def limpiar(self):
         limpiar_frame(self.frame)
