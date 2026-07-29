@@ -3,7 +3,7 @@ from tkinter import messagebox
 from tkcalendar import DateEntry
 
 from crud.eventos.crearEventos import CrearEventosMongo, COLORES_EVENTO
-from herramients import obtener_indice, navegar_a_pagina_mongo as navegar_a_pagina
+from herramients import navegar_a_pagina, obtener_indice
 from db_mongo import actualizar_registro, obtener_registros
 
 

@@ -4,8 +4,8 @@ from tkinter import messagebox
 from tkcalendar import DateEntry
 from tkinter import ttk
 
-from herramients import limpiar_frame, navegar_a_pagina_mongo as navegar_a_pagina
-from db_mongo import insertar_registro, obtener_valores
+from herramients import navegar_a_pagina
+from db_mongo import insertar_registro
 from db_mysql import obtener_valores as obtener_valores_mysql
 
 COLORES_EVENTO = {

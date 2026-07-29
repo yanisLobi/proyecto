@@ -4,9 +4,9 @@ from tkinter import ttk
 from tkinter import messagebox
 from typing import Any, cast
 
-from herramients import navegar_a_pagina_mongo as navegar_a_pagina, navegar_a_pagina as navegar_mysql, regresar_string
+from herramients import navegar_a_pagina, regresar_string
 from db_mongo import obtener_tabla, borrar_registro
-from db_mysql import obtener_valores as obtener_valores_mysql, obtener_tabla as obtener_tabla_mysql
+from db_mysql import obtener_tabla as obtener_tabla_mysql
 
 
 class ListaEventos:
