@@ -75,7 +75,14 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
     
     
     def cambiar_a_calendario():
-        mostrar_contenido(contenido_frame, "Calendario", "", GoogleCalendarSemanal)
+        def navegar_cb(tipo, nombre_clase, **kwargs):
+            if tipo == "mongo":
+                navegar_a_pagina_mongo(contenido_frame, nombre_clase, usuario=usuario, **kwargs)
+            else:
+                navegar_a_pagina(contenido_frame, nombre_clase,
+                                 tipo_usuario=usuario.get("us_tipo_usuario"), **kwargs)
+        mostrar_contenido(contenido_frame, "Calendario", "",
+                          lambda f: GoogleCalendarSemanal(f, navegar_cb=navegar_cb, usuario=usuario))
 
     
 
@@ -175,7 +182,8 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
         bootstyle="danger",
         padding=menu_button_padding,
         style=menu_button_style,
-    ).pack(fill="x")
+    ).pack(fill="x", side="bottom")
+    ttkb.Separator(menu_frame).pack(fill="x", side="bottom", pady=(10, 0))
     
     # Ejecutar la aplicación
     ventana.mainloop()

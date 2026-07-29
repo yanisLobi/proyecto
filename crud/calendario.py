@@ -8,14 +8,24 @@ try:
 except Exception:
     obtener_tabla = None
 
+try:
+    from db_mysql import obtener_registros as _mysql_get
+except Exception:
+    _mysql_get = None
+
 _COLORES_EVENTO = ["#26a69a", "#29b6f6", "#ab47bc", "#ff7043", "#66bb6a", "#ffa726", "#ec407a"]
 _NOMBRES_DIA = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
 
 
 class GoogleCalendarSemanal(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, navegar_cb=None, usuario=None):
         super().__init__(parent)
         self.pack(fill="both", expand=True)
+        self.navegar_cb = navegar_cb
+        self.usuario = usuario
+        self._popup_frame = None
+        self.evento_rects = []
+        self._eventos_raw = []
 
         # Parámetros de la interfaz
         self.HORA_INICIO = 8
@@ -51,6 +61,7 @@ class GoogleCalendarSemanal(ttk.Frame):
         self.canvas.configure(scrollregion=(0, 0, 900, altura_total))
 
         self.canvas.bind("<Configure>", self.al_redimensionar)
+        self.canvas.bind("<Button-1>", self._on_canvas_click)
 
         # Cargar eventos reales desde MongoDB
         self.eventos = self._cargar_eventos_mongo()
@@ -77,6 +88,7 @@ class GoogleCalendarSemanal(ttk.Frame):
             return None
 
     def _cargar_eventos_mongo(self):
+        self._eventos_raw = []
         if obtener_tabla is None:
             print("[Calendario] db_mongo no disponible")
             return []
@@ -110,7 +122,10 @@ class GoogleCalendarSemanal(ttk.Frame):
 
                 titulo = (reg.get("re_titulo") or "Sin título").strip('"').strip()
                 color = reg.get("re_color") or random.choice(_COLORES_EVENTO)
-                eventos.append((titulo, col_idx, h_inicio, h_fin, color))
+                id_evento = reg.get("id", "")
+                id_tr = str(reg.get("id_tr", ""))
+                eventos.append((titulo, col_idx, h_inicio, h_fin, color, id_evento, id_tr))
+                self._eventos_raw.append(reg)
                 print(f"[Calendario] Evento añadido: '{titulo}' col={col_idx} {h_inicio}-{h_fin}")
             except Exception as e:
                 print(f"[Calendario] Error procesando evento {i}: {e}")
@@ -155,19 +170,22 @@ class GoogleCalendarSemanal(ttk.Frame):
             self.canvas.create_line(x, 0, x, altura_total, fill="#2d2d2d", width=1)
 
     def dibujar_eventos(self):
-        for titulo, dia_idx, h_inicio, h_fin, color in self.eventos:
+        self.evento_rects = []
+        for idx, (titulo, dia_idx, h_inicio, h_fin, color, id_evento, id_tr) in enumerate(self.eventos):
             x_inicial = self.MARGEN_IZQUIERDO + (dia_idx * self.ancho_columna)
             x_final = x_inicial + self.ancho_columna
             y_inicial = (h_inicio - self.HORA_INICIO) * self.PIXELS_POR_HORA
             y_final = (h_fin - self.HORA_INICIO) * self.PIXELS_POR_HORA
             y_final = max(y_final, y_inicial + 20)  # altura mínima visible
-            
+
+            self.evento_rects.append((x_inicial, y_inicial, x_final, y_final, idx))
+
             self.canvas.create_rectangle(x_inicial, y_inicial, x_final, y_final, fill=color, outline="", width=0)
-            
+
             ancho_texto_maximo = int(self.ancho_columna - 15)
             self.canvas.create_text(
-                x_inicial + 6, y_inicial + 12, 
-                text=titulo, anchor="w", fill="white", 
+                x_inicial + 6, y_inicial + 12,
+                text=titulo, anchor="w", fill="white",
                 font=("Arial", 9, "bold"), width=ancho_texto_maximo
             )
 
@@ -200,6 +218,163 @@ class GoogleCalendarSemanal(ttk.Frame):
         self.dibujar_eventos()
         self.dibujar_indicador_tiempo()
         self.actualizar_cabecera(event.width)
+
+    # ── CLICK EN EL CANVAS ──────────────────────────────────────────────
+
+    def _on_canvas_click(self, event):
+        cx = self.canvas.canvasx(event.x)
+        cy = self.canvas.canvasy(event.y)
+        for x1, y1, x2, y2, idx in self.evento_rects:
+            if x1 <= cx <= x2 and y1 <= cy <= y2:
+                self._abrir_popup(idx)
+                return
+        self._cerrar_popup()
+
+    # ── POPUP ────────────────────────────────────────────────────────────
+
+    def _cerrar_popup(self):
+        if self._popup_frame is not None:
+            self._popup_frame.destroy()
+            self._popup_frame = None
+
+    def _navegar(self, tipo, nombre_clase, **kwargs):
+        self._cerrar_popup()
+        if self.navegar_cb:
+            self.navegar_cb(tipo, nombre_clase, **kwargs)
+
+    def _campo(self, parent, etiqueta, valor, bg):
+        fila = tk.Frame(parent, bg=bg)
+        fila.pack(fill="x", padx=10, pady=1)
+        tk.Label(fila, text=f"{etiqueta}:", fg="#aaaaaa", bg=bg,
+                 font=("Arial", 8), anchor="w", width=12).pack(side="left")
+        tk.Label(fila, text=str(valor) if valor else "—", fg="#e0e0e0", bg=bg,
+                 font=("Arial", 8), anchor="w", wraplength=155, justify="left").pack(side="left", fill="x", expand=True)
+
+    def _seccion(self, parent, titulo_sec, campos, bg_header, bg_body, link_cmd=None):
+        header = tk.Frame(parent, bg=bg_header)
+        header.pack(fill="x", pady=(8, 0))
+        tk.Label(header, text=titulo_sec, fg="white", bg=bg_header,
+                 font=("Arial", 9, "bold"), padx=10, pady=4).pack(side="left")
+        if link_cmd and self.navegar_cb:
+            btn = tk.Label(header, text="Editar →", fg="#29b6f6", bg=bg_header,
+                           font=("Arial", 8, "underline"), cursor="hand2", padx=8)
+            btn.pack(side="right")
+            btn.bind("<Button-1>", lambda e, fn=link_cmd: fn())
+        body = tk.Frame(parent, bg=bg_body)
+        body.pack(fill="x")
+        for etiqueta, valor in campos:
+            self._campo(body, etiqueta, valor, bg_body)
+
+    def _abrir_popup(self, idx):
+        self._cerrar_popup()
+
+        raw = self._eventos_raw[idx]
+        titulo, col_idx, h_inicio, h_fin, color, id_evento, id_tr = self.eventos[idx]
+
+        # ── Cargar datos relacionados desde MySQL ──
+        trat, pac, doc, enf = {}, {}, {}, {}
+        id_trat, id_paciente, id_doctor, id_enfermera = None, None, None, None
+        if _mysql_get and id_tr:
+            try:
+                trat_list = _mysql_get("tratamientos", "id_tratamientos", id_tr)
+                trat = trat_list[0] if trat_list else {}
+                id_trat = trat.get("id_tratamientos")
+                id_paciente = trat.get("id_paciente")
+                id_doctor = trat.get("id_doctor")
+            except Exception as e:
+                print(f"[Popup] Error tratamiento: {e}")
+            if id_paciente:
+                try:
+                    pac_list = _mysql_get("pacientes", "id_pacientes", id_paciente)
+                    pac = pac_list[0] if pac_list else {}
+                    id_enfermera = pac.get("id_enfermera_principal")
+                except Exception as e:
+                    print(f"[Popup] Error paciente: {e}")
+            if id_doctor:
+                try:
+                    doc_list = _mysql_get("usuarios", "id_usuarios", id_doctor)
+                    doc = doc_list[0] if doc_list else {}
+                except Exception as e:
+                    print(f"[Popup] Error doctor: {e}")
+            if id_enfermera:
+                try:
+                    enf_list = _mysql_get("usuarios", "id_usuarios", id_enfermera)
+                    enf = enf_list[0] if enf_list else {}
+                except Exception as e:
+                    print(f"[Popup] Error enfermera: {e}")
+
+        # ── Construir el frame del popup ──
+        BG       = "#1e1e2e"
+        BG_HDR   = "#2a2a3e"
+        BG_BODY  = "#252535"
+
+        popup = tk.Frame(self, bg=BG, bd=1, relief="solid")
+        popup.place(relx=1.0, rely=0.04, anchor="ne", x=-20, relheight=0.90, width=290)
+        self._popup_frame = popup
+
+        # Barra de título
+        title_bar = tk.Frame(popup, bg="#161625")
+        title_bar.pack(fill="x")
+        tk.Label(title_bar, text="Detalle del evento", fg="white", bg="#161625",
+                 font=("Arial", 10, "bold"), padx=10, pady=7).pack(side="left")
+        close_lbl = tk.Label(title_bar, text="✕", fg="#aaaaaa", bg="#161625",
+                              font=("Arial", 11), padx=10, cursor="hand2")
+        close_lbl.pack(side="right")
+        close_lbl.bind("<Button-1>", lambda e: self._cerrar_popup())
+
+        # Área scrollable interna
+        sc_canvas = tk.Canvas(popup, bg=BG, highlightthickness=0)
+        sc_scroll = ttk.Scrollbar(popup, orient="vertical", command=sc_canvas.yview)
+        sc_canvas.configure(yscrollcommand=sc_scroll.set)
+        sc_scroll.pack(side="right", fill="y")
+        sc_canvas.pack(side="left", fill="both", expand=True)
+        inner = tk.Frame(sc_canvas, bg=BG)
+        win_id = sc_canvas.create_window((0, 0), window=inner, anchor="nw")
+        inner.bind("<Configure>", lambda e: sc_canvas.configure(scrollregion=sc_canvas.bbox("all")))
+        sc_canvas.bind("<Configure>", lambda e, wid=win_id: sc_canvas.itemconfig(wid, width=e.width))
+
+        # ── Sección Evento ──
+        self._seccion(inner, "Evento", [
+            ("Título",        titulo),
+            ("Fecha",         raw.get("re_fecha", "—")),
+            ("Inicio",        raw.get("re_hora_inicio", "—")),
+            ("Fin",           raw.get("re_hora_fin", "—")),
+            ("Estado",        raw.get("re_estado", "—")),
+            ("Observaciones", raw.get("re_observaciones", "—")),
+        ], BG_HDR, BG_BODY,
+        link_cmd=lambda iv=id_evento: self._navegar("mongo", "Actualizar eventos", id_seleccionado=iv))
+
+        # ── Sección Tratamiento ──
+        self._seccion(inner, "Tratamiento", [
+            ("Nombre",      trat.get("tr_nombre", "—")),
+            ("Inicio",      trat.get("tr_fecha_inicio", "—")),
+            ("Fin",         trat.get("tr_fecha_final", "—")),
+            ("Descripción", trat.get("tr_descripcion", "—")),
+        ], BG_HDR, BG_BODY,
+        link_cmd=lambda it=id_trat: self._navegar("mysql", "Actualizar tratamientos", id_seleccionado=it) if it else None)
+
+        # ── Sección Paciente ──
+        self._seccion(inner, "Paciente", [
+            ("Nombre",    f"{pac.get('pa_nombre', '')} {pac.get('pa_apellidos', '')}".strip() or "—"),
+            ("Nacimiento", pac.get("pa_fecha_nacimiento", "—")),
+            ("Contacto",  pac.get("pa_nombre_contacto_emergencia", "—")),
+            ("Tel. emergencia", pac.get("pa_tel_contacto_emergencia", "—")),
+        ], BG_HDR, BG_BODY,
+        link_cmd=lambda ip=id_paciente: self._navegar("mysql", "Actualizar pacientes", id_seleccionado=ip) if ip else None)
+
+        # ── Sección Doctor ──
+        self._seccion(inner, "Doctor", [
+            ("Nombre",      f"{doc.get('us_nombre', '')} {doc.get('us_apellidos', '')}".strip() or "—"),
+            ("Especialidad", doc.get("us_especialidad", "—")),
+        ], BG_HDR, BG_BODY,
+        link_cmd=lambda id_d=id_doctor: self._navegar("mysql", "Actualizar usuarios", id_seleccionado=id_d) if id_d else None)
+
+        # ── Sección Enfermera ──
+        self._seccion(inner, "Enfermera", [
+            ("Nombre", f"{enf.get('us_nombre', '')} {enf.get('us_apellidos', '')}".strip() or "—"),
+        ], BG_HDR, BG_BODY,
+        link_cmd=lambda id_e=id_enfermera: self._navegar("mysql", "Actualizar usuarios", id_seleccionado=id_e) if id_e else None)
+
 
 if __name__ == "__main__":
     root = tk.Tk()
