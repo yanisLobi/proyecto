@@ -1,10 +1,10 @@
 from datetime import datetime
 from crud.tratamientos.crearTratamientos import CrearTratamientos
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 import tkinter as tk
 from typing import Any, cast
-from herramients import navegar_a_pagina, obtener_indice
-from db_mysql import obtener_registros, actualizar_registro
+from herramients import navegar_a_pagina, obtener_indice, regresar_string
+from db_mysql import obtener_registros, actualizar_registro, obtener_medicinas_de_tratamientos
 
 
 class ActualizarTratamientos(CrearTratamientos):
@@ -15,6 +15,7 @@ class ActualizarTratamientos(CrearTratamientos):
         if not self.tratamientos:
             messagebox.showinfo("Sin datos", "No se encontró el usuario seleccionado")
             return
+        
 
         self.tr_nombre.insert(0, self.tratamientos.get("tr_nombre", ""))
         
@@ -40,6 +41,10 @@ class ActualizarTratamientos(CrearTratamientos):
         
         self.id_doctor_seleccionado = self.tratamientos.get("id_doctor")
         self.combo_id_doctor.current(obtener_indice(self.id_doctor_seleccionado, self.valores_doctor ))
+        
+        
+                
+        
     
     def actualizar_tratamientos(self):
         self.guardar_valores()
@@ -50,4 +55,7 @@ class ActualizarTratamientos(CrearTratamientos):
         
     def guardar(self):
         self.actualizar_tratamientos()
+    
+    
+    
     

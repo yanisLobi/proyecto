@@ -138,3 +138,26 @@ def obtener_tabla_condicion(nombre_tabla, columna_condicion, valor_condicion):
     cursor.close()
     conexion.close()
     return resultados
+def obtener_medicinas_de_tratamientos(id_tratamiento):
+    conexion = conectar()
+    cursor = conexion.cursor(dictionary=True)
+    
+    consulta = """
+    SELECT
+        m.id_medicamentos,
+        m.me_nombre_comercial,
+        m.me_forma_farmaceutica,
+        m.me_concentracion,
+        m.me_fecha_caducidad,
+        m.me_descripcion,
+        m.me_activo
+    FROM receta r
+    INNER JOIN medicamentos m
+        ON r.id_medicamento = m.id_medicamentos
+    WHERE r.id_tratamiento = %s
+    """
+
+    cursor.execute(consulta, (id_tratamiento,))
+    medicamentos = cursor.fetchall()
+    cursor.close()
+    return medicamentos
