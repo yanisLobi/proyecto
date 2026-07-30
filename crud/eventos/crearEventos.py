@@ -28,7 +28,7 @@ class CrearEventosMongo:
 
         self.etiqueta = ttkb.Label(
             self.frame,
-            text=f"{titulo} eventos",
+            text=f"{titulo} recordatorios",
             font=("Arial", 14, "bold")
         )
         self.etiqueta.pack(pady=(40, 30))
@@ -150,7 +150,7 @@ class CrearEventosMongo:
     def crear_evento(self):
         self.guardar_valores()
         insertar_registro(self.tabla, self.nuevo_registro)
-        messagebox.showinfo("Crear", "Se creó correctamente el evento")
+        messagebox.showinfo("Crear", "Se creó correctamente el recordatorio")
         navegar_a_pagina(self.frame, "Lista eventos", usuario=self.usuario)
 
     def guardar(self):

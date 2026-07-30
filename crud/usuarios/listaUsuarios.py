@@ -56,7 +56,6 @@ class ListaUsuarios:
         
          
         self.lista_usuarios = obtener_tabla(self.tabla)
-        
         usuario = self.lista_usuarios[0]
         self.columnas = usuario.keys()
         

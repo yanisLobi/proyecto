@@ -66,13 +66,23 @@ class ListaTratamientos:
             return
         
         usuario = cast(dict[str, Any], self.lista_tratamiento[0])
-        self.columnas = usuario.keys()
         
+        
+        #self.columnas = usuario.keys()
+        #self.columnas_tupla = tuple(self.columnas)
+        self.columnas = [
+            col for col in usuario.keys()
+            if not str(col).endswith("_activo")
+        ]
+        
+        self.columnas_tupla = tuple(self.columnas)#Se cambio para ocultar la columna activo
 
-        self.columnas_tupla = tuple(self.columnas)
+       
+        
         self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")
         ancho_columna =int(1000/len(self.columnas))
         for columna in self.columnas:
+        
             self.tree.heading(columna, text=regresar_string(columna), anchor="center")
             self.tree.column(columna, width=ancho_columna, minwidth=30, stretch=False, anchor="center")
 

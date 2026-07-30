@@ -127,8 +127,14 @@ def mostrar_recordatorios():
         time.sleep(50)
         eventos = obtener_tabla("consultas")
         
+        
+        
+        
+        
         for evento in eventos:
             fecha_partes = evento["re_fecha"].split("-")
+            
+            
             year_1= fecha_partes[0]
             mes_1=fecha_partes[1]
             dia_1 = fecha_partes[2]
@@ -161,13 +167,68 @@ def mostrar_recordatorios():
             
             
             if diff_hora == 0:
-                print(f"{fecha} {hora} {minuto} - {fecha_a} {hora_a} {minuto_a}  ")  
+                print(f"{year_1} {mes_1} {dia_1} {hora} {minuto} - {year_2} {mes_1} {mes_2} {hora_a} {minuto_a}  ")  
                 print(f" La diferencia es {diff_hora} {diff_minutos} ")
                 if diff_minutos in dif_eventos: #Numeros positivos son minutos faltantes
+                    
                     tratamiento = obtener_tabla_condicion("tratamientos", "id_tratamientos", evento["id_tr"] )[0]
                     paciente = obtener_tabla_condicion("pacientes", "id_pacientes", tratamiento.get("id_paciente"))[0]
                     enfermera = obtener_tabla_condicion("usuarios", "id_usuarios", paciente.get("id_enfermera_principal"))[0]
+                    doctor = obtener_tabla_condicion("usuarios", "id_usuarios", tratamiento.get("id_doctor"))[0]
+                    observacion_evento = evento["re_observaciones"]
                     
-                    messagebox.showinfo(f"{evento["re_titulo"]}", f"Faltan {diff_minutos} minutos para tu evento, Enfermera:{enfermera.get("us_nombre")}, Paciente:{paciente.get("pa_nombre")}")
-          
+                    
+                    
+                    frecuencia = evento["re_frecuencia"]
+                    hora_inicio = evento["re_hora_inicio"]
+                    hora_final = evento["re_hora_fin"]
+                    
+                    
+                    """ tr_fecha_inicial = obtener_tabla_condicion("tratamientos", "tr_fecha_inicio", tratamiento.get("tr_fecha_inicio"))[5].split("-")
+                    fecha_mes_1= int(tr_fecha_inicial[1])
+                    fecha_dia_1 = int(tr_fecha_inicial[2])
+                    
+                    tr_fecha_final = obtener_tabla_condicion("tratamientos", "tr_fecha_final", tratamiento.get("tr_fecha_final"))[6].split("-")
+                    fecha_mes_2= int(tr_fecha_inicial[1])
+                    fecha_dia_2 = int(tr_fecha_final[2])
+                    
+                    dif_mes = fecha_mes_1 - fecha_mes_2
+                    print(dif_mes)
+                    dif_dia = fecha_dia_1 - fecha_dia_2
+                    print(dif_dia) """
+                   
+                    messagebox.showinfo(
+                            f"📅 {evento['re_titulo']}\n",
+                            (
+                                
+                                f"⏰ Tu evento comienza en {diff_minutos} minutos\n\n"
+                                
+                                f"💊 Tratamiento: {tratamiento.get('tr_nombre')}"
+                                
+                                f"💊 Fecha de inicio del tratamiento: {tratamiento.get('tr_fecha_inicio')}"
+                                f"💊 Fecha final del tratamiento: {tratamiento.get('tr_fecha_final')}\n\n"
+                                
+                                
+                                f"🕒 Hora de inicio del evento: {hora_inicio}\n"
+                                f"🕒 Hora de final del evento: {hora_final}\n\n"
+                                
+                                f"🧑 Paciente: {paciente.get('pa_nombre')} {paciente.get('pa_apllidos')}\n\n"
+                                f"🧑 Nombre del contacto de emergencia: {paciente.get('pa_nombre_contacto_emergencia')}\n\n"
+                                f"🧑 Número del contatco de emergencia {paciente.get('pa_tel_contatco_emergencia')}\n\n"
+                                
+                                 
+                                f"👩‍⚕️ Enfermera: {enfermera.get('us_nombre')} {enfermera.get('us_apellidos')}\n"
+                                f" 🆔 Cédula profesional: {enfermera.get('us_cedula')}\n"
+                                f" 🆔 Especialidad: {enfermera.get('us_especialidad')}\n\n"
+                                
+                                f"👨‍⚕️ Doctor: {doctor.get('us_nombre')} {doctor.get('us_apellidos')}\n\n"
+                                f" 🆔 Cédula profesional: {doctor.get('us_cedula')}\n"
+                                f" 🆔 Especialidad: {doctor.get('us_especialidad')}\n\n"
+                                
+                               
+                                f"📝 Observación evento: {observacion_evento}\n"
+                                f"💊 Observación tratamiento: {tratamiento.get('tr_descripcion')}"
+                            ),
+                        )
+                                                                        
     

@@ -14,7 +14,7 @@ class ConsultarEventosMongo:
 
 		ttkb.Label(
 			self.frame,
-			text="Consultar eventos",
+			text="Consultar recordatorios",
 			font=("Arial", 14, "bold")
 		).pack(pady=(40, 20))
 

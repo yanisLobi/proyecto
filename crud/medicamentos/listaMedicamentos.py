@@ -57,10 +57,18 @@ class ListaMedicamentos:
         self.lista_medicamentos = obtener_tabla(self.tabla)
         
         usuario = self.lista_medicamentos[0]
-        self.columnas = usuario.keys()
         
-
-        self.columnas_tupla = tuple(self.columnas)
+        
+        
+        #self.columnas = usuario.keys()
+        #self.columnas_tupla = tuple(self.columnas)
+        self.columnas = [
+        col for col in usuario.keys()
+        if not str(col).endswith("_activo")
+        ]
+        
+        self.columnas_tupla = tuple(self.columnas)# Se cambio para ocultar la columna de activo
+            
         self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")
         ancho_columna =int(1000/len(self.columnas))
         for columna in self.columnas:
@@ -78,10 +86,13 @@ class ListaMedicamentos:
         for item in self.tree.get_children():
             self.tree.delete(item)
         #llenar tabla
-        for usuario in obtener_tabla(self.tabla):
-            valores_tupla =tuple(usuario.values())
-             
+        #for usuario in obtener_tabla(self.tabla):
+            #valores_tupla =tuple(usuario.values())
+        for registro in obtener_tabla(self.tabla):
+            valores_tupla = tuple(registro.get(col) for col in self.columnas_tupla)
             self.tree.insert("", tk.END, values=valores_tupla)
+             
+        self.tree.insert("", tk.END, values=valores_tupla)
         self.on_seleccion()
     
     

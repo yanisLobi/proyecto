@@ -16,7 +16,7 @@ class ActualizarEventosMongo(CrearEventosMongo):
 		self.evento = eventos[0] if eventos else None
 
 		if not self.evento:
-			messagebox.showinfo("Sin datos", "No se encontró el evento seleccionado")
+			messagebox.showinfo("Sin datos", "No se encontró el recordatorio seleccionado")
 			navegar_a_pagina(self.frame, "Lista eventos", usuario=self.usuario)
 			return
 
@@ -55,7 +55,7 @@ class ActualizarEventosMongo(CrearEventosMongo):
 	def actualizar_evento(self):
 		self.guardar_valores()
 		actualizar_registro(self.tabla, self.nuevo_registro, "id", self.id_seleccionado)
-		messagebox.showinfo("Actualización", "Se actualizó correctamente el evento")
+		messagebox.showinfo("Actualización", "Se actualizó correctamente el recordatorio")
 		navegar_a_pagina(self.frame, "Lista eventos", usuario=self.usuario)
 
 	def guardar(self):

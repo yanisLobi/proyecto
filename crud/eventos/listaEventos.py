@@ -42,7 +42,7 @@ class ListaEventosMongo:
 
             ttkb.Button(
                 botones_frame,
-                text="Crear Eventos",
+                text="Crear Recordatorios",
                 command=self.ir_crear,
                 bootstyle="primary",
             ).grid(row=0, column=0, sticky="ew", padx=6)
@@ -147,7 +147,7 @@ class ListaEventosMongo:
     def obtener_id_seleccionado(self):
         item_id = self.tree.selection()
         if not item_id:
-            messagebox.showinfo("Error", "Debes seleccionar un evento de la tabla")
+            messagebox.showinfo("Error", "Debes seleccionar un recordatorio de la tabla")
             return None
 
         valores = self.tree.item(item_id[0], "values")
@@ -163,7 +163,7 @@ class ListaEventosMongo:
             return
 
         borrar_registro(self.tabla, "id", id_seleccionado)
-        messagebox.showinfo("Eliminar", f"Haz eliminado el evento con ID = {id_seleccionado}")
+        messagebox.showinfo("Eliminar", f"Haz eliminado el recordatorio con ID = {id_seleccionado}")
         self.recargar_tabla()
 
     def ir_actualizar(self):
