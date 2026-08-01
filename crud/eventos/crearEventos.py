@@ -64,8 +64,15 @@ class CrearEventosMongo:
         form_frame.grid_columnconfigure(1, weight=1)
         form_frame.grid_columnconfigure(2, weight=0)
         form_frame.grid_columnconfigure(3, weight=1)
-
-        ttkb.Label(form_frame, text="Tratamiento").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        
+        
+        
+        
+        ttkb.Label(form_frame, text="Titulo").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.re_titulo = ttkb.Entry(form_frame, width=30)
+        self.re_titulo.grid(row=0, column=1, sticky="ew", pady=(0, 16))
+        
+        ttkb.Label(form_frame, text="Tratamiento").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.tratamientos = self._cargar_tratamientos_combo()
         self.id_tr = tk.StringVar(value="ninguno")
         self.combo_id_tr = ttk.Combobox(
@@ -75,9 +82,9 @@ class CrearEventosMongo:
             width=27,
             values=self.tratamientos,
         )
-        self.combo_id_tr.grid(row=0, column=1, sticky="ew", pady=(0, 16))
+        self.combo_id_tr.grid(row=0, column=3, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Estado").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Estado").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_estado = ttk.Combobox(
             form_frame,
             values=["Pendiente", "Completado", "Cancelado"],
@@ -85,25 +92,21 @@ class CrearEventosMongo:
             width=27,
         )
         self.re_estado.set("Pendiente")
-        self.re_estado.grid(row=0, column=3, sticky="ew", pady=(0, 16))
+        self.re_estado.grid(row=1, column=1, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Titulo").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.re_titulo = ttkb.Entry(form_frame, width=30)
-        self.re_titulo.grid(row=1, column=1, columnspan=3, sticky="ew", pady=(0, 16))
-
-        ttkb.Label(form_frame, text="Fecha").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Fecha").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.re_fecha = DateEntry(form_frame)
-        self.re_fecha.grid(row=2, column=1, sticky="w", pady=(0, 16))
+        self.re_fecha.grid(row=1, column=3, sticky="w", pady=(0, 16))
 
         ttkb.Label(form_frame, text="Hora inicio").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.re_hora_inicio = ttkb.Entry(form_frame, width=30)
         self.re_hora_inicio.grid(row=2, column=3, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Hora Fin").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Hora Fin").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_hora_fin = ttkb.Entry(form_frame, width=30)
-        self.re_hora_fin.grid(row=3, column=1, sticky="ew", pady=(0, 16))
+        self.re_hora_fin.grid(row=2, column=1, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Color").grid(row=3, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Color").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_color = tk.StringVar(value=list(COLORES_EVENTO.keys())[0])
         self.combo_color = ttk.Combobox(
             form_frame,
@@ -112,11 +115,11 @@ class CrearEventosMongo:
             values=list(COLORES_EVENTO.keys()),
             width=27,
         )
-        self.combo_color.grid(row=3, column=3, sticky="ew", pady=(0, 16))
+        self.combo_color.grid(row=3, column=1, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Observaciones").grid(row=4, column=0, sticky="nw", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Observaciones").grid(row=3, column=2, sticky="nw", padx=(20, 10), pady=(0, 16))
         self.re_observaciones = tk.Text(form_frame, height=4, width=40)
-        self.re_observaciones.grid(row=4, column=1, columnspan=3, sticky="ew", pady=(0, 16))
+        self.re_observaciones.grid(row=3, column=3, sticky="ew", pady=(0, 16))
         
 
     def limpiar(self):
@@ -143,7 +146,13 @@ class CrearEventosMongo:
 
     def _cargar_tratamientos_combo(self):
         try:
-            return obtener_valores_mysql("tratamientos", "id_tratamientos", "tr_nombre", "tr_descripcion")
+            return obtener_valores_mysql(
+                "tratamientos",
+                "id_tratamientos",
+                "tr_nombre",
+                "tr_descripcion",
+                solo_activos=True,
+            )
         except Exception:
             return []
 

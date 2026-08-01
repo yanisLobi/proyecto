@@ -79,7 +79,7 @@ class CrearMedicamentos:
 
         ttkb.Label(form_frame, text="Descripción").grid(row=2, column=0, sticky="nw", padx=(0, 10), pady=(0, 16))
         self.me_descripcion = tk.Text(form_frame, width=40, height=4)
-        self.me_descripcion.grid(row=2, column=1, columnspan=3, sticky="ew", pady=(0, 16))
+        self.me_descripcion.grid(row=2, column=1, sticky="ew", pady=(0, 16))
         
     def limpiar(self):
         limpiar_frame(self.frame)

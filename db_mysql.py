@@ -98,12 +98,29 @@ def actualizar_registro(tabla, diccionario_usuario, nombre_columna, valor_column
     conexion.close()
 
 
-def obtener_valores(nombre_tabla, nombre_columna, nombre_columna1, nombre_columna2):
+def obtener_valores(nombre_tabla, nombre_columna, nombre_columna1, nombre_columna2, solo_activos=True):
     conexion = conectar()
 
     cursor = conexion.cursor()
 
-    query = f"SELECT {nombre_columna}, {nombre_columna1}, {nombre_columna2} FROM {nombre_tabla} "
+    letras = nombre_tabla[:2]
+    filtro_activo = f" WHERE {letras}_activo = 1" if solo_activos else ""
+    query = f"SELECT {nombre_columna}, {nombre_columna1}, {nombre_columna2} FROM {nombre_tabla}{filtro_activo}"
+
+    cursor.execute(query)
+    resultados = cursor.fetchall()
+    cursor.close()
+    conexion.close()
+    return resultados
+
+def obtener_valores_medicamentos(nombre_tabla, nombre_columna, nombre_columna1, solo_activos=True):
+    conexion = conectar()
+
+    cursor = conexion.cursor()
+
+    letras = nombre_tabla[:2]
+    filtro_activo = f" WHERE {letras}_activo = 1" if solo_activos else ""
+    query = f"SELECT {nombre_columna}, {nombre_columna1} FROM {nombre_tabla}{filtro_activo}"
 
     cursor.execute(query)
     resultados = cursor.fetchall()
@@ -112,12 +129,13 @@ def obtener_valores(nombre_tabla, nombre_columna, nombre_columna1, nombre_column
     return resultados
 
 
-def obtener_valores_usuarios(nombre_columna, nombre_columna1, nombre_columna2, tipo_usuario):
+def obtener_valores_usuarios(nombre_columna, nombre_columna1, nombre_columna2, tipo_usuario, solo_activos=True):
     conexion = conectar()
 
     cursor = conexion.cursor()
 
-    query = f"SELECT {nombre_columna}, {nombre_columna1}, {nombre_columna2} FROM usuarios WHERE us_tipo_usuario = '{tipo_usuario}'"
+    filtro_activo = " AND us_activo = 1" if solo_activos else ""
+    query = f"SELECT {nombre_columna}, {nombre_columna1}, {nombre_columna2} FROM usuarios WHERE us_tipo_usuario = '{tipo_usuario}'{filtro_activo}"
 
     cursor.execute(query)
     resultados = cursor.fetchall()
@@ -143,19 +161,14 @@ def obtener_medicinas_de_tratamientos(id_tratamiento):
     cursor = conexion.cursor(dictionary=True)
     
     consulta = """
-    SELECT
-        m.id_medicamentos,
-        m.me_nombre_comercial,
-        m.me_forma_farmaceutica,
-        m.me_concentracion,
-        m.me_fecha_caducidad,
-        m.me_descripcion,
-        m.me_activo
-    FROM receta r
-    INNER JOIN medicamentos m
-        ON r.id_medicamento = m.id_medicamentos
-    WHERE r.id_tratamiento = %s
-    """
+      SELECT 
+        m.* FROM 
+        medicamentos m
+    INNER JOIN 
+        receta r ON m.id_medicamentos = r.id_medicamento
+    WHERE 
+        r.id_tratamiento = %s
+        """
 
     cursor.execute(consulta, (id_tratamiento,))
     medicamentos = cursor.fetchall()

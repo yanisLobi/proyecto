@@ -29,7 +29,7 @@ class ActualizarMedicamentos(CrearMedicamentos):
     
     def actualizar_medicamento(self):
         self.guardar_valores()
-        actualizar_registro(self.tabla, self.nuevo_registro, "id_me", self.id_seleccionado)
+        actualizar_registro(self.tabla, self.nuevo_registro, "id_medicamentos", self.id_seleccionado)
      
         messagebox.showinfo("Actualización", "Se actualizo correctamente")
         navegar_a_pagina(self.frame, "Lista medicamentos", tipo_usuario=self.tipo_usuario)

@@ -33,11 +33,11 @@ class ActualizarTratamientos(CrearTratamientos):
 
         self.tr_descripcion.insert(tk.END, str(self.tratamientos.get("tr_descripcion", "")))
         
-        self.id_doctor_seleccionado = self.tratamientos.get("id_doctor")
-        self.id_paciente_seleccionado = self.tratamientos.get("id_paciente")
+        
         
         self.id_paciente_seleccionado = self.tratamientos.get("id_paciente")
         self.combo_id_paciente.current(obtener_indice(self.id_paciente_seleccionado, self.valores_pacientes ))
+        
         
         self.id_doctor_seleccionado = self.tratamientos.get("id_doctor")
         self.combo_id_doctor.current(obtener_indice(self.id_doctor_seleccionado, self.valores_doctor ))

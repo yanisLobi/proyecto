@@ -5,7 +5,7 @@ from tkcalendar import DateEntry
 from tkinter import ttk
 from tkcalendar import DateEntry
 from herramients import navegar_a_pagina, limpiar_frame
-from db_mysql import insertar_registro, obtener_valores, obtener_valores_usuarios
+from db_mysql import insertar_registro, obtener_valores, obtener_valores_medicamentos, obtener_valores_usuarios
 
 
 class CrearTratamientos:
@@ -22,8 +22,15 @@ class CrearTratamientos:
         )
         self.etiqueta.pack(pady=(40, 30))
         
-        self.valores_pacientes = obtener_valores("pacientes", "id_pacientes", "pa_nombre", "pa_apellidos")
-        self.valores_doctor = obtener_valores_usuarios("id_usuarios", "us_nombre", "us_apellidos", "Doctor")
+        self.valores_pacientes = obtener_valores(
+            "pacientes", "id_pacientes", "pa_nombre", "pa_apellidos", solo_activos=True
+        )
+        self.valores_medicamentos = obtener_valores_medicamentos(
+            "medicamentos", "id_medicamentos", "me_nombre_comercial", solo_activos=True
+        )
+        self.valores_doctor = obtener_valores_usuarios(
+            "id_usuarios", "us_nombre", "us_apellidos", "Doctor", solo_activos=True
+        )
         valores_enfermera = obtener_valores_usuarios("id_usuarios", "us_nombre", "us_apellidos", "Enfermera")
 
         botones_frame = ttkb.Frame(self.frame)
@@ -88,10 +95,6 @@ class CrearTratamientos:
         self.combo_id_doctor.grid(row=1, column=1, sticky="ew", pady=(0, 16))
         
 
-        #ttkb.Label(form_frame, text="Enfermera").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        #self.id_enfermera = ttk.Combobox(form_frame, values= valores_enfermera)
-        #self.id_enfermera.current(0)
-        #self.id_enfermera.grid(row=1, column=1, sticky="ew", pady=(0, 16))
         
         ttkb.Label(form_frame, text="Fecha de inicio").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.tr_fecha_inicio = DateEntry(form_frame, year= 2026)
@@ -101,9 +104,30 @@ class CrearTratamientos:
         self.tr_fecha_final = DateEntry(form_frame, year= 2026)
         self.tr_fecha_final.grid(row=2, column=1, sticky="w", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Descripción").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
-        self.tr_descripcion = ttkb.Entry(form_frame, width=30)
-        self.tr_descripcion.grid(row=3, column=1, columnspan=3, sticky="ew", pady=(0, 16))
+        ttkb.Label(form_frame, text="Descripción").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        self.tr_descripcion = tk.Text(form_frame, height=4, width=40)
+        self.tr_descripcion.grid(row=2, column=3, sticky="ew", pady=(0, 16))
+        
+        ttkb.Label(form_frame, text="Medicamentos").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.check_medicamentos = {}
+        frame_medicamentos = ttkb.Frame(form_frame)
+        frame_medicamentos.grid(
+            row=3,
+            column=1,
+            sticky="w",
+            pady=(0, 16)
+        )
+        for id_medicamento, nombre in self.valores_medicamentos:
+            var = tk.BooleanVar()
+            chk = ttkb.Checkbutton(
+                frame_medicamentos,
+                text=nombre,
+                variable=var
+            )
+            chk.pack(anchor="w")
+            self.check_medicamentos[id_medicamento] = var
+                
+        
         
         
         
@@ -127,9 +151,10 @@ class CrearTratamientos:
         self.nuevo_registro["tr_nombre"] = self.tr_nombre.get()
         self.nuevo_registro["tr_fecha_inicio"] = self.tr_fecha_inicio.get_date().strftime("%Y-%m-%d")
         self.nuevo_registro["tr_fecha_final"] = self.tr_fecha_final.get_date().strftime("%Y-%m-%d")
-        self.nuevo_registro["tr_descripcion"] = self.tr_descripcion.get()
+        self.nuevo_registro["tr_descripcion"] = self.tr_descripcion.get("1.0","end-1c")
         self.nuevo_registro["id_paciente"] = self.id_paciente.get().split(" ")[0]
         self.nuevo_registro["id_doctor"] = self.id_doctor.get().split(" ")[0]
+        
         
         
        
