@@ -247,7 +247,8 @@ def obtener_pacientes_doctor(id_doctor):
     cursor = conexion.cursor(dictionary=True)
 
     consulta = """
-        SELECT p.*
+       
+        SELECT DISTINCT p.*
         FROM pacientes p
         INNER JOIN tratamientos t
             ON p.id_pacientes = t.id_paciente

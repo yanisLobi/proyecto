@@ -53,17 +53,11 @@ class ListaPacientes:
             font=("Arial", 14, "bold")
         )
         self.etiqueta.pack(pady=(40, 30))
-        
-        print(f"El usuario que inicia sesion es de tipo {self.tipo_usuario}")  
-        if self.tipo_usuario == "Doctor":
-            self.lista_pacientes = obtener_pacientes_doctor(self.id_usuario)
-        elif self.tipo_usuario == "Administrador":
-            self.lista_pacientes = obtener_tabla(self.tabla, solo_activos=False)          
-        else: # Enfermeras
-            lista_pacientes = obtener_registros(self.tabla, "id_enfermera_principal", self.id_usuario)
+       
         
         try:
-            usuario = self.lista_pacientes[0]
+            lista_pacientes = obtener_tabla(self.tabla)
+            primer_paciente = lista_pacientes[0]
         except Exception as e:
             self.etiqueta_error = ttkb.Label(
                         self.frame,
@@ -73,7 +67,7 @@ class ListaPacientes:
             self.etiqueta_error.pack(pady=(40, 30))
             return
         
-        self.columnas = usuario.keys()
+        self.columnas = primer_paciente.keys()
         
 
         self.columnas_tupla = tuple(self.columnas)
@@ -109,7 +103,7 @@ class ListaPacientes:
     def recargar_tabla(self):
         
         if self.tipo_usuario == "Doctor":
-            lista_pacientes = obtener_tabla(self.tabla)
+            lista_pacientes = obtener_pacientes_doctor(self.id_usuario)
         elif self.tipo_usuario == "Administrador":
             lista_pacientes = obtener_tabla(self.tabla, solo_activos=False)
             
