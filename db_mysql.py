@@ -74,12 +74,32 @@ def insertar_registro(tabla, diccionario_usuario):
     cursor = conexion.cursor()
 
     cursor.execute(sql, tuple(diccionario_usuario.values()))
+    
+    id_generado = cursor.lastrowid
+    
+    conexion.commit()
+
+    cursor.close()
+    conexion.close()
+    
+    return id_generado
+
+def insertar_receta(id_tratamiento, id_medicamento):
+    conexion = conectar()
+
+    cursor = conexion.cursor()
+
+    sql = """
+        INSERT INTO receta (id_tratamiento, id_medicamento)
+        VALUES (%s, %s)
+    """
+
+    cursor.execute(sql, (id_tratamiento, id_medicamento))
 
     conexion.commit()
 
     cursor.close()
     conexion.close()
-
 
 def actualizar_registro(tabla, diccionario_usuario, nombre_columna, valor_columna):
     usuario_keys = "=%s, ".join(diccionario_usuario.keys())
@@ -156,21 +176,68 @@ def obtener_tabla_condicion(nombre_tabla, columna_condicion, valor_condicion):
     cursor.close()
     conexion.close()
     return resultados
+
+
 def obtener_medicinas_de_tratamientos(id_tratamiento):
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
-    
+
     consulta = """
-      SELECT 
-        m.* FROM 
-        medicamentos m
-    INNER JOIN 
-        receta r ON m.id_medicamentos = r.id_medicamento
-    WHERE 
-        r.id_tratamiento = %s
-        """
+        SELECT m.*
+        FROM medicamentos m
+        INNER JOIN receta r
+            ON m.id_medicamentos = r.id_medicamento
+        WHERE r.id_tratamiento = %s
+    """
 
     cursor.execute(consulta, (id_tratamiento,))
     medicamentos = cursor.fetchall()
+
     cursor.close()
+    conexion.close()
+
     return medicamentos
+
+def eliminar_recetas_tratamiento(id_tratamiento):
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    sql = """
+        DELETE FROM receta
+        WHERE id_tratamiento = %s
+    """
+
+    cursor.execute(sql, (id_tratamiento,))
+    conexion.commit()
+
+    cursor.close()
+    conexion.close()
+    
+
+    
+
+def obtener_valores_recetas(id_tratamiento):
+    conexion = conectar()
+    cursor = conexion.cursor(dictionary=True)
+
+    consulta = """
+        SELECT
+            r.id_tratamiento,
+            t.tr_nombre,
+            r.id_medicamento,
+            m.me_nombre_comercial
+        FROM receta r
+        INNER JOIN tratamientos t
+            ON r.id_tratamiento = t.id_tratamientos
+        INNER JOIN medicamentos m
+            ON r.id_medicamento = m.id_medicamentos
+        WHERE r.id_tratamiento = %s
+    """
+
+    cursor.execute(consulta, (id_tratamiento,))
+    recetas = cursor.fetchall()
+
+    cursor.close()
+    conexion.close()
+
+    return recetas

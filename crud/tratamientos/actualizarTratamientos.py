@@ -4,7 +4,7 @@ from tkinter import messagebox, ttk
 import tkinter as tk
 from typing import Any, cast
 from herramients import navegar_a_pagina, obtener_indice, regresar_string
-from db_mysql import obtener_registros, actualizar_registro, obtener_medicinas_de_tratamientos
+from db_mysql import insertar_receta, obtener_registros, actualizar_registro, obtener_medicinas_de_tratamientos, eliminar_recetas_tratamiento, obtener_valores_recetas
 
 
 class ActualizarTratamientos(CrearTratamientos):
@@ -42,6 +42,39 @@ class ActualizarTratamientos(CrearTratamientos):
         self.id_doctor_seleccionado = self.tratamientos.get("id_doctor")
         self.combo_id_doctor.current(obtener_indice(self.id_doctor_seleccionado, self.valores_doctor ))
         
+        medicamentos = obtener_medicinas_de_tratamientos(self.id_seleccionado)
+     #   
+        self.lista_recetas = obtener_valores_recetas(self.id_seleccionado)
+
+        columnas = tuple(self.lista_recetas[0].keys())
+
+        self.tree = ttk.Treeview(
+            self.frame,
+            columns=columnas,
+            show="headings"
+        )
+
+        for columna in columnas:
+            self.tree.heading(columna, text=regresar_string(columna))
+
+        for receta in self.lista_recetas:
+            self.tree.insert("", tk.END, values=tuple(receta.values()))
+
+        self.tree.pack()
+                
+        
+        
+        
+        
+
+        ids_medicamentos = {
+            medicamento["id_medicamentos"]
+            for medicamento in medicamentos
+        }
+
+        for id_medicamento in ids_medicamentos:
+            if id_medicamento in self.check_medicamentos:
+                self.check_medicamentos[id_medicamento].set(True)
         
                 
         
@@ -49,7 +82,13 @@ class ActualizarTratamientos(CrearTratamientos):
     def actualizar_tratamientos(self):
         self.guardar_valores()
         actualizar_registro(self.tabla, self.nuevo_registro, "id_tratamientos", self.id_seleccionado)
-     
+
+        eliminar_recetas_tratamiento(self.id_seleccionado)
+
+        for id_medicamento in self.medicamentos_seleccionados:
+            insertar_receta(self.id_seleccionado, id_medicamento)
+        
+        
         messagebox.showinfo("Actualización", "Se actualizo correctamente")
         navegar_a_pagina(self.frame, "Lista tratamientos", tipo_usuario=self.tipo_usuario)
         

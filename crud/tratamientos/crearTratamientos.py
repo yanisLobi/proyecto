@@ -5,7 +5,7 @@ from tkcalendar import DateEntry
 from tkinter import ttk
 from tkcalendar import DateEntry
 from herramients import navegar_a_pagina, limpiar_frame
-from db_mysql import insertar_registro, obtener_valores, obtener_valores_medicamentos, obtener_valores_usuarios
+from db_mysql import insertar_registro, obtener_medicinas_de_tratamientos, obtener_valores, obtener_valores_medicamentos, obtener_valores_usuarios, insertar_receta
 
 
 class CrearTratamientos:
@@ -117,6 +117,7 @@ class CrearTratamientos:
             sticky="w",
             pady=(0, 16)
         )
+        
         for id_medicamento, nombre in self.valores_medicamentos:
             var = tk.BooleanVar()
             chk = ttkb.Checkbutton(
@@ -154,15 +155,28 @@ class CrearTratamientos:
         self.nuevo_registro["tr_descripcion"] = self.tr_descripcion.get("1.0","end-1c")
         self.nuevo_registro["id_paciente"] = self.id_paciente.get().split(" ")[0]
         self.nuevo_registro["id_doctor"] = self.id_doctor.get().split(" ")[0]
-        
-        
+        self.medicamentos_seleccionados = []
+
+        for id_medicamento, var in self.check_medicamentos.items():
+            if var.get():
+                self.medicamentos_seleccionados.append(id_medicamento)
+        print(f"lista de medicamentos seleccionados {self.medicamentos_seleccionados}")        
         
        
     
     def crear_tratamientos(self):
         self.guardar_valores()
-        insertar_registro(self.tabla, self.nuevo_registro)
-     
+        id_tratamiento = insertar_registro(self.tabla, self.nuevo_registro)
+       # medicamentos = obtener_medicinas_de_tratamientos(id_tratamiento)
+        #ids_medicamentos = [
+           # medicamento["id_medicamentos"]
+           # for medicamento in medicamentos
+       # ]
+        
+
+        for id_medicamento in self.medicamentos_seleccionados:
+            insertar_receta(id_tratamiento, id_medicamento)
+    
         messagebox.showinfo("Crear", "Se creó correctamente el tratamiento")
         navegar_a_pagina(self.frame, f"Lista {self.tabla}", tipo_usuario=self.tipo_usuario)
         #messabox, se creó correctamente.
