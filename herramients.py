@@ -5,7 +5,7 @@ from tkcalendar import DateEntry
 import threading
 import time
 from datetime import datetime
-from db_mysql import obtener_tabla_condicion
+from db_mysql import obtener_registros
 from db_mongo import obtener_tabla
 
 
@@ -175,10 +175,10 @@ def mostrar_recordatorios():
                 print(f" La diferencia es {diff_hora} {diff_minutos} ")
                 if diff_minutos in dif_eventos: #Numeros positivos son minutos faltantes
                     
-                    tratamiento = obtener_tabla_condicion("tratamientos", "id_tratamientos", evento["id_tr"] )[0]
-                    paciente = obtener_tabla_condicion("pacientes", "id_pacientes", tratamiento.get("id_paciente"))[0]
-                    enfermera = obtener_tabla_condicion("usuarios", "id_usuarios", paciente.get("id_enfermera_principal"))[0]
-                    doctor = obtener_tabla_condicion("usuarios", "id_usuarios", tratamiento.get("id_doctor"))[0]
+                    tratamiento = obtener_registros("tratamientos", "id_tratamientos", evento["id_tr"] )[0]
+                    paciente = obtener_registros("pacientes", "id_pacientes", tratamiento.get("id_paciente"))[0]
+                    enfermera = obtener_registros("usuarios", "id_usuarios", paciente.get("id_enfermera_principal"))[0]
+                    doctor = obtener_registros("usuarios", "id_usuarios", tratamiento.get("id_doctor"))[0]
                     observacion_evento = evento["re_observaciones"]
                     
                     
@@ -188,11 +188,11 @@ def mostrar_recordatorios():
                     hora_final = evento["re_hora_fin"]
                     
                     
-                    """ tr_fecha_inicial = obtener_tabla_condicion("tratamientos", "tr_fecha_inicio", tratamiento.get("tr_fecha_inicio"))[5].split("-")
+                    """ tr_fecha_inicial = obtener_registros("tratamientos", "tr_fecha_inicio", tratamiento.get("tr_fecha_inicio"))[5].split("-")
                     fecha_mes_1= int(tr_fecha_inicial[1])
                     fecha_dia_1 = int(tr_fecha_inicial[2])
                     
-                    tr_fecha_final = obtener_tabla_condicion("tratamientos", "tr_fecha_final", tratamiento.get("tr_fecha_final"))[6].split("-")
+                    tr_fecha_final = obtener_registros("tratamientos", "tr_fecha_final", tratamiento.get("tr_fecha_final"))[6].split("-")
                     fecha_mes_2= int(tr_fecha_inicial[1])
                     fecha_dia_2 = int(tr_fecha_final[2])
                     

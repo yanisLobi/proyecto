@@ -164,18 +164,6 @@ def obtener_valores_usuarios(nombre_columna, nombre_columna1, nombre_columna2, t
     return resultados
 
 
-def obtener_tabla_condicion(nombre_tabla, columna_condicion, valor_condicion):
-    conexion = conectar()
-
-    cursor = conexion.cursor(dictionary=True)
-
-    query = f"SELECT * FROM {nombre_tabla} WHERE {columna_condicion} = '{valor_condicion}'"
-
-    cursor.execute(query)
-    resultados = cursor.fetchall()
-    cursor.close()
-    conexion.close()
-    return resultados
 
 
 def obtener_medicinas_de_tratamientos(id_tratamiento):
@@ -262,3 +250,25 @@ def obtener_pacientes_doctor(id_doctor):
     conexion.close()
     print(f"obtener pacientes doctor: {consulta}")
     return pacientes
+
+def obtener_tratamientos_enfermera(id_enfermera_principal):
+    conexion = conectar()
+    cursor = conexion.cursor(dictionary=True)
+
+    consulta = """
+        
+        SELECT DISTINCT t.*
+        FROM tratamientos t
+        INNER JOIN pacientes p
+            ON p.id_pacientes = t.id_paciente 
+        WHERE t.tr_activo =1 AND p.pa_activo =1 AND p.id_enfermera_principal = %s
+    """
+
+    cursor.execute(consulta, (id_enfermera_principal,))
+    registros = cursor.fetchall()
+
+    cursor.close()
+    conexion.close()
+    print(f"Tratamientos: {consulta}")
+    return registros
+

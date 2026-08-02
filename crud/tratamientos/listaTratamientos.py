@@ -4,7 +4,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from typing import Any, cast
 from herramients import navegar_a_pagina, obtener_columnas, regresar_string
-from db_mysql import obtener_tabla, borrar_registro, obtener_valores
+from db_mysql import obtener_registros, obtener_tabla, borrar_registro, obtener_tratamientos_enfermera, obtener_valores
 
 
 class ListaTratamientos:
@@ -54,7 +54,8 @@ class ListaTratamientos:
             font=("Arial", 14, "bold")
         )
         self.etiqueta.pack(pady=(40, 30))
-         
+        
+        self.id_usuario = usuario.get("id_usuarios")
         self.lista_tratamiento = obtener_tabla(self.tabla)
 
         # Si no hay registros, evitar error con self.lista_tratamiento[0]
@@ -102,13 +103,22 @@ class ListaTratamientos:
         self.tree.pack(pady=(10, 0))
 
     def recargar_tabla(self):
+        
+        if self.tipo_usuario == "Doctor":
+            lista_registros = obtener_registros(self.tabla, "id_doctor", self.id_usuario )
+        elif self.tipo_usuario == "Administrador":
+            lista_registros = obtener_tabla(self.tabla, solo_activos=False)
+        else: # Enfermeras
+            lista_registros = obtener_tratamientos_enfermera(self.id_usuario)
+
+        
         #limpiar filas
         for item in self.tree.get_children():
             self.tree.delete(item)
 
         self.fk_ids_por_fila = {}
         #llenar tabla
-        for registro in obtener_tabla(self.tabla):
+        for registro in lista_registros:
             registro = cast(dict[str, Any], registro)
             valores = []
             fk_ids = {}

@@ -161,6 +161,26 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
             padding=menu_button_padding,
             style=menu_button_style,
         ).pack(fill="x")
+        
+        ttkb.Button(
+            menu_frame,
+            text="Medicamentos",
+            command=cambiar_a_medicamentos,
+            bootstyle="secondary",
+            padding=menu_button_padding,
+            style=menu_button_style,
+        ).pack(fill="x")
+        
+        ttkb.Button(
+            menu_frame,
+            text="Tratamiento",
+            command=cambiar_a_tratamiento,
+            bootstyle="secondary",
+            padding=menu_button_padding,
+            style=menu_button_style,
+        ).pack(fill="x")
+        
+        
         #tk.Button(menu_frame, text="Medicamentos", height=3,font=("Arial", 10, "bold"), fg="black", command=cambiar_a_medicamentos).pack(fill="x")
     
     ttkb.Button(

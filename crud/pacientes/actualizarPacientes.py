@@ -3,7 +3,7 @@ from crud.pacientes.crearPacientes import CrearPacientes
 from tkinter import messagebox, ttk
 import tkinter as tk
 from herramients import obtener_columnas, obtener_indice, navegar_a_pagina, regresar_string
-from db_mysql import obtener_registros, actualizar_registro, obtener_tabla, obtener_tabla_condicion
+from db_mysql import obtener_registros, actualizar_registro
 
 
 class ActualizarPacientes(CrearPacientes):
@@ -31,7 +31,7 @@ class ActualizarPacientes(CrearPacientes):
         self.pa_tel_contacto_emergencia.insert(0, str(self.pacientes.get("pa_tel_contacto_emergencia", "")))
         self.combo_id_enfermera.current(obtener_indice(self.id_enfermera_seleccionado, self.enfermeras ))
        
-        self.lista_tratamientos = obtener_tabla_condicion("tratamientos", "id_paciente", id_seleccionado)
+        self.lista_tratamientos = obtener_registros("tratamientos", "id_paciente", id_seleccionado)
         
         tratamiento = self.lista_tratamientos[0]
         self.columnas = tratamiento.keys()

@@ -6,7 +6,7 @@ from tkinter import ttk
 
 from herramients import navegar_a_pagina
 from db_mongo import insertar_registro
-from db_mysql import obtener_valores as obtener_valores_mysql
+from db_mysql import obtener_medicinas_de_tratamientos, obtener_valores as obtener_valores_mysql
 
 COLORES_EVENTO = {
     "Azul":          "#29b6f6",
@@ -77,13 +77,26 @@ class CrearEventosMongo:
         self.id_tr = tk.StringVar(value="ninguno")
         self.combo_id_tr = ttk.Combobox(
             form_frame,
+            
             textvariable=self.id_tr,
             state="readonly",
             width=27,
             values=self.tratamientos,
         )
         self.combo_id_tr.grid(row=0, column=3, sticky="ew", pady=(0, 16))
-
+        
+        def elemento_seleccionado(event):
+            id_tr_seleccionado = self.id_tr.get().strip().split()[0]
+            if id_tr_seleccionado != "ninguno":
+            # El parámetro 'event' es obligatorio porque .bind() lo envía automáticamente   
+                self.medicamentos = obtener_medicinas_de_tratamientos(id_tr_seleccionado)
+                if self.re_medicamento:
+                    self.re_medicamento.config(state="readonly")  
+                    self.re_medicamento.config(values=self.medicamentos)  
+        self.combo_id_tr.bind("<<ComboboxSelected>>", elemento_seleccionado)
+    
+        
+        
         ttkb.Label(form_frame, text="Estado").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_estado = ttk.Combobox(
             form_frame,
@@ -98,13 +111,13 @@ class CrearEventosMongo:
         self.re_fecha = DateEntry(form_frame)
         self.re_fecha.grid(row=1, column=3, sticky="w", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Hora inicio").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Hora inicio").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_hora_inicio = ttkb.Entry(form_frame, width=30)
-        self.re_hora_inicio.grid(row=2, column=3, sticky="ew", pady=(0, 16))
+        self.re_hora_inicio.grid(row=2, column=1, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Hora Fin").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(form_frame, text="Hora Fin").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
         self.re_hora_fin = ttkb.Entry(form_frame, width=30)
-        self.re_hora_fin.grid(row=2, column=1, sticky="ew", pady=(0, 16))
+        self.re_hora_fin.grid(row=2, column=3, sticky="ew", pady=(0, 16))
 
         ttkb.Label(form_frame, text="Color").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.re_color = tk.StringVar(value=list(COLORES_EVENTO.keys())[0])
@@ -121,6 +134,22 @@ class CrearEventosMongo:
         self.re_observaciones = tk.Text(form_frame, height=4, width=40)
         self.re_observaciones.grid(row=3, column=3, sticky="ew", pady=(0, 16))
         
+        
+        ttkb.Label(form_frame, text="Frecuencia").grid(row=4, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.re_frecuencia = tk.Spinbox(form_frame, from_=0, to=96, increment=2, width=30)
+        self.re_frecuencia.grid(row=4, column=1, sticky="ew", pady=(0, 16))
+        
+        ttkb.Label(form_frame, text="Medicamento").grid(row=4, column=2, sticky="w", padx=(0, 10), pady=(0, 16))
+        self.re_medicamento = ttk.Combobox(
+            form_frame,
+            
+            values=["Debes seleccionar un tratamiento"],
+            state="disabled",
+            width=27,
+            
+        )
+       
+        self.re_medicamento.grid(row=4, column=3, sticky="ew", pady=(0, 16))
 
     def limpiar(self):
         limpiar_frame(self.frame)
@@ -141,6 +170,8 @@ class CrearEventosMongo:
             "re_hora_inicio": self.re_hora_inicio.get().strip(),
             "re_fecha": self.re_fecha.get_date().strftime("%Y-%m-%d"),
             "re_color": COLORES_EVENTO.get(self.re_color.get(), "#29b6f6"),
+            "re_autor": self.usuario.get("id_usuarios"),
+            "re_frecuencia": self.re_frecuencia.get()
         }
 
 
