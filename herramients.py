@@ -92,7 +92,11 @@ def navegar_a_pagina(frame, nombre_clase, **kwargs):
     clase_instanciar(frame, **kwargs)
 
  
-
+def obtener_columnas(columnas):
+    return [
+        columna for columna in columnas
+        if not str(columna).endswith("_activo")
+            ]
     
 
 
@@ -230,5 +234,3 @@ def mostrar_recordatorios():
                                 f"💊 Observación tratamiento: {tratamiento.get('tr_descripcion')}"
                             ),
                         )
-                                                                        
-    

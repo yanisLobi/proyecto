@@ -3,7 +3,7 @@ import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
 from typing import Any, cast
-from herramients import navegar_a_pagina, regresar_string
+from herramients import navegar_a_pagina, obtener_columnas, regresar_string
 from db_mysql import obtener_pacientes_doctor, obtener_registros, obtener_tabla, borrar_registro, obtener_valores_usuarios
 
 
@@ -13,6 +13,7 @@ class ListaPacientes:
         self.tabla = 'pacientes' 
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
+        self.usuario = usuario
         self.tipo_usuario = usuario.get("us_tipo_usuario")
         self.boton_actualizar = None
         self.boton_eliminar = None
@@ -53,7 +54,6 @@ class ListaPacientes:
             font=("Arial", 14, "bold")
         )
         self.etiqueta.pack(pady=(40, 30))
-       
         
         try:
             lista_pacientes = obtener_tabla(self.tabla)
@@ -67,8 +67,7 @@ class ListaPacientes:
             self.etiqueta_error.pack(pady=(40, 30))
             return
         
-        self.columnas = primer_paciente.keys()
-        
+        self.columnas = obtener_columnas(primer_paciente.keys())
 
         self.columnas_tupla = tuple(self.columnas)
         self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")
@@ -106,11 +105,8 @@ class ListaPacientes:
             lista_pacientes = obtener_pacientes_doctor(self.id_usuario)
         elif self.tipo_usuario == "Administrador":
             lista_pacientes = obtener_tabla(self.tabla, solo_activos=False)
-            
         else: # Enfermeras
             lista_pacientes = obtener_registros(self.tabla, "id_enfermera_principal", self.id_usuario)
-            
-            
             
         # limpiar filas
         for item in self.tree.get_children():
@@ -138,11 +134,9 @@ class ListaPacientes:
             self.fk_ids_por_fila[iid] = fk_ids
         self.on_seleccion()
     
-    
-      
     def ir_crear(self):
-    
-        navegar_a_pagina(self.frame, f"Crear {self.tabla}", tipo_usuario=self.tipo_usuario)
+        navegar_a_pagina(self.frame, f"Crear {self.tabla}", usuario=self.usuario)
+        
     def on_seleccion(self, event=None):
         if self.boton_actualizar is None and self.boton_eliminar is None:
             return
@@ -151,6 +145,7 @@ class ListaPacientes:
             self.boton_actualizar.config(state=estado)
         if self.boton_eliminar is not None:
             self.boton_eliminar.config(state=estado)
+            
     def obtener_id_seleccionado(self):
         item_id = self.tree.selection()
         if not item_id:
@@ -179,7 +174,7 @@ class ListaPacientes:
             return
         
         id = self.obtener_id_seleccionado()
-        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, tipo_usuario=self.tipo_usuario)
+        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, usuario=self.usuario)
         #ActualizarUsuario(self.frame, self.id_selccionado)
 
     def _cargar_display_map_enfermeras(self):

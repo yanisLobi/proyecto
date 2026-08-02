@@ -2,7 +2,7 @@ import tkinter as tk
 import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
-from herramients import navegar_a_pagina, regresar_string
+from herramients import navegar_a_pagina, obtener_columnas, regresar_string
 from db_mysql import obtener_tabla, borrar_registro
 
 
@@ -12,7 +12,7 @@ class ListaUsuarios:
         self.tabla = 'usuarios' 
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
-        
+        self.usuario = usuario
         self.tipo_usuario = usuario.get("us_tipo_usuario")
         self.boton_actualizar = None
         self.boton_eliminar = None
@@ -57,7 +57,7 @@ class ListaUsuarios:
          
         self.lista_usuarios = obtener_tabla(self.tabla)
         usuario = self.lista_usuarios[0]
-        self.columnas = usuario.keys()
+        self.columnas = obtener_columnas(usuario.keys())
         
 
         self.columnas_tupla = tuple(self.columnas)
@@ -89,7 +89,7 @@ class ListaUsuarios:
       
     def ir_crear(self):
     
-        navegar_a_pagina(self.frame, f"Crear {self.tabla}", tipo_usuario=self.tipo_usuario)
+        navegar_a_pagina(self.frame, f"Crear {self.tabla}", usuario=self.usuario)
     def on_seleccion(self, event=None):
         if self.boton_actualizar is None and self.boton_eliminar is None:
             return
@@ -126,7 +126,7 @@ class ListaUsuarios:
             return
         
         id = self.obtener_id_seleccionado()
-        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, tipo_usuario=self.tipo_usuario)
+        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, usuario=self.usuario)
         #ActualizarUsuario(self.frame, self.id_selccionado)
         
         

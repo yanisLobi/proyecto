@@ -7,15 +7,19 @@ from db_mysql import obtener_registros, actualizar_registro
 
 
 class ActualizarUsuarios(CrearUsuario):
-    def __init__(self, parent, id_seleccionado, tipo_usuario=None):
-        super().__init__(parent, "Actualizar", tipo_usuario=tipo_usuario)
+    def __init__(self, parent, id_seleccionado, usuario={}):
+        
+        self.usuario = usuario
+        self.tipo_usuario = usuario.get("us_tipo_usuario")
+        
+        super().__init__(parent, "Actualizar", usuario=self.usuario)
         self.id_seleccionado=id_seleccionado
         self.usuario = obtener_registros(self.tabla, "id_usuarios", id_seleccionado)[0]
         if not self.usuario:
             messagebox.showinfo("Sin datos", "No se encontró el usuario seleccionado")
             return
 
-        self.us_tipo_usuario.set(self.usuario.get("us_tipo_usuario", "ninguno"))
+        self.us_tipo_usuario.set(self.tipo_usuario)
         self.us_nombre.insert(0, self.usuario.get("us_nombre", ""))
         self.us_apellidos.insert(0, self.usuario.get("us_apellidos", ""))
 
@@ -37,22 +41,8 @@ class ActualizarUsuarios(CrearUsuario):
         actualizar_registro(self.tabla, self.nuevo_registro, "id_usuarios", self.id_seleccionado)
      
         messagebox.showinfo("Actualización", "Se actualizo correctamente")
-        navegar_a_pagina(self.frame, "Lista usuarios", tipo_usuario=self.tipo_usuario)
+        navegar_a_pagina(self.frame, "Lista usuarios", usuario=self.usuario)
         
     def guardar(self):
         self.actualizar_usuario()
-    
-   # def actualizar_usuario(self):
-        #dicc
-        #construir sql 
-        #conexion, cursor, ejecutar un update
-        #messabox, se actualizo correctamente.
-        #regresar a lista usuarios
-        
-       
-       
-       
-       
-       
-      
     

@@ -9,13 +9,13 @@ from db_mysql import insertar_registro, obtener_valores_usuarios
 
 
 class CrearPacientes:
-    def __init__(self, parent, titulo="Crear", tipo_usuario=None):
+    def __init__(self, parent, titulo="Crear", usuario={}):
         
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
         self.tabla = "pacientes"
-        self.tipo_usuario = tipo_usuario
-          
+        self.usuario = usuario
+        self.tipo_usuario = usuario.get("us_tipo_usuario")
         self.etiqueta = ttkb.Label(
             self.frame,
             text=f"{titulo} {self.tabla} ",
@@ -93,7 +93,7 @@ class CrearPacientes:
         limpiar_frame(self.frame)
     
     def ir_lista(self):
-        navegar_a_pagina(self.frame, f"Lista {self.tabla}", tipo_usuario=self.tipo_usuario)
+        navegar_a_pagina(self.frame, f"Lista {self.tabla}", usuario=self.usuario)
         
     def guardar_valores(self):
         #actualizar los valores del diccionario con los valores de lo widgets
@@ -123,7 +123,7 @@ class CrearPacientes:
         insertar_registro(self.tabla, self.nuevo_registro)
      
         messagebox.showinfo("Crear", "Se creó correctamente el paciente")
-        navegar_a_pagina(self.frame, "Lista pacientes", tipo_usuario=self.tipo_usuario)
+        navegar_a_pagina(self.frame, "Lista pacientes", usuario=self.usuario)
         #messabox, se actualizo correctamente.
         #regresar a lista usuarios
     

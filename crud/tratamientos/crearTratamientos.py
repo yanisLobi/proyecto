@@ -9,12 +9,13 @@ from db_mysql import insertar_registro, obtener_medicinas_de_tratamientos, obten
 
 
 class CrearTratamientos:
-    def __init__(self, parent=None, titulo="Crear", tipo_usuario=None):
+    def __init__(self, parent=None, titulo="Crear", usuario={}):
         #me queda la duda de que es parent
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
         self.tabla = 'tratamientos'
-        self.tipo_usuario = tipo_usuario
+        self.usuario = usuario
+        self.tipo_usuario = usuario.get("us_tipo_usuario")
         self.etiqueta = ttkb.Label(
             self.frame,
             text=f"{titulo} {self.tabla}",
@@ -136,7 +137,7 @@ class CrearTratamientos:
         limpiar_frame(self.frame)
     
     def ir_lista(self):
-        navegar_a_pagina(self.frame, f"Lista {self.tabla}", tipo_usuario = self.tipo_usuario)
+        navegar_a_pagina(self.frame, f"Lista {self.tabla}", usuario = self.usuario)
         
     def guardar_valores(self):
         #actualizar los valores del diccionario con los valores de lo widgets
@@ -178,7 +179,7 @@ class CrearTratamientos:
             insertar_receta(id_tratamiento, id_medicamento)
     
         messagebox.showinfo("Crear", "Se creó correctamente el tratamiento")
-        navegar_a_pagina(self.frame, f"Lista {self.tabla}", tipo_usuario=self.tipo_usuario)
+        navegar_a_pagina(self.frame, f"Lista {self.tabla}", usuario=self.usuario)
         #messabox, se creó correctamente.
         #regresar a lista usuarios
     

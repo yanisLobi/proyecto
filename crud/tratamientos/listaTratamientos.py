@@ -3,7 +3,7 @@ import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
 from typing import Any, cast
-from herramients import navegar_a_pagina, regresar_string
+from herramients import navegar_a_pagina, obtener_columnas, regresar_string
 from db_mysql import obtener_tabla, borrar_registro, obtener_valores
 
 
@@ -11,6 +11,7 @@ class ListaTratamientos:
     def __init__(self, parent, usuario={}):
         
         self.tabla = 'tratamientos' 
+        self.usuario = usuario
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
         self.boton_actualizar = None
@@ -65,19 +66,10 @@ class ListaTratamientos:
             ).pack(pady=(20, 0))
             return
         
-        usuario = cast(dict[str, Any], self.lista_tratamiento[0])
+        tratamiento = cast(dict[str, Any], self.lista_tratamiento[0])
         
-        
-        #self.columnas = usuario.keys()
-        #self.columnas_tupla = tuple(self.columnas)
-        self.columnas = [
-            col for col in usuario.keys()
-            if not str(col).endswith("_activo")
-        ]
-        
-        self.columnas_tupla = tuple(self.columnas)#Se cambio para ocultar la columna activo
-
-       
+        self.columnas = obtener_columnas(tratamiento.keys())
+        self.columnas_tupla = tuple(self.columnas)
         
         self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")
         ancho_columna =int(1000/len(self.columnas))
@@ -136,12 +128,10 @@ class ListaTratamientos:
             iid = self.tree.insert("", tk.END, values=tuple(valores))
             self.fk_ids_por_fila[iid] = fk_ids
         self.on_seleccion()
-    
-    
       
     def ir_crear(self):
-    
-        navegar_a_pagina(self.frame, f"Crear {self.tabla}", tipo_usuario =self.tipo_usuario)
+        navegar_a_pagina(self.frame, f"Crear {self.tabla}", usuario=self.usuario)
+        
     def on_seleccion(self, event=None):
         if self.boton_actualizar is None and self.boton_eliminar is None:
             return
@@ -150,6 +140,7 @@ class ListaTratamientos:
             self.boton_actualizar.config(state=estado)
         if self.boton_eliminar is not None:
             self.boton_eliminar.config(state=estado)
+            
     def obtener_id_seleccionado(self):
         item_id = self.tree.selection()
         if not item_id:
@@ -161,16 +152,15 @@ class ListaTratamientos:
             messagebox.showinfo("Error", "La fila seleccionada no tiene datos")
             return
 
-        return self.valores[0]       
+        return self.valores[0]     
+      
     def borrar(self):
-        
         id = self.obtener_id_seleccionado()
         borrar_registro(self.tabla, self.columnas_tupla[0], id)
         messagebox.showinfo("Eliminar", f"Haz eliminado el {self.tabla.title()} con ID = {id}")
         self.recargar_tabla()
     
     def ir_actualizar(self):
-        
         item_id = self.tree.selection()
         if not item_id:
             messagebox.showinfo("Sin selección", f"seleccione un {self.tabla} ")
@@ -178,7 +168,7 @@ class ListaTratamientos:
             return
         
         id = self.obtener_id_seleccionado()
-        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, tipo_usuario=self.tipo_usuario)
+        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, usuario=self.usuario)
 
     def obtener_celda_evento(self, event):
         region = self.tree.identify_region(event.x, event.y)
@@ -234,7 +224,6 @@ class ListaTratamientos:
             self.tree.configure(cursor="hand2")
         else:
             self.tree.configure(cursor="")
-
 
     def _cargar_display_map_pacientes(self):
         try:

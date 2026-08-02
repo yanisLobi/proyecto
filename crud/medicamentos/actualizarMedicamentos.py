@@ -7,9 +7,11 @@ from db_mysql import obtener_registros, actualizar_registro
 
 
 class ActualizarMedicamentos(CrearMedicamentos):
-    def __init__(self, parent, id_seleccionado, tipo_usuario=None):
-        super().__init__(parent, "Actualizar")
-        self.id_seleccionado=id_seleccionado
+    def __init__(self, parent, id_seleccionado, usuario={}):
+        super().__init__(parent, titulo="Actualizar")
+        self.usuario = usuario
+        self.tipo_usuario = usuario.get("us_tipo_usuario")
+        self.id_seleccionado = id_seleccionado
         self.medicamento = obtener_registros(self.tabla, "id_medicamentos", id_seleccionado)[0]
         if not self.medicamento:
             messagebox.showinfo("Sin datos", "No se encontró el usuario seleccionado")
@@ -32,7 +34,7 @@ class ActualizarMedicamentos(CrearMedicamentos):
         actualizar_registro(self.tabla, self.nuevo_registro, "id_medicamentos", self.id_seleccionado)
      
         messagebox.showinfo("Actualización", "Se actualizo correctamente")
-        navegar_a_pagina(self.frame, "Lista medicamentos", tipo_usuario=self.tipo_usuario)
+        navegar_a_pagina(self.frame, "Lista medicamentos", usuario=self.usuario)
         
     def guardar(self):
         self.actualizar_medicamento()

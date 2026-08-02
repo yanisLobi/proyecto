@@ -2,7 +2,7 @@ import tkinter as tk
 import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
-from herramients import navegar_a_pagina, regresar_string
+from herramients import navegar_a_pagina, obtener_columnas, regresar_string
 from db_mysql import obtener_tabla, borrar_registro
 
 
@@ -11,6 +11,7 @@ class ListaMedicamentos:
         
         self.tabla = 'medicamentos' 
         self.frame = ttkb.Frame(parent)
+        self.usuario = usuario
         self.frame.pack(fill="both", expand=True)
         self.tipo_usuario = usuario.get("us_tipo_usuario")
         self.boton_actualizar = None
@@ -66,15 +67,12 @@ class ListaMedicamentos:
 
         usuario = self.lista_medicamentos[0]
 
-        self.columnas = [
-        col for col in usuario.keys()
-        if not str(col).endswith("_activo")
-        ]
-        
+        self.columnas = obtener_columnas(usuario.keys())
         self.columnas_tupla = tuple(self.columnas)# Se cambio para ocultar la columna de activo
             
         self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")
-        ancho_columna =int(1000/len(self.columnas))
+        ancho_columna = int(1000/len(self.columnas))
+        
         for columna in self.columnas:
             self.tree.heading(columna, text=regresar_string(columna))
             self.tree.column(columna, width=ancho_columna, minwidth=30, stretch=False)
@@ -99,8 +97,8 @@ class ListaMedicamentos:
     
       
     def ir_crear(self):
-    
-        navegar_a_pagina(self.frame, f"Crear {self.tabla}", tipo_usuario =self.tipo_usuario)
+        navegar_a_pagina(self.frame, f"Crear {self.tabla}", usuario=self.usuario)
+        
     def on_seleccion(self, event=None):
         if self.boton_actualizar is None and self.boton_eliminar is None:
             return
@@ -137,7 +135,7 @@ class ListaMedicamentos:
             return
         
         id = self.obtener_id_seleccionado()
-        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, tipo_usuario=self.tipo_usuario)
+        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, usuario=self.usuario)
         #ActualizarUsuario(self.frame, self.id_selccionado)
         
         

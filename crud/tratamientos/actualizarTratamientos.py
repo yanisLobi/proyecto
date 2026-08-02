@@ -8,8 +8,13 @@ from db_mysql import insertar_receta, obtener_registros, actualizar_registro, ob
 
 
 class ActualizarTratamientos(CrearTratamientos):
-    def __init__(self, parent, id_seleccionado, tipo_usuario=None):
-        super().__init__(parent, "Actualizar", tipo_usuario=tipo_usuario)
+    def __init__(self, parent, id_seleccionado, usuario={}):
+        
+        self.usuario = usuario
+        self.tipo_usuario = usuario.get("us_tipo_usuario")
+        
+        super().__init__(parent, "Actualizar", usuario=self.usuario)
+        
         self.id_seleccionado=id_seleccionado
         self.tratamientos = cast(dict[str, Any], obtener_registros(self.tabla, "id_tratamientos", id_seleccionado) or {})[0]
         if not self.tratamientos:
@@ -43,7 +48,6 @@ class ActualizarTratamientos(CrearTratamientos):
         self.combo_id_doctor.current(obtener_indice(self.id_doctor_seleccionado, self.valores_doctor ))
         
         medicamentos = obtener_medicinas_de_tratamientos(self.id_seleccionado)
-     #   
         self.lista_recetas = obtener_valores_recetas(self.id_seleccionado)
 
         columnas = tuple(self.lista_recetas[0].keys())
@@ -62,11 +66,6 @@ class ActualizarTratamientos(CrearTratamientos):
 
         self.tree.pack()
                 
-        
-        
-        
-        
-
         ids_medicamentos = {
             medicamento["id_medicamentos"]
             for medicamento in medicamentos
@@ -75,8 +74,6 @@ class ActualizarTratamientos(CrearTratamientos):
         for id_medicamento in ids_medicamentos:
             if id_medicamento in self.check_medicamentos:
                 self.check_medicamentos[id_medicamento].set(True)
-        
-                
         
     
     def actualizar_tratamientos(self):
@@ -88,13 +85,9 @@ class ActualizarTratamientos(CrearTratamientos):
         for id_medicamento in self.medicamentos_seleccionados:
             insertar_receta(self.id_seleccionado, id_medicamento)
         
-        
         messagebox.showinfo("Actualización", "Se actualizo correctamente")
-        navegar_a_pagina(self.frame, "Lista tratamientos", tipo_usuario=self.tipo_usuario)
+        navegar_a_pagina(self.frame, "Lista tratamientos", usuario=self.usuario)
         
     def guardar(self):
         self.actualizar_tratamientos()
-    
-    
-    
     
