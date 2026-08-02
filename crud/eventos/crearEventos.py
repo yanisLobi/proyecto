@@ -172,7 +172,8 @@ class CrearEventosMongo:
             "re_fecha": self.re_fecha.get_date().strftime("%Y-%m-%d"),
             "re_color": COLORES_EVENTO.get(self.re_color.get(), "#29b6f6"),
             "re_autor": self.usuario.get("id_usuarios"),
-            "re_frecuencia": self.re_frecuencia.get()
+            "re_frecuencia": self.re_frecuencia.get(),
+            "re_medicamento": self.re_medicamento.get().split()[0]
         }
 
 

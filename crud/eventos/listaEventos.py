@@ -78,11 +78,12 @@ class ListaEventosMongo:
             "re_estado",
             "re_observaciones",
             "re_titulo",
-            "re_hora_fin",
             "re_hora_inicio",
+            "re_hora_fin",
             "re_fecha",
             "re_autor",
-            "re_frecuencia"
+            "re_frecuencia",
+            "re_medicamento"
         )
 
         self.tree = ttk.Treeview(self.frame, columns=self.columnas_tupla, show="headings")
