@@ -4,7 +4,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from typing import Any, cast
 from herramients import navegar_a_pagina, regresar_string
-from db_mysql import obtener_registros, obtener_tabla, borrar_registro, obtener_valores_usuarios
+from db_mysql import obtener_pacientes_doctor, obtener_registros, obtener_tabla, borrar_registro, obtener_valores_usuarios
 
 
 class ListaPacientes:
@@ -54,12 +54,11 @@ class ListaPacientes:
         )
         self.etiqueta.pack(pady=(40, 30))
         
-          
+        print(f"El usuario que inicia sesion es de tipo {self.tipo_usuario}")  
         if self.tipo_usuario == "Doctor":
-            self.lista_pacientes = obtener_tabla(self.tabla)
+            self.lista_pacientes = obtener_pacientes_doctor(self.id_usuario)
         elif self.tipo_usuario == "Administrador":
-            self.lista_pacientes = obtener_tabla(self.tabla, solo_activos=False)
-            
+            self.lista_pacientes = obtener_tabla(self.tabla, solo_activos=False)          
         else: # Enfermeras
             lista_pacientes = obtener_registros(self.tabla, "id_enfermera_principal", self.id_usuario)
         

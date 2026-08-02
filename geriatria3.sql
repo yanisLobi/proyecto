@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-07-2026 a las 07:17:04
+-- Tiempo de generación: 02-08-2026 a las 05:30:00
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -42,8 +42,10 @@ CREATE TABLE `medicamentos` (
 --
 
 INSERT INTO `medicamentos` (`id_medicamentos`, `me_nombre_comercial`, `me_forma_farmaceutica`, `me_concentracion`, `me_fecha_caducidad`, `me_descripcion`, `me_activo`) VALUES
-(1, 'Paracetamol', 'Solidas', '500mg', '2027-12-31', 'Analgésico', 1),
-(2, 'Amoxicilina', 'Liquidas', '250mg/5ml', '2026-06-30', 'Recomedable.', 0);
+(1, 'Paracetamol', 'Liquidas', '500mg', '2027-12-31', 'Analgésico', 1),
+(2, 'Amoxicilina', 'Liquidas', '250mg/5ml', '2026-06-30', 'Recomedable.', 1),
+(7, 'Buscapina', 'Solidas', '10mg', '2027-07-21', 'hmj', 1),
+(8, 'Benzac', 'Semisolidas', '60g', '2028-08-17', 'Aplica con cuidado', 1);
 
 -- --------------------------------------------------------
 
@@ -68,8 +70,9 @@ CREATE TABLE `pacientes` (
 
 INSERT INTO `pacientes` (`id_pacientes`, `pa_nombre`, `pa_apellidos`, `pa_fecha_nacimiento`, `pa_nombre_contacto_emergencia`, `pa_tel_contacto_emergencia`, `id_enfermera_principal`, `pa_activo`) VALUES
 (9, 'karla', 'Medina', '2026-07-24', 'Eli', 1122334455, 17, 1),
-(10, 'Monse', 'Campusano Juarez', '2026-07-24', 'Juan', 1122334455, 19, 0),
-(11, 'Emili', 'Garcia Lopes', '2026-07-01', 'Paloma juarez', 2233445566, 17, 0);
+(10, 'Monse', 'Campusano Juarez', '2026-07-31', 'Juan', 1122334455, 19, 1),
+(11, 'Emili', 'Garcia Lopes', '2026-07-01', 'Paloma juarez', 2233445566, 17, 0),
+(12, 'Monica', 'Juarez Cholula', '2026-07-31', 'Fernando', 4455667788, 19, 1);
 
 -- --------------------------------------------------------
 
@@ -82,6 +85,16 @@ CREATE TABLE `receta` (
   `id_medicamento` int(11) NOT NULL,
   `id_tratamiento` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `receta`
+--
+
+INSERT INTO `receta` (`id_recetas`, `id_medicamento`, `id_tratamiento`) VALUES
+(8, 1, 12),
+(9, 2, 12),
+(10, 1, 13),
+(11, 2, 13);
 
 -- --------------------------------------------------------
 
@@ -105,7 +118,14 @@ CREATE TABLE `tratamientos` (
 --
 
 INSERT INTO `tratamientos` (`id_tratamientos`, `tr_nombre`, `id_paciente`, `id_doctor`, `tr_fecha_inicio`, `tr_fecha_final`, `tr_descripcion`, `tr_activo`) VALUES
-(6, 'Alzheimer', 10, 18, '2026-07-25', '2026-07-30', 'Precaución ', 1);
+(6, 'Alzheimer', 10, 18, '2026-07-25', '2026-07-30', 'Precaución ', 1),
+(7, 'Diabetes', 11, 20, '2026-07-28', '2026-07-31', '...', 0),
+(8, 'Epilepsia', 10, 15, '2026-07-29', '2026-08-05', '...', 1),
+(9, 'Cinesiterapia', 10, 18, '2026-07-29', '2026-08-04', 'Tome sus debidas precauciones', 1),
+(10, 'prueba', 10, 18, '2026-07-31', '2026-07-16', 'ffgbg', 1),
+(11, 'Rehabilitación', 9, 20, '2026-07-31', '2026-08-05', 'Tomar el paracetamol para el dolor', 0),
+(12, 'Optometria', 12, 15, '2026-08-03', '2026-08-20', 'Acudir con los estudios realizados previamente.', 0),
+(13, 'Anemia3', 12, 20, '2026-08-04', '2026-08-20', 'Toma tus mediacamentos', 1);
 
 -- --------------------------------------------------------
 
@@ -115,7 +135,7 @@ INSERT INTO `tratamientos` (`id_tratamientos`, `tr_nombre`, `id_paciente`, `id_d
 
 CREATE TABLE `usuarios` (
   `id_usuarios` int(11) NOT NULL,
-  `us_tipo_usuario` enum('Doctor','Enfermera','Administrador') DEFAULT NULL,
+  `us_tipo_usuario` enum('Doctor','Enfermera','Administrador') NOT NULL,
   `us_nombre` varchar(50) NOT NULL,
   `us_apellidos` varchar(50) NOT NULL,
   `us_fecha_nacimiento` date NOT NULL,
@@ -123,7 +143,7 @@ CREATE TABLE `usuarios` (
   `us_telefono` bigint(10) NOT NULL,
   `us_correo_electronico` varchar(50) NOT NULL,
   `us_direccion` varchar(200) NOT NULL,
-  `us_especialidad` enum('Geriatría',',Médico General') DEFAULT NULL,
+  `us_especialidad` enum('Geriatría',',Cuidados Críticos Geriátricos') DEFAULT NULL,
   `us_activo` tinyint(4) NOT NULL DEFAULT 1,
   `us_cedula` int(11) NOT NULL DEFAULT 10000000
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -133,13 +153,14 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuarios`, `us_tipo_usuario`, `us_nombre`, `us_apellidos`, `us_fecha_nacimiento`, `us_contraseña`, `us_telefono`, `us_correo_electronico`, `us_direccion`, `us_especialidad`, `us_activo`, `us_cedula`) VALUES
-(7, 'Enfermera', 'Camila', 'Santiago Juárez', '2091-07-17', '12345', 2147483647, 'camila@gmail.com', 'Calle 1 de enero', '', 1, 10000000),
-(15, 'Doctor', 'Camila', 'Camacho', '2026-07-15', '12345', 4455667788, 'camila', 'calle 1 de enero', 'Geriatría', 1, 10000000),
-(16, 'Administrador', 'Pedro', 'García', '2026-07-15', '12345', 4455667788, 'pedro@garcia', 'calle falsa', 'Geriatría', 1, 10000000),
-(17, 'Enfermera', 'Juan carlos', 'Lopez velazsquez', '2026-07-08', '12345', 1122334455, 'carlos@gamil.com', 'calle falsa', '', 1, 10000000),
-(18, 'Doctor', 'Paola', 'Montayo Nose', '2026-07-15', '12345', 5537196729, 'paola@montayo', 'calle falsa', 'Geriatría', 1, 10000000),
-(19, 'Enfermera', 'Manuel', 'Santiago Garcia', '2091-07-18', '12345', 1122334455, 'santi@gmail', 'calle 1 de enero ', '', 1, 10000000),
-(20, 'Doctor', 'Juan', 'camacho', '2000-12-02', '12345', 1122334455, 'juan@camacho', '2 de octubre', '', 1, 10000000);
+(7, 'Enfermera', 'Camila', 'Santiago Juárez', '2091-07-17', '12345', 2147483647, 'camila@gmail.com', 'Calle 1 de enero', 'Geriatría', 0, 1234566),
+(15, 'Doctor', 'Camila', 'Camacho', '2026-07-15', '12345', 4455667788, 'camila', 'calle 1 de enero', '', 1, 1678988),
+(16, 'Administrador', 'Pedro', 'García', '2026-07-15', '12345', 4455667788, 'pedro@garcia', 'calle falsa', '', 1, 6784343),
+(17, 'Enfermera', 'Juan carlos', 'Lopez velazsquez', '2026-07-08', '12345', 1122334455, 'carlos@gamil.com', 'calle falsa', '', 1, 5689433),
+(18, 'Doctor', 'Paola', 'Montayo Nose', '2026-07-15', '12345', 5537196729, 'paola@montayo', 'calle falsa', '', 1, 1564323),
+(19, 'Enfermera', 'Manuel', 'Santiago Garcia', '2091-07-18', '12345', 1122334455, 'santi@gmail', 'calle 1 de enero ', 'Geriatría', 1, 1675432),
+(20, 'Doctor', 'Juan', 'camacho', '2000-12-02', '12345', 1122334455, 'juan@camacho', '2 de octubre', '', 1, 1975434),
+(21, 'Enfermera', 'Lupe', 'juarez juarez', '2001-07-19', '12345', 1122334455, 'a', 'calle 1 de enero', 'Geriatría', 1, 1234567);
 
 --
 -- Índices para tablas volcadas
@@ -188,31 +209,31 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `medicamentos`
 --
 ALTER TABLE `medicamentos`
-  MODIFY `id_medicamentos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_medicamentos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `pacientes`
 --
 ALTER TABLE `pacientes`
-  MODIFY `id_pacientes` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_pacientes` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `receta`
 --
 ALTER TABLE `receta`
-  MODIFY `id_recetas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_recetas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `tratamientos`
 --
 ALTER TABLE `tratamientos`
-  MODIFY `id_tratamientos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_tratamientos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuarios` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_usuarios` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Restricciones para tablas volcadas

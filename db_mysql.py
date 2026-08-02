@@ -241,3 +241,23 @@ def obtener_valores_recetas(id_tratamiento):
     conexion.close()
 
     return recetas
+
+def obtener_pacientes_doctor(id_doctor):
+    conexion = conectar()
+    cursor = conexion.cursor(dictionary=True)
+
+    consulta = """
+        SELECT p.*
+        FROM pacientes p
+        INNER JOIN tratamientos t
+            ON p.id_pacientes = t.id_paciente
+        WHERE t.tr_activo =1 AND p.pa_activo =1 AND t.id_doctor = %s
+    """
+
+    cursor.execute(consulta, (id_doctor,))
+    pacientes = cursor.fetchall()
+
+    cursor.close()
+    conexion.close()
+    print(f"obtener pacientes doctor: {consulta}")
+    return pacientes
