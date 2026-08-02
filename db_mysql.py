@@ -50,12 +50,17 @@ def borrar_registro(nombre_tabla, nombre_columna, valor_columna):
     conexion.close()
 
 
-def obtener_registros(nombre_tabla, nombre_columna, valor_columna):
+def obtener_registros(nombre_tabla, nombre_columna, valor_columna, solo_activos=True):
     conexion = conectar()
-
     cursor = conexion.cursor(dictionary=True)
-
-    query = f"SELECT * FROM {nombre_tabla} WHERE {nombre_columna} = {valor_columna}"
+    
+    letras = nombre_tabla[:2]
+    tabla_letras = letras + "_activo"
+    
+    if solo_activos:
+        query = f"SELECT * FROM {nombre_tabla} WHERE {nombre_columna} = {valor_columna} AND {tabla_letras} = 1"
+    else:
+        query = f"SELECT * FROM {nombre_tabla} WHERE {nombre_columna} = {valor_columna}"
 
     cursor.execute(query)
     resultados = cursor.fetchall()
@@ -175,7 +180,7 @@ def obtener_medicinas_de_tratamientos(id_tratamiento):
         FROM medicamentos m
         INNER JOIN receta r
             ON m.id_medicamentos = r.id_medicamento
-        WHERE r.id_tratamiento = %s
+        WHERE m.me_activo = 1 AND r.id_tratamiento = %s
     """
 
     cursor.execute(consulta, (id_tratamiento,))

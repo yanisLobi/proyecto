@@ -89,7 +89,8 @@ class CrearEventosMongo:
             id_tr_seleccionado = self.id_tr.get().strip().split()[0]
             if id_tr_seleccionado != "ninguno":
             # El parámetro 'event' es obligatorio porque .bind() lo envía automáticamente   
-                self.medicamentos = obtener_medicinas_de_tratamientos(id_tr_seleccionado)
+                meds = obtener_medicinas_de_tratamientos(id_tr_seleccionado)
+                self.medicamentos = [f"{m["id_medicamentos"]} {m["me_nombre_comercial"]}" for m in meds]
                 if self.re_medicamento:
                     self.re_medicamento.config(state="readonly")  
                     self.re_medicamento.config(values=self.medicamentos)  
