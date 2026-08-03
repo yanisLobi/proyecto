@@ -35,18 +35,21 @@ class CrearPacientes:
             command=self.ir_lista,
             bootstyle="secondary",
         ).grid(row=0, column=0, sticky="ew", padx=6)
-        ttkb.Button(
-            botones_frame,
-            text="Limpiar campos",
-            command=self.limpiar,
-            bootstyle="warning",
-        ).grid(row=0, column=1, sticky="ew", padx=6)
-        ttkb.Button(
-            botones_frame,
-            text="Guardar",
-            command=self.guardar,
-            bootstyle="primary",
-        ).grid(row=0, column=2, sticky="ew", padx=6)
+       
+        if self.tipo_usuario in ["Doctor", "Administrador"]:
+             ttkb.Button(
+                        botones_frame,
+                        text="Limpiar campos",
+                        command=self.limpiar,
+                        bootstyle="warning",
+                    ).grid(row=0, column=1, sticky="ew", padx=6)
+             
+            ttkb.Button(
+                botones_frame,
+                text="Guardar",
+                command=self.guardar,
+                bootstyle="primary",
+            ).grid(row=0, column=2, sticky="ew", padx=6)
 
         form_frame = ttkb.Frame(self.frame)
         form_frame.pack(padx=20, pady=(20, 30), fill="x")

@@ -17,34 +17,34 @@ class ListaPacientes:
         self.tipo_usuario = usuario.get("us_tipo_usuario")
         self.boton_actualizar = None
         self.boton_eliminar = None
-        if self.tipo_usuario in ["Doctor", "Administrador"]:
-            botones_frame = ttkb.Frame(self.frame)
-            botones_frame.pack(pady=(40, 45), padx=20, fill="x")
-            botones_frame.grid_columnconfigure(0, weight=1)
-            botones_frame.grid_columnconfigure(1, weight=1)
-            botones_frame.grid_columnconfigure(2, weight=1)
-            ttkb.Button(
-                botones_frame,
-                text=f"Crear {self.tabla.title()}",
-                command=self.ir_crear,
-                bootstyle="primary",
-            ).grid(row=0, column=0, sticky="ew", padx=6)
-            self.boton_eliminar = ttkb.Button(
-                botones_frame,
-                text="Eliminar",
-                command=self.borrar,
-                state="disabled",
-                bootstyle="danger",
-            )
-            self.boton_eliminar.grid(row=0, column=1, sticky="ew", padx=6)
-            self.boton_actualizar = ttkb.Button(
-                botones_frame,
-                text="Ver detalles",
-                command=self.ir_actualizar,
-                state="disabled",
-                bootstyle="info",
-            )
-            self.boton_actualizar.grid(row=0, column=2, sticky="ew", padx=6)
+        
+        botones_frame = ttkb.Frame(self.frame)
+        botones_frame.pack(pady=(40, 45), padx=20, fill="x")
+        botones_frame.grid_columnconfigure(0, weight=1)
+        botones_frame.grid_columnconfigure(1, weight=1)
+        botones_frame.grid_columnconfigure(2, weight=1)
+        ttkb.Button(
+            botones_frame,
+            text=f"Crear {self.tabla.title()}",
+            command=self.ir_crear,
+            bootstyle="primary",
+        ).grid(row=0, column=0, sticky="ew", padx=6)
+        self.boton_eliminar = ttkb.Button(
+            botones_frame,
+            text="Eliminar",
+            command=self.borrar,
+            state="disabled",
+            bootstyle="danger",
+        )
+        self.boton_eliminar.grid(row=0, column=1, sticky="ew", padx=6)
+        self.boton_actualizar = ttkb.Button(
+            botones_frame,
+            text="Ver detalles",
+            command=self.ir_actualizar,
+            state="disabled",
+            bootstyle="info",
+        )
+        self.boton_actualizar.grid(row=0, column=2, sticky="ew", padx=6)
 
         self.id_usuario = usuario.get("id_usuarios")
 
