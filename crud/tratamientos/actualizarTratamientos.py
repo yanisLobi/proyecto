@@ -73,7 +73,8 @@ class ActualizarTratamientos(CrearTratamientos):
         )
 
         for columna in columnas:
-            self.tree.heading(columna, text=regresar_string(columna))
+            self.tree.heading(columna, text=regresar_string(columna), anchor="center")
+            self.tree.column(columna, anchor="center")
 
         for receta in self.lista_recetas:
             self.tree.insert("", tk.END, values=tuple(receta.values()))

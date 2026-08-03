@@ -74,8 +74,8 @@ class ListaPacientes:
         self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")
         ancho_columna =int(1000/len(self.columnas))
         for columna in self.columnas:
-            self.tree.heading(columna, text=regresar_string(columna))
-            self.tree.column(columna, width=ancho_columna, minwidth=30, stretch=False)
+            self.tree.heading(columna, text=regresar_string(columna), anchor="center")
+            self.tree.column(columna, width=ancho_columna, minwidth=30, stretch=False, anchor="center")
         
         # Mapear la foreign key con la pagina que se abre cuando le damos doble clic
         self.fk_paginas = {

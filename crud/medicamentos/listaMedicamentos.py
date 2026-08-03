@@ -76,12 +76,13 @@ class ListaMedicamentos:
         ancho_columna = int(1000 / len(self.columnas))
 
         for columna in self.columnas:
-            self.tree.heading(columna, text=regresar_string(columna))
+            self.tree.heading(columna, text=regresar_string(columna), anchor="center")
             self.tree.column(
                 columna,
                 width=ancho_columna,
                 minwidth=30,
-                stretch=False)
+                stretch=False,
+                anchor="center")
 
         self.recargar_tabla()
         self.tree.bind("<<TreeviewSelect>>", self.on_seleccion)

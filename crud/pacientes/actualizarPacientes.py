@@ -65,12 +65,13 @@ class ActualizarPacientes(CrearPacientes):
         ancho_columna = int(1000 / len(self.columnas))
         for columna in self.columnas_tupla:
 
-            self.tree.heading(columna, text=regresar_string(columna))
+            self.tree.heading(columna, text=regresar_string(columna), anchor="center")
             self.tree.column(
                 columna,
                 width=ancho_columna,
                 minwidth=30,
-                stretch=False)
+                stretch=False,
+                anchor="center")
 
         self.tree.pack(pady=(10, 0))
 
