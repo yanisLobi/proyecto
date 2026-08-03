@@ -80,8 +80,7 @@ class ListaUsuarios:
             self.tree.delete(item)
         #llenar tabla
         for usuario in obtener_tabla(self.tabla):
-            valores_tupla =tuple(usuario.values())
-             
+            valores_tupla = tuple(usuario.get(col) for col in self.columnas_tupla)
             self.tree.insert("", tk.END, values=valores_tupla)
         self.on_seleccion()
     
