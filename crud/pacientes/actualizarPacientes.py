@@ -51,6 +51,13 @@ class ActualizarPacientes(CrearPacientes):
             obtener_columnas(
                 self.columnas,
             self.tipo_usuario))
+
+        tk.Label(
+            self.frame,
+            text=f"Tratamientos del paciente #{id_seleccionado}",
+            font=("Arial", 11, "bold"),
+        ).pack(pady=(20, 5))
+
         self.tree = ttk. Treeview(
             self.frame,
             columns=self.columnas_tupla,

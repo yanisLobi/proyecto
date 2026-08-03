@@ -60,6 +60,12 @@ class ActualizarTratamientos(CrearTratamientos):
 
         columnas = tuple(self.lista_recetas[0].keys())
 
+        tk.Label(
+            self.frame,
+            text=f"Medicamentos del tratamiento #{self.id_seleccionado}",
+            font=("Arial", 11, "bold"),
+        ).pack(pady=(20, 5))
+
         self.tree = ttk.Treeview(
             self.frame,
             columns=columnas,

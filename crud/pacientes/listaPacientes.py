@@ -17,11 +17,13 @@ class ListaPacientes:
         self.tipo_usuario = usuario.get("us_tipo_usuario")
         self.boton_actualizar = None
         self.boton_eliminar = None
+        
         botones_frame = ttkb.Frame(self.frame)
         botones_frame.pack(pady=(40, 45), padx=20, fill="x")
         botones_frame.grid_columnconfigure(0, weight=1)
         botones_frame.grid_columnconfigure(1, weight=1)
         botones_frame.grid_columnconfigure(2, weight=1)
+        
         if self.tipo_usuario in ["Doctor", "Administrador"]:
             ttkb.Button(
                 botones_frame,
@@ -72,7 +74,6 @@ class ListaPacientes:
         self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")
         ancho_columna =int(1000/len(self.columnas))
         for columna in self.columnas:
-            
             self.tree.heading(columna, text=regresar_string(columna))
             self.tree.column(columna, width=ancho_columna, minwidth=30, stretch=False)
         
