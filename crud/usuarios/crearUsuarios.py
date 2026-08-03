@@ -235,20 +235,21 @@ class CrearUsuario:
             'us_nombre': '',
             'us_apellidos': '',
             'us_fecha_nacimiento': "1980-01-01",
-            'us_contraseña': '',
             'us_cedula': '',
             'us_telefono': '',
             'us_correo_electronico': '',
             'us_direccion': '',
             'us_especialidad': ''}
 
+        # encryptar contraseña solo si la actualizaron
+        if self.us_contra.get() != "":
+                self.nuevo_registro.update({"us_contraseña": encriptar_contrasena(
+                    self.us_contra.get())})  
         self.nuevo_registro["us_tipo_usuario"] = self.us_tipo_usuario.get()
         self.nuevo_registro["us_nombre"] = self.us_nombre.get()
         self.nuevo_registro["us_apellidos"] = self.us_apellidos.get()
         self.nuevo_registro["us_fecha_nacimiento"] = self.us_fecha_nacimiento.get_date(
         ).strftime("%Y-%m-%d")
-        self.nuevo_registro["us_contraseña"] = encriptar_contrasena(
-            self.us_contra.get())  # encryptar contraseña
         self.nuevo_registro["us_telefono"] = self.us_telefono.get()
         self.nuevo_registro["us_cedula"] = self.us_cedula.get()
         self.nuevo_registro["us_correo_electronico"] = self.us_correo_electronico.get(
