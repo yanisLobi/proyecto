@@ -4,7 +4,7 @@ from tkinter import messagebox
 from tkcalendar import DateEntry
 from tkinter import ttk
 
-from herramients import navegar_a_pagina
+from herramients import navegar_a_pagina, validar_widget, validar_combo
 from db_mongo import insertar_registro
 from db_mysql import obtener_medicinas_de_tratamientos, obtener_valores as obtener_valores_mysql, obtener_ids_tratamientos_visibles
 
@@ -67,7 +67,7 @@ class CrearEventosMongo:
 
         ttkb.Label(
             form_frame,
-            text="Titulo").grid(
+            text="Titulo*").grid(
             row=0,
             column=0,
             sticky="w",
@@ -82,7 +82,7 @@ class CrearEventosMongo:
 
         ttkb.Label(
             form_frame,
-            text="Tratamiento").grid(
+            text="Tratamiento*").grid(
             row=0,
             column=2,
             sticky="w",
@@ -154,7 +154,7 @@ class CrearEventosMongo:
         self.re_fecha.grid(row=1, column=3, sticky="w", pady=(0, 16))
 
         ttkb.Label(
-            form_frame, text="Hora inicio").grid(
+            form_frame, text="Hora inicio*").grid(
             row=2, column=0, sticky="w", padx=(
                 0, 10), pady=(
                 0, 16))
@@ -163,7 +163,7 @@ class CrearEventosMongo:
 
         ttkb.Label(
             form_frame,
-            text="Hora Fin").grid(
+            text="Hora Fin*").grid(
             row=2,
             column=2,
             sticky="w",
@@ -287,6 +287,10 @@ class CrearEventosMongo:
             return []
 
     def crear_evento(self):
+        if not validar_widget(self.re_titulo, "Título", max_len=100): return
+        if not validar_combo(self.id_tr, "Tratamiento"): return
+        if not validar_widget(self.re_hora_inicio, "Hora inicio", max_len=5): return
+        if not validar_widget(self.re_hora_fin, "Hora fin", max_len=5): return
         self.guardar_valores()
         insertar_registro(self.tabla, self.nuevo_registro)
         messagebox.showinfo("Crear", "Se creó correctamente el recordatorio")

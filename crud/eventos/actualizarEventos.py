@@ -3,7 +3,7 @@ from tkinter import messagebox
 from tkcalendar import DateEntry
 
 from crud.eventos.crearEventos import CrearEventosMongo, COLORES_EVENTO
-from herramients import navegar_a_pagina, obtener_indice, mostrar_sin_registros
+from herramients import navegar_a_pagina, obtener_indice, mostrar_sin_registros, validar_widget, validar_combo
 from db_mongo import actualizar_registro, obtener_registros
 from db_mysql import obtener_valores as _obtener_valores_mysql
 
@@ -98,6 +98,10 @@ class ActualizarEventosMongo(CrearEventosMongo):
                 pass
 
     def actualizar_evento(self):
+        if not validar_widget(self.re_titulo, "Título", max_len=100): return
+        if not validar_combo(self.id_tr, "Tratamiento"): return
+        if not validar_widget(self.re_hora_inicio, "Hora inicio", max_len=5): return
+        if not validar_widget(self.re_hora_fin, "Hora fin", max_len=5): return
         self.guardar_valores()
         actualizar_registro(
             self.tabla,
