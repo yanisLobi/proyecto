@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-08-2026 a las 09:53:23
+-- Tiempo de generación: 03-08-2026 a las 09:58:31
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -96,11 +96,8 @@ CREATE TABLE `receta` (
 INSERT INTO `receta` (`id_recetas`, `id_medicamento`, `id_tratamiento`) VALUES
 (8, 1, 12),
 (9, 2, 12),
-(10, 1, 13),
-(11, 2, 13),
 (12, 2, 8),
-(13, 7, 8),
-(14, 9, 14);
+(13, 7, 8);
 
 -- --------------------------------------------------------
 
@@ -130,9 +127,7 @@ INSERT INTO `tratamientos` (`id_tratamientos`, `tr_nombre`, `id_paciente`, `id_d
 (9, 'Cinesiterapia', 10, 18, '2026-07-29', '2026-08-04', 'Tome sus debidas precauciones', 1),
 (10, 'prueba', 10, 18, '2026-07-31', '2026-07-16', 'ffgbg', 1),
 (11, 'Rehabilitación', 9, 20, '2026-07-31', '2026-08-05', 'Tomar el paracetamol para el dolor', 0),
-(12, 'Optometria', 12, 15, '2026-08-03', '2026-08-20', 'Acudir con los estudios realizados previamente.', 0),
-(13, 'Anemia3', 12, 24, '2026-08-04', '2026-08-20', 'Toma tus mediacamentos', 1),
-(14, 'Quimioterapia', 12, 24, '2026-08-02', '2026-09-08', 'Tomar los fármacos correspondientes', 1);
+(12, 'Optometria', 12, 15, '2026-08-03', '2026-08-20', 'Acudir con los estudios realizados previamente.', 0);
 
 -- --------------------------------------------------------
 
