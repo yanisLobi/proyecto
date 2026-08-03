@@ -12,11 +12,6 @@ from herramients import agregar_boton_mostrar_contrasena
 def main():
     # esto se actualizara con datos de la db despues
     # Abre la conexión
-    lista_usuarios = obtener_tabla('usuarios')
-
-    def recargar_usuarios():
-        nonlocal lista_usuarios
-        lista_usuarios = obtener_tabla('usuarios')
     
     # temas: minty (verde), cosmo (blanco), darkly (obscuro)
     ventana = ttkb.Window(themename="minty") 
@@ -62,6 +57,7 @@ def main():
 
 
     def intentar_login():
+        lista_usuarios = obtener_tabla('usuarios')
         correo_introducido = correo.get().strip()
         contrasena_introducida  = contra.get().strip()
         
@@ -95,7 +91,7 @@ def main():
 
     def abrir_registro():
         iniciar_registro(ventana)
-        recargar_usuarios()
+        
         
     botones_frame = ttkb.Frame(contenido_frame)
     botones_frame.grid(row=4, column=0, sticky="ew", pady=(20, 30))

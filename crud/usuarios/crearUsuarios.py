@@ -16,7 +16,7 @@ class CrearUsuario:
         self.frame.pack(fill="both", expand=True)
         self.tabla = "usuarios"
         self.usuario = usuario
-        self.tipo_usuario = usuario.get("us_tipo_usuario")
+        self.tipo_usuario = usuario.get("us_tipo_usuario","")
         self.etiqueta = ttkb.Label(
             self.frame,
             text=f"{titulo} {self.tabla}",
@@ -57,6 +57,10 @@ class CrearUsuario:
         form_frame.grid_columnconfigure(3, weight=1)
         form_frame.grid_columnconfigure(4, weight=0)
 
+        opciones_tipo_usuario= ["Doctor", "Enfermera"]
+        if self.tipo_usuario == "Administrador":
+            opciones_tipo_usuario.append("Administrador")
+        
         ttkb.Label(form_frame, text="Tipo de usuario").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.us_tipo_usuario = tk.StringVar(value="ninguno")
         self.combo_tipo_usuario = ttk.Combobox(
@@ -64,7 +68,7 @@ class CrearUsuario:
             textvariable=self.us_tipo_usuario,
             state="readonly",
             width=27,
-            values=["Administrador", "Doctor", "Enfermera"]
+            values= opciones_tipo_usuario
         )
         self.combo_tipo_usuario.grid(row=0, column=1, sticky="ew", pady=(0, 16))
 
