@@ -2,7 +2,7 @@ from datetime import datetime
 from crud.pacientes.crearPacientes import CrearPacientes
 from tkinter import messagebox, ttk
 import tkinter as tk
-from herramients import obtener_columnas, obtener_indice, navegar_a_pagina, regresar_string
+from herramients import obtener_columnas, obtener_indice, navegar_a_pagina, regresar_string, mostrar_sin_registros
 from db_mysql import obtener_registros, actualizar_registro
 
 
@@ -12,12 +12,12 @@ class ActualizarPacientes(CrearPacientes):
         self.id_seleccionado = id_seleccionado
         self.usuario = usuario
         self.tipo_usuario = usuario.get("us_tipo_usuario")
-        self.pacientes = obtener_registros(
-            self.tabla, "id_pacientes", id_seleccionado)[0]
-        if not self.pacientes:
-            messagebox.showinfo("Sin datos",
-                                "No se encontró el usuario seleccionado")
+        resultado = obtener_registros(
+            self.tabla, "id_pacientes", id_seleccionado, False)
+        if not resultado:
+            mostrar_sin_registros(self.frame, self.tabla)
             return
+        self.pacientes = resultado[0]
 
         self.pa_nombre.insert(0, self.pacientes.get("pa_nombre", ""))
         self.pa_apellidos.insert(0, self.pacientes.get("pa_apellidos", ""))
@@ -42,6 +42,10 @@ class ActualizarPacientes(CrearPacientes):
 
         self.lista_tratamientos = obtener_registros(
             "tratamientos", "id_paciente", id_seleccionado)
+
+        if not self.lista_tratamientos:
+            mostrar_sin_registros(self.frame, "tratamientos")
+            return
 
         tratamiento = self.lista_tratamientos[0]
         self.columnas = tratamiento.keys()

@@ -2,7 +2,7 @@ import tkinter as tk
 import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
-from herramients import navegar_a_pagina, obtener_columnas, regresar_string
+from herramients import navegar_a_pagina, obtener_columnas, regresar_string, mostrar_sin_registros
 from db_mysql import obtener_tabla, borrar_registro
 
 
@@ -54,6 +54,9 @@ class ListaUsuarios:
         self.etiqueta.pack(pady=(40, 30))
 
         self.lista_usuarios = obtener_tabla(self.tabla)
+        if not self.lista_usuarios:
+            mostrar_sin_registros(self.frame, self.tabla)
+            return
         usuario = self.lista_usuarios[0]
         self.columnas = obtener_columnas(usuario.keys(), self.tipo_usuario)
 

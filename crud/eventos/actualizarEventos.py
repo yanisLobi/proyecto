@@ -1,9 +1,8 @@
 import tkinter as tk
-from tkinter import messagebox
 from tkcalendar import DateEntry
 
 from crud.eventos.crearEventos import CrearEventosMongo, COLORES_EVENTO
-from herramients import navegar_a_pagina, obtener_indice
+from herramients import navegar_a_pagina, obtener_indice, mostrar_sin_registros
 from db_mongo import actualizar_registro, obtener_registros
 
 
@@ -16,13 +15,26 @@ class ActualizarEventosMongo(CrearEventosMongo):
         self.evento = eventos[0] if eventos else None
 
         if not self.evento:
-            messagebox.showinfo("Sin datos",
-                                "No se encontró el recordatorio seleccionado")
-            navegar_a_pagina(self.frame, "Lista eventos", usuario=self.usuario)
+            mostrar_sin_registros(self.frame, self.tabla)
             return
 
         self.combo_id_tr.current(obtener_indice(
             str(self.evento.get("id_tr", "")), self.tratamientos))
+
+        # poblar medicamentos del tratamiento guardado y seleccionar el correcto
+        id_tr_guardado = str(self.evento.get("id_tr", "")).strip()
+        if id_tr_guardado:
+            from db_mysql import obtener_medicinas_de_tratamientos
+            meds = obtener_medicinas_de_tratamientos(id_tr_guardado)
+            self.medicamentos = [
+                f"{m['id_medicamentos']} {m['me_nombre_comercial']}" for m in meds]
+            if self.re_medicamento:
+                self.re_medicamento.config(state="readonly", values=self.medicamentos)
+                med_guardado = str(self.evento.get("re_medicamento", "")).strip()
+                if med_guardado in self.medicamentos:
+                    self.re_medicamento.set(med_guardado)
+                elif self.medicamentos:
+                    self.re_medicamento.current(0)
 
         self.re_estado.set(str(self.evento.get("re_estado", "Pendiente")))
 

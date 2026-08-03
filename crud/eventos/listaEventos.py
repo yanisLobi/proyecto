@@ -4,7 +4,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from typing import Any, cast
 
-from herramients import navegar_a_pagina, regresar_string
+from herramients import navegar_a_pagina, regresar_string, mostrar_sin_registros
 from db_mongo import obtener_tabla, borrar_registro
 from db_mysql import obtener_tabla as obtener_tabla_mysql, obtener_ids_tratamientos_visibles
 

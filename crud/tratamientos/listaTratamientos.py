@@ -59,11 +59,7 @@ class ListaTratamientos:
 
         # Si no hay registros, evitar error con self.lista_tratamiento[0]
         if not self.lista_tratamiento:
-            ttkb.Label(
-                self.frame,
-                text="Sin registros",
-                font=("Arial", 12, "italic"),
-            ).pack(pady=(20, 0))
+            mostrar_sin_registros(self.frame, self.tabla)
             return
 
         tratamiento = cast(dict[str, Any], self.lista_tratamiento[0])

@@ -3,7 +3,7 @@ from crud.tratamientos.crearTratamientos import CrearTratamientos
 from tkinter import messagebox, ttk
 import tkinter as tk
 from typing import Any, cast
-from herramients import navegar_a_pagina, obtener_indice, regresar_string
+from herramients import navegar_a_pagina, obtener_indice, regresar_string, mostrar_sin_registros
 from db_mysql import insertar_receta, obtener_registros, actualizar_registro, obtener_medicinas_de_tratamientos, eliminar_recetas_tratamiento, obtener_valores_recetas
 
 
@@ -16,12 +16,12 @@ class ActualizarTratamientos(CrearTratamientos):
         super().__init__(parent, "Actualizar", usuario=self.usuario)
 
         self.id_seleccionado = id_seleccionado
-        self.tratamientos = cast(dict[str, Any], obtener_registros(
-            self.tabla, "id_tratamientos", id_seleccionado) or {})[0]
-        if not self.tratamientos:
-            messagebox.showinfo("Sin datos",
-                                "No se encontró el usuario seleccionado")
+        resultado = obtener_registros(
+            self.tabla, "id_tratamientos", id_seleccionado, False)
+        if not resultado:
+            mostrar_sin_registros(self.frame, self.tabla)
             return
+        self.tratamientos = cast(dict[str, Any], resultado[0])
 
         self.tr_nombre.insert(0, self.tratamientos.get("tr_nombre", ""))
 
@@ -58,28 +58,31 @@ class ActualizarTratamientos(CrearTratamientos):
         medicamentos = obtener_medicinas_de_tratamientos(self.id_seleccionado)
         self.lista_recetas = obtener_valores_recetas(self.id_seleccionado)
 
-        columnas = tuple(self.lista_recetas[0].keys())
+        if not self.lista_recetas:
+            mostrar_sin_registros(self.frame, "recetas")
+        else:
+            columnas = tuple(self.lista_recetas[0].keys())
 
-        tk.Label(
-            self.frame,
-            text=f"Medicamentos del tratamiento #{self.id_seleccionado}",
-            font=("Arial", 11, "bold"),
-        ).pack(pady=(20, 5))
+            tk.Label(
+                self.frame,
+                text=f"Medicamentos del tratamiento #{self.id_seleccionado}",
+                font=("Arial", 11, "bold"),
+            ).pack(pady=(20, 5))
 
-        self.tree = ttk.Treeview(
-            self.frame,
-            columns=columnas,
-            show="headings"
-        )
+            self.tree = ttk.Treeview(
+                self.frame,
+                columns=columnas,
+                show="headings"
+            )
 
-        for columna in columnas:
-            self.tree.heading(columna, text=regresar_string(columna), anchor="center")
-            self.tree.column(columna, anchor="center")
+            for columna in columnas:
+                self.tree.heading(columna, text=regresar_string(columna), anchor="center")
+                self.tree.column(columna, anchor="center")
 
-        for receta in self.lista_recetas:
-            self.tree.insert("", tk.END, values=tuple(receta.values()))
+            for receta in self.lista_recetas:
+                self.tree.insert("", tk.END, values=tuple(receta.values()))
 
-        self.tree.pack()
+            self.tree.pack()
 
         ids_medicamentos = {
             medicamento["id_medicamentos"]

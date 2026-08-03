@@ -69,7 +69,7 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
         font=("Arial", 12)
     ).pack(padx=15, pady=20)
     etiqueta_logo = ttkb.Label(menu_frame, image=imagen_pequena)
-    etiqueta_logo.pack(pady=50)
+    etiqueta_logo.pack(pady=20)
 
     # 2. FRAME DEL CONTENIDO (Ocupa la columna 1)
     contenido_frame = ttkb.Frame(ventana)

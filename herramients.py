@@ -119,6 +119,16 @@ def navegar_a_pagina(frame, nombre_clase, **kwargs):
     clase_instanciar(frame, **kwargs)
 
 
+def mostrar_sin_registros(frame, nombre_tabla):
+    ttkb.Label(
+        frame,
+        text=f"La tabla \"{nombre_tabla}\" no contiene ningún registro.\nSi tienes algún problema contacta a tu administrador.",
+        font=("Arial", 12),
+        justify="center",
+        anchor="center",
+    ).pack(pady=(40, 10))
+
+
 def obtener_columnas(columnas, tipo_usuario=""):
     if tipo_usuario == "Administrador":
         columnas_ocultar = {"contraseña", "password", "passwd"}
@@ -161,6 +171,8 @@ def obtener_indice(id_registro: int, opciones: list[tuple]):
 
 def mostrar_recordatorios():
     dif_eventos = [15, 5, 0]
+    # (id_evento, diff_minutos) ya notificados en esta sesión
+    _mostrados = set()
     while True:
         time.sleep(50)
         eventos = obtener_tabla("consultas")
@@ -198,7 +210,10 @@ def mostrar_recordatorios():
                 print(
                     f"{year_1} {mes_1} {dia_1} {hora} {minuto} - {year_2} {mes_1} {mes_2} {hora_a} {minuto_a}  ")
                 print(f" La diferencia es {diff_hora} {diff_minutos} ")
-                if diff_minutos in dif_eventos:  # Numeros positivos son minutos faltantes
+                if diff_minutos in dif_eventos:
+                    clave = (str(evento.get("id")), diff_minutos)
+                    if clave in _mostrados:
+                        continue
 
                     tratamiento = obtener_registros(
                         "tratamientos", "id_tratamientos", evento["id_tr"])[0]
@@ -260,6 +275,7 @@ def mostrar_recordatorios():
                             f" Observación tratamiento: {tratamiento.get('tr_descripcion')}"
                         ),
                     )
+                    _mostrados.add(clave)
 
 
 

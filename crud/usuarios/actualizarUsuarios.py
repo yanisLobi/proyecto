@@ -1,8 +1,7 @@
 from datetime import datetime
 from crud.usuarios.crearUsuarios import CrearUsuario
 import tkinter as tk
-from tkinter import messagebox
-from herramients import navegar_a_pagina, obtener_indice
+from herramients import navegar_a_pagina, obtener_indice, mostrar_sin_registros
 from db_mysql import obtener_registros, actualizar_registro
 
 
@@ -14,12 +13,12 @@ class ActualizarUsuarios(CrearUsuario):
 
         super().__init__(parent, "Actualizar", usuario=self.usuario)
         self.id_seleccionado = id_seleccionado
-        self.usuario = obtener_registros(
-            self.tabla, "id_usuarios", id_seleccionado)[0]
-        if not self.usuario:
-            messagebox.showinfo("Sin datos",
-                                "No se encontró el usuario seleccionado")
+        resultado = obtener_registros(
+            self.tabla, "id_usuarios", id_seleccionado, False)
+        if not resultado:
+            mostrar_sin_registros(self.frame, self.tabla)
             return
+        self.usuario = resultado[0]
 
         self.us_tipo_usuario.set(self.tipo_usuario)
         self.us_nombre.insert(0, self.usuario.get("us_nombre", ""))

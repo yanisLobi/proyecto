@@ -3,7 +3,7 @@ import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
 from typing import Any, cast
-from herramients import navegar_a_pagina, obtener_columnas, regresar_string
+from herramients import navegar_a_pagina, obtener_columnas, regresar_string, mostrar_sin_registros
 from db_mysql import obtener_pacientes_doctor, obtener_registros, obtener_tabla, borrar_registro, obtener_valores_usuarios
 
 
@@ -60,12 +60,7 @@ class ListaPacientes:
             lista_pacientes = obtener_tabla(self.tabla)
             primer_paciente = lista_pacientes[0]
         except Exception as e:
-            self.etiqueta_error = ttkb.Label(
-                        self.frame,
-                        text=f"No se encontraron registros",
-                        font=("Arial", 14, "bold")
-                    )
-            self.etiqueta_error.pack(pady=(40, 30))
+            mostrar_sin_registros(self.frame, self.tabla)
             return
         
         self.columnas = obtener_columnas(primer_paciente.keys(), self.tipo_usuario)

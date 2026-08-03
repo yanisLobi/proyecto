@@ -1,8 +1,7 @@
 from datetime import datetime
 from crud.medicamentos.crearMedicamentos import CrearMedicamentos
-from tkinter import messagebox
 import tkinter as tk
-from herramients import navegar_a_pagina, obtener_indice
+from herramients import navegar_a_pagina, obtener_indice, mostrar_sin_registros
 from db_mysql import obtener_registros, actualizar_registro
 
 
@@ -12,12 +11,12 @@ class ActualizarMedicamentos(CrearMedicamentos):
         self.usuario = usuario
         self.tipo_usuario = usuario.get("us_tipo_usuario")
         self.id_seleccionado = id_seleccionado
-        self.medicamento = obtener_registros(
-            self.tabla, "id_medicamentos", id_seleccionado)[0]
-        if not self.medicamento:
-            messagebox.showinfo("Sin datos",
-                                "No se encontró el usuario seleccionado")
+        resultado = obtener_registros(
+            self.tabla, "id_medicamentos", id_seleccionado, False)
+        if not resultado:
+            mostrar_sin_registros(self.frame, self.tabla)
             return
+        self.medicamento = resultado[0]
 
         self.me_nombre_comercial.insert(
             0, self.medicamento.get(
