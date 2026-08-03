@@ -4,8 +4,9 @@ import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkcalendar import DateEntry
 from tkinter import messagebox
-from herramients import navegar_a_pagina, limpiar_frame
+from herramients import navegar_a_pagina, limpiar_frame, agregar_boton_mostrar_contrasena
 from db_mysql import insertar_registro
+from seguridad import encriptar_contrasena
 
 
 
@@ -54,6 +55,7 @@ class CrearUsuario:
         form_frame.grid_columnconfigure(1, weight=1)
         form_frame.grid_columnconfigure(2, weight=0)
         form_frame.grid_columnconfigure(3, weight=1)
+        form_frame.grid_columnconfigure(4, weight=0)
 
         ttkb.Label(form_frame, text="Tipo de usuario").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.us_tipo_usuario = tk.StringVar(value="ninguno")
@@ -75,8 +77,18 @@ class CrearUsuario:
         self.us_nombre.grid(row=1, column=1, sticky="ew", pady=(0, 16))
 
         ttkb.Label(form_frame, text="Contraseña").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
-        self.us_contra = ttkb.Entry(form_frame, width=30)
+        self.us_contra = ttkb.Entry(form_frame, width=30, show="*")
         self.us_contra.grid(row=1, column=3, sticky="ew", pady=(0, 16))
+        self.btn_mostrar_contra, self.mostrar_contra = agregar_boton_mostrar_contrasena(
+            form_frame,
+            self.us_contra,
+            row=1,
+            column=4,
+            sticky="w",
+            padx=(6, 0),
+            pady=(0, 16),
+            width=3,
+        )
 
         ttkb.Label(form_frame, text="Apellidos").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.us_apellidos = ttkb.Entry(form_frame, width=30)
@@ -105,14 +117,13 @@ class CrearUsuario:
             textvariable=self.us_especialidad,
             state="readonly",
             width=27,
-            values=["Geriatría", "Médico General"]
+            values=["Geriatría", "Cuidados Críticos Geriátricos"]
         )
         self.combo_especialidad.grid(row=4, column=1, sticky="ew", pady=(0, 16))
-        
-     
-        
+
     def limpiar(self):
         limpiar_frame(self.frame)
+            
     
     def ir_lista(self):
         navegar_a_pagina(self.frame, f"Lista {self.tabla}", usuario=self.usuario)
@@ -135,7 +146,7 @@ class CrearUsuario:
         self.nuevo_registro["us_nombre"] = self.us_nombre.get()
         self.nuevo_registro["us_apellidos"] = self.us_apellidos.get()
         self.nuevo_registro["us_fecha_nacimiento"] = self.us_fecha_nacimiento.get_date().strftime("%Y-%m-%d")
-        self.nuevo_registro["us_contraseña"] = self.us_contra.get()
+        self.nuevo_registro["us_contraseña"] = encriptar_contrasena(self.us_contra.get()) #encryptar contraseña
         self.nuevo_registro["us_telefono"] = self.us_telefono.get() 
         self.nuevo_registro["us_cedula"] = self.us_cedula.get() 
         self.nuevo_registro["us_correo_electronico"] = self.us_correo_electronico.get() 

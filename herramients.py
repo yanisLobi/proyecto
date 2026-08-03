@@ -5,9 +5,28 @@ from tkcalendar import DateEntry
 import threading
 import time
 from datetime import datetime
+import ttkbootstrap as ttkb
 from db_mysql import obtener_registros
 from db_mongo import obtener_tabla
 
+
+def agregar_boton_mostrar_contrasena(parent, entry, row, column, sticky="w", padx=(6, 0), pady=0, width=3, bootstyle="outline-secondary"):
+    mostrar = tk.BooleanVar(value=False)
+
+    def toggle_password_visibility():
+        mostrar.set(not mostrar.get())
+        entry.config(show="" if mostrar.get() else "*")
+        boton.config(text="🙈" if mostrar.get() else "👁")
+
+    boton = ttkb.Button(
+        parent,
+        text="👁",
+        command=toggle_password_visibility,
+        bootstyle=bootstyle,
+        width=width,
+    )
+    boton.grid(row=row, column=column, sticky=sticky, padx=padx, pady=pady)
+    return boton, mostrar
 
 
 def limpiar_widget(widget):
@@ -234,3 +253,9 @@ def mostrar_recordatorios():
                                 f"💊 Observación tratamiento: {tratamiento.get('tr_descripcion')}"
                             ),
                         )
+
+
+
+def encriptar_contrasena(contrasena):
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(contrasena.encode("utf-8"), salt).decode("utf-8")

@@ -33,6 +33,7 @@ class CrearTratamientos:
             "id_usuarios", "us_nombre", "us_apellidos", "Doctor", solo_activos=True
         )
         valores_enfermera = obtener_valores_usuarios("id_usuarios", "us_nombre", "us_apellidos", "Enfermera")
+        
 
         botones_frame = ttkb.Frame(self.frame)
         botones_frame.pack(pady=(10, 35), padx=20, fill="x")

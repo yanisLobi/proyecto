@@ -6,6 +6,8 @@ from ventanas.aplicacion import iniciar_aplicacion
 from ventanas.registro import iniciar_registro
 from db_mysql import obtener_tabla
 import ttkbootstrap as ttkb
+from seguridad import verificar_contrasena
+from herramients import agregar_boton_mostrar_contrasena
         
 def main():
     # esto se actualizara con datos de la db despues
@@ -34,6 +36,7 @@ def main():
     contenido_frame = ttkb.Frame(ventana)
     contenido_frame.pack(padx=30, fill="x")
     contenido_frame.grid_columnconfigure(0, weight=1)
+    contenido_frame.grid_columnconfigure(1, weight=0)
 
     # Entry para correo
     ttkb.Label(contenido_frame, text="Correo:").grid(row=0, column=0, sticky="w", pady=(5, 2))
@@ -42,8 +45,18 @@ def main():
     
     # Entry para contraseña
     ttkb.Label(contenido_frame, text="Contraseña:").grid(row=2, column=0, sticky="w", pady=(5, 2))
-    contra = ttkb.Entry(contenido_frame)
+    contra = ttkb.Entry(contenido_frame, show="*")
     contra.grid(row=3, column=0, sticky="ew", pady=(0, 10))
+    agregar_boton_mostrar_contrasena(
+        contenido_frame,
+        contra,
+        row=3,
+        column=1,
+        sticky="w",
+        padx=(6, 0),
+        pady=(0, 10),
+        width=3,
+    )
     #-------------------------------------------------------------------------------
     
 
@@ -66,9 +79,14 @@ def main():
         contrasena_esperada = [usuario.get("us_contraseña") for usuario in lista_usuarios if usuario.get("us_correo_electronico") == correo_introducido ][0]
         print(f"Contraseña encontrada en la DB: {contrasena_esperada}")
         
-        if contrasena_introducida != contrasena_esperada:
+        """ if contrasena_introducida != contrasena_esperada:
             messagebox.showinfo("Error al iniciar sesion", "La contrasena es incorrecta")
+            return """
+        
+        if not verificar_contrasena(contrasena_introducida,contrasena_esperada):
+            messagebox.showinfo("Error al iniciar sesión", "La contraseña es incorrecta")
             return
+        
         
         usuario = [usuario for usuario in lista_usuarios if usuario.get("us_correo_electronico") == correo_introducido ][0]
         nombre_usuario = [usuario.get("us_nombre") for usuario in lista_usuarios if usuario.get("us_correo_electronico") == correo_introducido ][0]
