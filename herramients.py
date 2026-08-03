@@ -109,12 +109,15 @@ def navegar_a_pagina(frame, nombre_clase, **kwargs):
     clase_instanciar(frame, **kwargs)
 
  
-def obtener_columnas(columnas):
-    columnas_ocultar = {"_activo", "_contraseña", "contraseña", "password", "passwd"}
+def obtener_columnas(columnas, tipo_usuario=""):
+    if tipo_usuario == "Administrador":
+        columnas_ocultar = {"contraseña", "password", "passwd"}
+    else:
+        columnas_ocultar = {"_activo", "contraseña", "password", "passwd"}
 
     def debe_ocultarse(nombre):
         texto = str(nombre).lower()
-        return any(token in texto for token in columnas_ocultar) or texto.endswith("_activo")
+        return any(token in texto for token in columnas_ocultar)
 
     return [columna for columna in columnas if not debe_ocultarse(columna)]
     

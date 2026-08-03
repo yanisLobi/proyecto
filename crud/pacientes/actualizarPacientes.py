@@ -37,7 +37,7 @@ class ActualizarPacientes(CrearPacientes):
         self.columnas = tratamiento.keys()
         print(self.lista_tratamientos)
 
-        self.columnas_tupla = tuple(obtener_columnas(self.columnas))
+        self.columnas_tupla = tuple(obtener_columnas(self.columnas), self.tipo_usuario)
         self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")
         ancho_columna =int(1000/len(self.columnas))
         for columna in self.columnas_tupla:

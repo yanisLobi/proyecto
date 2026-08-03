@@ -57,7 +57,7 @@ class ListaUsuarios:
          
         self.lista_usuarios = obtener_tabla(self.tabla)
         usuario = self.lista_usuarios[0]
-        self.columnas = obtener_columnas(usuario.keys())
+        self.columnas = obtener_columnas(usuario.keys(), self.tipo_usuario)
         
 
         self.columnas_tupla = tuple(self.columnas)
