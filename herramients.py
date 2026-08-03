@@ -231,37 +231,35 @@ def mostrar_recordatorios():
                         f"📅 {evento['re_titulo']}\n",
                         (
 
-                            f"⏰ Tu evento comienza en {diff_minutos} minutos\n\n"
+                            f" Tu evento comienza en {diff_minutos} minutos\n\n"
 
-                            f"💊 Tratamiento: {tratamiento.get('tr_nombre')}"
+                            f" Tratamiento: {tratamiento.get('tr_nombre')}"
 
-                            f"💊 Fecha de inicio del tratamiento: {tratamiento.get('tr_fecha_inicio')}"
-                            f"💊 Fecha final del tratamiento: {tratamiento.get('tr_fecha_final')}\n\n"
-
-
-                            f"🕒 Hora de inicio del evento: {hora_inicio}\n"
-                            f"🕒 Hora de final del evento: {hora_final}\n\n"
-
-                            f"🧑 Paciente: {paciente.get('pa_nombre')} {paciente.get('pa_apllidos')}\n\n"
-                            f"🧑 Nombre del contacto de emergencia: {paciente.get('pa_nombre_contacto_emergencia')}\n\n"
-                            f"🧑 Número del contatco de emergencia {paciente.get('pa_tel_contatco_emergencia')}\n\n"
+                            f" Fecha de inicio del tratamiento: {tratamiento.get('tr_fecha_inicio')}"
+                            f" Fecha final del tratamiento: {tratamiento.get('tr_fecha_final')}\n\n"
 
 
-                            f"👩‍⚕️ Enfermera: {enfermera.get('us_nombre')} {enfermera.get('us_apellidos')}\n"
-                            f" 🆔 Cédula profesional: {enfermera.get('us_cedula')}\n"
-                            f" 🆔 Especialidad: {enfermera.get('us_especialidad')}\n\n"
+                            f" Hora de inicio del evento: {hora_inicio}\n"
+                            f" Hora de final del evento: {hora_final}\n\n"
 
-                            f"👨‍⚕️ Doctor: {doctor.get('us_nombre')} {doctor.get('us_apellidos')}\n\n"
-                            f" 🆔 Cédula profesional: {doctor.get('us_cedula')}\n"
-                            f" 🆔 Especialidad: {doctor.get('us_especialidad')}\n\n"
+                            f" Paciente: {paciente.get('pa_nombre')} {paciente.get('pa_apellidos')}\n\n"
+                            f" Nombre del contacto de emergencia: {paciente.get('pa_nombre_contacto_emergencia')}\n\n"
+                            f" Número del contatco de emergencia {paciente.get('pa_tel_contacto_emergencia')}\n\n"
 
 
-                            f"📝 Observación evento: {observacion_evento}\n"
-                            f"💊 Observación tratamiento: {tratamiento.get('tr_descripcion')}"
+                            f" Enfermera: {enfermera.get('us_nombre')} {enfermera.get('us_apellidos')}\n"
+                            f" Cédula profesional: {enfermera.get('us_cedula')}\n"
+                            f" Especialidad: {enfermera.get('us_especialidad')}\n\n"
+
+                            f" Doctor: {doctor.get('us_nombre')} {doctor.get('us_apellidos')}\n"
+                            f" Cédula profesional: {doctor.get('us_cedula')}\n"
+                            f" Especialidad: {doctor.get('us_especialidad')}\n\n"
+
+
+                            f" Observación evento: {observacion_evento}\n"
+                            f" Observación tratamiento: {tratamiento.get('tr_descripcion')}"
                         ),
                     )
 
 
-def encriptar_contrasena(contrasena):
-    salt = bcrypt.gensalt()
-    return bcrypt.hashpw(contrasena.encode("utf-8"), salt).decode("utf-8")
+
