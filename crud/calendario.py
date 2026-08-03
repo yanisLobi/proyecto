@@ -12,10 +12,11 @@ except Exception:
     _mongo_actualizar = None
 
 try:
-    from db_mysql import obtener_registros as _mysql_get, obtener_medicinas_de_tratamientos as _mysql_medicinas_tratamiento
+    from db_mysql import obtener_registros as _mysql_get, obtener_medicinas_de_tratamientos as _mysql_medicinas_tratamiento, obtener_ids_tratamientos_visibles as _mysql_ids_visibles
 except Exception:
     _mysql_get = None
     _mysql_medicinas_tratamiento = None
+    _mysql_ids_visibles = None
 
 _COLORES_EVENTO = ["#26a69a", "#29b6f6", "#ab47bc", "#ff7043", "#66bb6a", "#ffa726", "#ec407a"]
 _NOMBRES_DIA = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
@@ -116,9 +117,22 @@ class CalendarioRecordatorios(ttk.Frame):
             print(f"[Calendario] Error al obtener registros: {e}")
             return []
 
+        tipo_usu = (self.usuario or {}).get("us_tipo_usuario")
+        id_usu = (self.usuario or {}).get("id_usuarios")
+        ids_permitidos = None
+        if _mysql_ids_visibles and tipo_usu:
+            try:
+                ids_permitidos = _mysql_ids_visibles(tipo_usu, id_usu)
+            except Exception as e:
+                print(f"[Calendario] Error al obtener ids permitidos: {e}")
+
         eventos = []
         for i, reg in enumerate(registros):
             try:
+                # filtrar por tratamientos visibles
+                if ids_permitidos is not None and str(reg.get("id_tr", "")) not in ids_permitidos:
+                    continue
+
                 fecha_val = reg.get("re_fecha", "")
                 if hasattr(fecha_val, "strftime"):
                     fecha_str = fecha_val.strftime("%Y-%m-%d")
@@ -520,7 +534,7 @@ class CalendarioRecordatorios(ttk.Frame):
             for i, med in enumerate(medicinas, start=1):
                 id_med = med.get("id_medicamentos")
                 self._seccion(inner, f"Medicina {i}", self._filtrar_campos(med, incluir_identificador=True), BG_HDR, BG_BODY,
-                             link_cmd=(lambda im=id_med: self._navegar("mysql", "Actualizar medicamentos", id_seleccionado=im) if im else None) if puede_editar_usuarios else None)
+                             link_cmd=(lambda im=id_med: self._navegar("mysql", "Actualizar medicamentos", id_seleccionado=im) if im else None) if puede_editar_resto else None)
         else:
             self._seccion(inner, "Medicinas", [("Detalle", "Sin medicinas asociadas al tratamiento")], BG_HDR, BG_BODY)
 

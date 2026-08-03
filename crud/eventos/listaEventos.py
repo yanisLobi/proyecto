@@ -6,7 +6,7 @@ from typing import Any, cast
 
 from herramients import navegar_a_pagina, regresar_string
 from db_mongo import obtener_tabla, borrar_registro
-from db_mysql import obtener_tabla as obtener_tabla_mysql
+from db_mysql import obtener_tabla as obtener_tabla_mysql, obtener_ids_tratamientos_visibles
 
 
 class ListaEventos:
@@ -112,9 +112,16 @@ class ListaEventosMongo:
         for item in self.tree.get_children():
             self.tree.delete(item)
 
+        ids_permitidos = obtener_ids_tratamientos_visibles(
+            self.tipo_usuario, self.usuario.get("id_usuarios")
+        )
+
         self.fk_ids_por_fila = {}
         for registro in obtener_tabla(self.tabla):
             registro = cast(dict[str, Any], registro)
+            # filtrar por tratamientos visibles (None = sin restricción)
+            if ids_permitidos is not None and str(registro.get("id_tr", "")) not in ids_permitidos:
+                continue
             valores = []
             fk_ids = {}
 

@@ -251,3 +251,17 @@ def obtener_tratamientos_enfermera(id_enfermera_principal):
     conexion.close()
     print(f"Tratamientos: {consulta}")
     return registros
+
+
+def obtener_ids_tratamientos_visibles(tipo_usuario, id_usuario):
+    """Devuelve un set de str con los id_tratamientos que el usuario puede ver.
+    Administrador recibe None (sin restricción)."""
+    if tipo_usuario == "Administrador":
+        return None
+    if tipo_usuario == "Doctor":
+        tratamientos = obtener_registros("tratamientos", "id_doctor", id_usuario, False)
+    elif tipo_usuario == "Enfermera":
+        tratamientos = obtener_tratamientos_enfermera(id_usuario)
+    else:
+        tratamientos = []
+    return {str(t.get("id_tratamientos")) for t in tratamientos}
