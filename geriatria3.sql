@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-08-2026 a las 07:29:24
+-- Tiempo de generación: 03-08-2026 a las 09:47:39
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,87 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `geriatria3`
 --
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `medicamentos`
---
-
-CREATE TABLE `medicamentos` (
-  `id_medicamentos` int(11) NOT NULL,
-  `me_nombre_comercial` varchar(50) NOT NULL,
-  `me_forma_farmaceutica` enum('Solidas','Semisolidas','Liquidas','Inhalables') DEFAULT NULL,
-  `me_concentracion` varchar(50) NOT NULL,
-  `me_fecha_caducidad` date NOT NULL,
-  `me_descripcion` varchar(100) DEFAULT NULL,
-  `me_activo` tinyint(4) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `medicamentos`
---
-
-INSERT INTO `medicamentos` (`id_medicamentos`, `me_nombre_comercial`, `me_forma_farmaceutica`, `me_concentracion`, `me_fecha_caducidad`, `me_descripcion`, `me_activo`) VALUES
-(1, 'Paracetamol', 'Liquidas', '500mg', '2027-12-31', 'Analgésico', 1),
-(2, 'Amoxicilina', 'Liquidas', '250mg/5ml', '2026-06-30', 'Recomedable.', 1),
-(7, 'Buscapina', 'Solidas', '10mg', '2027-07-21', 'Alivio estomacal', 1),
-(8, 'Benzac', 'Semisolidas', '60g', '2028-08-17', 'Aplica con cuidado', 0),
-(9, 'Ibuprofeno', 'Solidas', '500mg', '2028-08-10', 'Analgésico', 1);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `pacientes`
---
-
-CREATE TABLE `pacientes` (
-  `id_pacientes` int(11) NOT NULL,
-  `pa_nombre` varchar(50) NOT NULL,
-  `pa_apellidos` varchar(50) NOT NULL,
-  `pa_fecha_nacimiento` date NOT NULL,
-  `pa_nombre_contacto_emergencia` varchar(50) NOT NULL,
-  `pa_tel_contacto_emergencia` bigint(10) NOT NULL,
-  `id_enfermera_principal` int(11) NOT NULL,
-  `pa_activo` tinyint(4) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `pacientes`
---
-
-INSERT INTO `pacientes` (`id_pacientes`, `pa_nombre`, `pa_apellidos`, `pa_fecha_nacimiento`, `pa_nombre_contacto_emergencia`, `pa_tel_contacto_emergencia`, `id_enfermera_principal`, `pa_activo`) VALUES
-(9, 'karla', 'Medina', '2026-07-24', 'Eli', 1122334455, 17, 1),
-(10, 'Monse', 'Campusano Juarez', '2026-07-31', 'Juan', 1122334455, 19, 1),
-(11, 'Emili', 'Garcia Lopes', '2026-07-01', 'Paloma juarez', 2233445566, 17, 0),
-(12, 'Monica', 'Juarez Cholula', '2026-07-31', 'Fernando', 4455667788, 19, 1),
-(14, 'María Del Refugio', 'Rivera Flores', '2065-08-11', '', 0, 19, 1),
-(15, 'María Del Refugio', 'Rivera Flores', '2066-08-18', 'Enrique Castro Lara', 4434235667, 19, 1);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `receta`
---
-
-CREATE TABLE `receta` (
-  `id_recetas` int(11) NOT NULL,
-  `id_medicamento` int(11) NOT NULL,
-  `id_tratamiento` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `receta`
---
-
-INSERT INTO `receta` (`id_recetas`, `id_medicamento`, `id_tratamiento`) VALUES
-(8, 1, 12),
-(9, 2, 12),
-(10, 1, 13),
-(11, 2, 13),
-(12, 2, 8),
-(13, 7, 8),
-(14, 9, 14);
 
 -- --------------------------------------------------------
 
@@ -131,76 +50,12 @@ INSERT INTO `tratamientos` (`id_tratamientos`, `tr_nombre`, `id_paciente`, `id_d
 (10, 'prueba', 10, 18, '2026-07-31', '2026-07-16', 'ffgbg', 1),
 (11, 'Rehabilitación', 9, 20, '2026-07-31', '2026-08-05', 'Tomar el paracetamol para el dolor', 0),
 (12, 'Optometria', 12, 15, '2026-08-03', '2026-08-20', 'Acudir con los estudios realizados previamente.', 0),
-(13, 'Anemia3', 12, 20, '2026-08-04', '2026-08-20', 'Toma tus mediacamentos', 1),
-(14, 'Quimioterapia', 12, 15, '2026-08-02', '2026-09-08', 'Tomar los fármacos correspondientes', 1);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `usuarios`
---
-
-CREATE TABLE `usuarios` (
-  `id_usuarios` int(11) NOT NULL,
-  `us_tipo_usuario` enum('Doctor','Enfermera','Administrador') NOT NULL,
-  `us_nombre` varchar(50) NOT NULL,
-  `us_apellidos` varchar(50) NOT NULL,
-  `us_fecha_nacimiento` date NOT NULL,
-  `us_contraseña` varchar(255) NOT NULL,
-  `us_telefono` bigint(10) NOT NULL,
-  `us_correo_electronico` varchar(50) NOT NULL,
-  `us_direccion` varchar(200) NOT NULL,
-  `us_especialidad` enum('Geriatría',',Cardiología','Dermatología','Neurología','Pediatría','Psiquiatría','Oncología','Gastroenterología','Neumología','Endocrinología','Oftalmología') NOT NULL,
-  `us_activo` tinyint(4) NOT NULL DEFAULT 1,
-  `us_cedula` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `usuarios`
---
-
-INSERT INTO `usuarios` (`id_usuarios`, `us_tipo_usuario`, `us_nombre`, `us_apellidos`, `us_fecha_nacimiento`, `us_contraseña`, `us_telefono`, `us_correo_electronico`, `us_direccion`, `us_especialidad`, `us_activo`, `us_cedula`) VALUES
-(7, 'Enfermera', 'Camila', 'Santiago Juárez', '2091-07-17', '12345', 2147483647, 'camila@gmail.com', 'Calle 1 de enero', 'Geriatría', 0, 1234566),
-(15, 'Doctor', 'Camila', 'Camacho', '2026-07-15', '12345', 4455667788, 'camila', 'calle 1 de enero', '', 0, 1678988),
-(16, 'Administrador', 'Pedro', 'García', '2026-07-15', '12345', 4455667788, 'pedro@garcia', 'calle falsa', '', 0, 6784343),
-(17, 'Enfermera', 'Juan carlos', 'Lopez velazsquez', '2026-07-08', '12345', 1122334455, 'carlos@gamil.com', 'calle falsa', '', 0, 5689433),
-(18, 'Doctor', 'Paola', 'Montayo Nose', '2026-07-15', '12345', 5537196729, 'paola@montayo', 'calle falsa', '', 0, 1564323),
-(19, 'Enfermera', 'Manuel', 'Santiago Garcia', '2091-07-18', '12345', 1122334455, 'santi@gmail', 'calle 1 de enero ', 'Geriatría', 0, 1675432),
-(20, 'Doctor', 'Juan', 'camacho', '2000-12-02', '12345', 1122334455, 'juan@camacho', '2 de octubre', '', 0, 1975434),
-(21, 'Enfermera', 'Lupe', 'juarez juarez', '2001-07-19', '12345', 1122334455, 'a', 'calle 1 de enero', 'Geriatría', 0, 1234567),
-(22, 'Doctor', 'Jessica', 'García Cruz', '2026-08-02', '12345', 9988771122, 'garciacruz@jessica', 'Avenida Plateros #115', '', 0, 2345678),
-(23, 'Administrador', 'Luis ', 'Patrick Juárez', '2094-07-12', '$2b$12$mD34BWpLKAmQWxKCJHYrdeB7Q0oGpuc129d30uV3p4vRKj8a2QpzS', 4424593888, 'patrick0102@juarez', 'Calle Juárez #302', '', 1, 4567890),
-(24, 'Doctor', 'Ernesto ', 'Suárez López', '2098-12-16', '$2b$12$sFSatnwYz3CsWF9hg6EGROX3gsGdrdURaTfrS1jpU8PUjAzAwFDtG', 4455332255, 'ernesto@suarezlopez', 'Avenida Tolmán #406', '', 1, 67854328),
-(25, 'Enfermera', 'pon', 'pin', '2026-08-02', '$2b$12$bzUV00REQof4wPaLJPDm2uKq9FIsD3BfBT9c6lx9enQ0X9aVP3VQ2', 1234567890, 'ddf@', 'rfrgg', 'Geriatría', 1, 3456788),
-(26, 'Doctor', 'Cosme', 'Lozano Lozano', '2001-07-19', '12345', 4424567888, 'cosme@lozano', 'Avenida', 'Geriatría', 1, 67854328),
-(27, 'Administrador', 'Fabian', 'Carmona Juárez', '2091-08-15', '$2b$12$LJ1rCxwk5hR2pQbFrX2LGeAkEsZPlKia.2JhcjE1480527SSk22bW', 4455662324, 'fabian@carmona', 'Avenida Belén #102', '', 1, 3456788),
-(28, 'Enfermera', 'Yanetyanetyanet', 'Lázaro Campos', '2000-08-18', '$2b$12$51ZM8QlUhyYq94AeelzK8uBXWQBagPfxuU2Yqx8GAitPBLzGwAg/q', 5537196729, 'lazarocamposyanet@gmail.com', 'Avenida escuadrón 201', 'Geriatría', 1, 3456624),
-(29, 'Doctor', 'prueba3', 'ggh', '2026-08-04', '$2b$12$KB4AIwgTfJsl0m5rfmlYpOk1eW4bB/n7ZaAoggk9X18Pw/pxFTXOO', 4424591299, 'fhg', 'ggf', '', 1, 45676435);
+(13, 'Anemia3', 12, 24, '2026-08-04', '2026-08-20', 'Toma tus mediacamentos', 1),
+(14, 'Quimioterapia', 12, 24, '2026-08-02', '2026-09-08', 'Tomar los fármacos correspondientes', 1);
 
 --
 -- Índices para tablas volcadas
 --
-
---
--- Indices de la tabla `medicamentos`
---
-ALTER TABLE `medicamentos`
-  ADD PRIMARY KEY (`id_medicamentos`);
-
---
--- Indices de la tabla `pacientes`
---
-ALTER TABLE `pacientes`
-  ADD PRIMARY KEY (`id_pacientes`),
-  ADD KEY `id_enfermera_principal` (`id_enfermera_principal`);
-
---
--- Indices de la tabla `receta`
---
-ALTER TABLE `receta`
-  ADD PRIMARY KEY (`id_recetas`),
-  ADD KEY `receta_ibfk_1` (`id_medicamento`),
-  ADD KEY `receta_ibfk_2` (`id_tratamiento`);
 
 --
 -- Indices de la tabla `tratamientos`
@@ -211,32 +66,8 @@ ALTER TABLE `tratamientos`
   ADD KEY `tratamientos_ibfk_2` (`id_doctor`);
 
 --
--- Indices de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id_usuarios`);
-
---
 -- AUTO_INCREMENT de las tablas volcadas
 --
-
---
--- AUTO_INCREMENT de la tabla `medicamentos`
---
-ALTER TABLE `medicamentos`
-  MODIFY `id_medicamentos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT de la tabla `pacientes`
---
-ALTER TABLE `pacientes`
-  MODIFY `id_pacientes` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
---
--- AUTO_INCREMENT de la tabla `receta`
---
-ALTER TABLE `receta`
-  MODIFY `id_recetas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `tratamientos`
@@ -245,27 +76,8 @@ ALTER TABLE `tratamientos`
   MODIFY `id_tratamientos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  MODIFY `id_usuarios` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
-
---
 -- Restricciones para tablas volcadas
 --
-
---
--- Filtros para la tabla `pacientes`
---
-ALTER TABLE `pacientes`
-  ADD CONSTRAINT `pacientes_ibfk_1` FOREIGN KEY (`id_enfermera_principal`) REFERENCES `usuarios` (`id_usuarios`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `receta`
---
-ALTER TABLE `receta`
-  ADD CONSTRAINT `receta_ibfk_1` FOREIGN KEY (`id_medicamento`) REFERENCES `medicamentos` (`id_medicamentos`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `receta_ibfk_2` FOREIGN KEY (`id_tratamiento`) REFERENCES `tratamientos` (`id_tratamientos`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `tratamientos`

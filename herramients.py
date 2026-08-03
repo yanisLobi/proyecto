@@ -216,16 +216,15 @@ def mostrar_recordatorios():
                         continue
 
                     tratamiento = obtener_registros(
-                        "tratamientos", "id_tratamientos", evento["id_tr"])[0]
+                        "tratamientos", "id_tratamientos", evento["id_tr"], False)[0]
                     paciente = obtener_registros(
-                        "pacientes", "id_pacientes", tratamiento.get("id_paciente"))[0]
+                        "pacientes", "id_pacientes", tratamiento.get("id_paciente"), False)[0]
                     enfermera = obtener_registros(
-                        "usuarios", "id_usuarios", paciente.get("id_enfermera_principal"))[0]
+                        "usuarios", "id_usuarios", paciente.get("id_enfermera_principal"), False)[0]
                     doctor = obtener_registros(
-                        "usuarios", "id_usuarios", tratamiento.get("id_doctor"))[0]
+                        "usuarios", "id_usuarios", tratamiento.get("id_doctor"), False)[0]
                     observacion_evento = evento["re_observaciones"]
 
-                    frecuencia = evento["re_frecuencia"]
                     hora_inicio = evento["re_hora_inicio"]
                     hora_final = evento["re_hora_fin"]
 
