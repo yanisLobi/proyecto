@@ -19,7 +19,7 @@ class ActualizarEventosMongo(CrearEventosMongo):
             return
 
         self.combo_id_tr.current(obtener_indice(
-            str(self.evento.get("id_tr", "")), self.tratamientos))
+            int(self.evento.get("id_tr", 0)), self.tratamientos))
 
         # poblar medicamentos del tratamiento guardado y seleccionar el correcto
         id_tr_guardado = str(self.evento.get("id_tr", "")).strip()
