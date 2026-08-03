@@ -145,11 +145,11 @@ class CalendarioRecordatorios(ttk.Frame):
                 nombre_paciente = ""
                 if _mysql_get and id_tr:
                     try:
-                        trat_l = _mysql_get("tratamientos", "id_tratamientos", id_tr)
+                        trat_l = _mysql_get("tratamientos", "id_tratamientos", id_tr, False)
                         if trat_l:
                             id_pac = trat_l[0].get("id_paciente")
                             if id_pac:
-                                pac_l = _mysql_get("pacientes", "id_pacientes", id_pac)
+                                pac_l = _mysql_get("pacientes", "id_pacientes", id_pac, False)
                                 if pac_l:
                                     p = pac_l[0]
                                     nombre_paciente = f"{p.get('pa_nombre', '')} {p.get('pa_apellidos', '')}".strip()
@@ -157,7 +157,7 @@ class CalendarioRecordatorios(ttk.Frame):
                         pass
                 eventos.append((titulo, col_idx, h_inicio, h_fin, color, id_evento, id_tr, nombre_paciente))
                 self._eventos_raw.append(reg)
-                print(f"[Calendario] Evento añadido: '{titulo}' col={col_idx} {h_inicio}-{h_fin}")
+                #print(f"[Calendario] Evento añadido: '{titulo}' col={col_idx} {h_inicio}-{h_fin}")
             except Exception as e:
                 print(f"[Calendario] Error procesando evento {i}: {e}")
                 continue
@@ -385,7 +385,7 @@ class CalendarioRecordatorios(ttk.Frame):
         id_trat, id_paciente, id_doctor, id_enfermera = None, None, None, None
         if _mysql_get and id_tr:
             try:
-                trat_list = _mysql_get("tratamientos", "id_tratamientos", id_tr)
+                trat_list = _mysql_get("tratamientos", "id_tratamientos", id_tr, False)
                 trat = trat_list[0] if trat_list else {}
                 id_trat = trat.get("id_tratamientos")
                 id_paciente = trat.get("id_paciente")
@@ -394,20 +394,20 @@ class CalendarioRecordatorios(ttk.Frame):
                 print(f"[Popup] Error tratamiento: {e}")
             if id_paciente:
                 try:
-                    pac_list = _mysql_get("pacientes", "id_pacientes", id_paciente)
+                    pac_list = _mysql_get("pacientes", "id_pacientes", id_paciente, False)
                     pac = pac_list[0] if pac_list else {}
                     id_enfermera = pac.get("id_enfermera_principal")
                 except Exception as e:
                     print(f"[Popup] Error paciente: {e}")
             if id_doctor:
                 try:
-                    doc_list = _mysql_get("usuarios", "id_usuarios", id_doctor)
+                    doc_list = _mysql_get("usuarios", "id_usuarios", id_doctor, False)
                     doc = doc_list[0] if doc_list else {}
                 except Exception as e:
                     print(f"[Popup] Error doctor: {e}")
             if id_enfermera:
                 try:
-                    enf_list = _mysql_get("usuarios", "id_usuarios", id_enfermera)
+                    enf_list = _mysql_get("usuarios", "id_usuarios", id_enfermera, False)
                     enf = enf_list[0] if enf_list else {}
                 except Exception as e:
                     print(f"[Popup] Error enfermera: {e}")
@@ -472,6 +472,10 @@ class CalendarioRecordatorios(ttk.Frame):
         inner.bind("<Configure>", lambda e: sc_canvas.configure(scrollregion=sc_canvas.bbox("all")))
         sc_canvas.bind("<Configure>", lambda e, wid=win_id: sc_canvas.itemconfig(wid, width=e.width))
 
+        tipo_usu = (self.usuario or {}).get("us_tipo_usuario", "")
+        puede_editar_usuarios    = tipo_usu == "Administrador"
+        puede_editar_resto       = tipo_usu in ("Administrador", "Doctor")
+
         # ── Sección Evento ──
         self._seccion(inner, "Evento", [
             ("Título", titulo),
@@ -481,40 +485,42 @@ class CalendarioRecordatorios(ttk.Frame):
             ("Estado", raw.get("re_estado", "—")),
             ("Observaciones", raw.get("re_observaciones", "—")),
         ], BG_HDR, BG_BODY,
-        link_cmd=lambda iv=id_evento: self._navegar("mongo", "Actualizar eventos", id_seleccionado=iv))
+        link_cmd=(lambda iv=id_evento: self._navegar("mongo", "Actualizar eventos", id_seleccionado=iv)) if puede_editar_resto else None)
 
         # ── Sección Tratamiento ──
         if trat:
             self._seccion(inner, "Tratamiento", self._filtrar_campos(trat, incluir_identificador=True), BG_HDR, BG_BODY,
-                         link_cmd=lambda it=id_trat: self._navegar("mysql", "Actualizar tratamientos", id_seleccionado=it) if it else None)
+                         link_cmd=(lambda it=id_trat: self._navegar("mysql", "Actualizar tratamientos", id_seleccionado=it) if it else None) if puede_editar_resto else None)
         else:
             self._seccion(inner, "Tratamiento", [("Detalle", "Sin tratamiento asociado")], BG_HDR, BG_BODY)
 
         # ── Sección Paciente ──
         if pac:
             self._seccion(inner, "Paciente", self._filtrar_campos(pac, incluir_identificador=True), BG_HDR, BG_BODY,
-                         link_cmd=lambda ip=id_paciente: self._navegar("mysql", "Actualizar pacientes", id_seleccionado=ip) if ip else None)
+                         link_cmd=(lambda ip=id_paciente: self._navegar("mysql", "Actualizar pacientes", id_seleccionado=ip) if ip else None) if puede_editar_resto else None)
         else:
             self._seccion(inner, "Paciente", [("Detalle", "Sin paciente asociado")], BG_HDR, BG_BODY)
 
         # ── Sección Doctor ──
         if doc:
             self._seccion(inner, "Doctor", self._filtrar_campos(doc, incluir_identificador=True), BG_HDR, BG_BODY,
-                         link_cmd=lambda id_d=id_doctor: self._navegar("mysql", "Actualizar usuarios", id_seleccionado=id_d) if id_d else None)
+                         link_cmd=(lambda id_d=id_doctor: self._navegar("mysql", "Actualizar usuarios", id_seleccionado=id_d) if id_d else None) if puede_editar_usuarios else None)
         else:
             self._seccion(inner, "Doctor", [("Detalle", "Sin doctor asociado")], BG_HDR, BG_BODY)
 
         # ── Sección Enfermera ──
         if enf:
             self._seccion(inner, "Enfermera", self._filtrar_campos(enf, incluir_identificador=True), BG_HDR, BG_BODY,
-                         link_cmd=lambda id_e=id_enfermera: self._navegar("mysql", "Actualizar usuarios", id_seleccionado=id_e) if id_e else None)
+                         link_cmd=(lambda id_e=id_enfermera: self._navegar("mysql", "Actualizar usuarios", id_seleccionado=id_e) if id_e else None) if puede_editar_usuarios else None)
         else:
             self._seccion(inner, "Enfermera", [("Detalle", "Sin enfermera asociada")], BG_HDR, BG_BODY)
 
         # ── Sección Medicinas ──
         if medicinas:
             for i, med in enumerate(medicinas, start=1):
-                self._seccion(inner, f"Medicina {i}", self._filtrar_campos(med, incluir_identificador=True), BG_HDR, BG_BODY)
+                id_med = med.get("id_medicamentos")
+                self._seccion(inner, f"Medicina {i}", self._filtrar_campos(med, incluir_identificador=True), BG_HDR, BG_BODY,
+                             link_cmd=(lambda im=id_med: self._navegar("mysql", "Actualizar medicamentos", id_seleccionado=im) if im else None) if puede_editar_usuarios else None)
         else:
             self._seccion(inner, "Medicinas", [("Detalle", "Sin medicinas asociadas al tratamiento")], BG_HDR, BG_BODY)
 
