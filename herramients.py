@@ -10,7 +10,18 @@ from db_mysql import obtener_registros
 from db_mongo import obtener_tabla
 
 
-def agregar_boton_mostrar_contrasena(parent, entry, row, column, sticky="w", padx=(6, 0), pady=0, width=3, bootstyle="outline-secondary"):
+def agregar_boton_mostrar_contrasena(
+        parent,
+        entry,
+        row,
+        column,
+        sticky="w",
+        padx=(
+            6,
+            0),
+    pady=0,
+    width=3,
+        bootstyle="outline-secondary"):
     mostrar = tk.BooleanVar(value=False)
 
     def toggle_password_visibility():
@@ -96,19 +107,18 @@ def navegar_a_pagina(frame, nombre_clase, **kwargs):
         "Crear eventos": CrearEventosMongo,
         "Consultar eventos": ConsultarEventosMongo
     }
-    
-    
 
     for widget in frame.winfo_children():
         widget.destroy()
 
     clase_instanciar = paginas.get(nombre_clase)
     if not clase_instanciar:
-        raise Exception(f"diccionario paginas no conoce ese archivo: {nombre_clase}")
+        raise Exception(
+            f"diccionario paginas no conoce ese archivo: {nombre_clase}")
 
     clase_instanciar(frame, **kwargs)
 
- 
+
 def obtener_columnas(columnas, tipo_usuario=""):
     if tipo_usuario == "Administrador":
         columnas_ocultar = {"contraseña", "password", "passwd"}
@@ -120,7 +130,6 @@ def obtener_columnas(columnas, tipo_usuario=""):
         return any(token in texto for token in columnas_ocultar)
 
     return [columna for columna in columnas if not debe_ocultarse(columna)]
-    
 
 
 def regresar_string(titulos):
@@ -136,7 +145,8 @@ def regresar_string(titulos):
     return resultado
 
 
-# id_registo = 5, opciones = [(1, "juan"), (5, "yanet")], resultado o indice encontrado igual a 1
+# id_registo = 5, opciones = [(1, "juan"), (5, "yanet")], resultado o
+# indice encontrado igual a 1
 
 def obtener_indice(id_registro: int, opciones: list[tuple]):
     indice_encontrado = 0
@@ -148,116 +158,108 @@ def obtener_indice(id_registro: int, opciones: list[tuple]):
 
     return 0
 
+
 def mostrar_recordatorios():
-    dif_eventos= [15, 5, 0]
+    dif_eventos = [15, 5, 0]
     while True:
         time.sleep(50)
         eventos = obtener_tabla("consultas")
-        
-        
-        
-        
-        
+
         for evento in eventos:
             fecha_partes = evento["re_fecha"].split("-")
-            
-            
-            year_1= fecha_partes[0]
-            mes_1=fecha_partes[1]
+
+            year_1 = fecha_partes[0]
+            mes_1 = fecha_partes[1]
             dia_1 = fecha_partes[2]
-            
+
             if evento["re_estado"] == "Completado":
                 continue
-           
+
             hora_partes = evento["re_hora_inicio"].split(":")
-            hora= int(hora_partes[0]) 
+            hora = int(hora_partes[0])
             minuto = int(hora_partes[1])
 
             ahora = datetime.now()
             year_2 = ahora.strftime("%Y")
             mes_2 = ahora.strftime("%m")
             dia_2 = ahora.strftime("%d")
-            
+
             hora_a = int(ahora.strftime("%H"))
             minuto_a = int(ahora.strftime("%M"))
-            
-            
-            
-            
+
             if year_1 != year_2 or mes_1 != mes_2 or dia_1 != dia_2:
-                
+
                 continue
-            
-            
+
             diff_hora = hora - hora_a
             diff_minutos = minuto - minuto_a
-            
-            
+
             if diff_hora == 0:
-                print(f"{year_1} {mes_1} {dia_1} {hora} {minuto} - {year_2} {mes_1} {mes_2} {hora_a} {minuto_a}  ")  
+                print(
+                    f"{year_1} {mes_1} {dia_1} {hora} {minuto} - {year_2} {mes_1} {mes_2} {hora_a} {minuto_a}  ")
                 print(f" La diferencia es {diff_hora} {diff_minutos} ")
-                if diff_minutos in dif_eventos: #Numeros positivos son minutos faltantes
-                    
-                    tratamiento = obtener_registros("tratamientos", "id_tratamientos", evento["id_tr"] )[0]
-                    paciente = obtener_registros("pacientes", "id_pacientes", tratamiento.get("id_paciente"))[0]
-                    enfermera = obtener_registros("usuarios", "id_usuarios", paciente.get("id_enfermera_principal"))[0]
-                    doctor = obtener_registros("usuarios", "id_usuarios", tratamiento.get("id_doctor"))[0]
+                if diff_minutos in dif_eventos:  # Numeros positivos son minutos faltantes
+
+                    tratamiento = obtener_registros(
+                        "tratamientos", "id_tratamientos", evento["id_tr"])[0]
+                    paciente = obtener_registros(
+                        "pacientes", "id_pacientes", tratamiento.get("id_paciente"))[0]
+                    enfermera = obtener_registros(
+                        "usuarios", "id_usuarios", paciente.get("id_enfermera_principal"))[0]
+                    doctor = obtener_registros(
+                        "usuarios", "id_usuarios", tratamiento.get("id_doctor"))[0]
                     observacion_evento = evento["re_observaciones"]
-                    
-                    
-                    
+
                     frecuencia = evento["re_frecuencia"]
                     hora_inicio = evento["re_hora_inicio"]
                     hora_final = evento["re_hora_fin"]
-                    
-                    
+
                     """ tr_fecha_inicial = obtener_registros("tratamientos", "tr_fecha_inicio", tratamiento.get("tr_fecha_inicio"))[5].split("-")
                     fecha_mes_1= int(tr_fecha_inicial[1])
                     fecha_dia_1 = int(tr_fecha_inicial[2])
-                    
+
                     tr_fecha_final = obtener_registros("tratamientos", "tr_fecha_final", tratamiento.get("tr_fecha_final"))[6].split("-")
                     fecha_mes_2= int(tr_fecha_inicial[1])
                     fecha_dia_2 = int(tr_fecha_final[2])
-                    
+
                     dif_mes = fecha_mes_1 - fecha_mes_2
                     print(dif_mes)
                     dif_dia = fecha_dia_1 - fecha_dia_2
                     print(dif_dia) """
-                   
-                    messagebox.showinfo(
-                            f"📅 {evento['re_titulo']}\n",
-                            (
-                                
-                                f"⏰ Tu evento comienza en {diff_minutos} minutos\n\n"
-                                
-                                f"💊 Tratamiento: {tratamiento.get('tr_nombre')}"
-                                
-                                f"💊 Fecha de inicio del tratamiento: {tratamiento.get('tr_fecha_inicio')}"
-                                f"💊 Fecha final del tratamiento: {tratamiento.get('tr_fecha_final')}\n\n"
-                                
-                                
-                                f"🕒 Hora de inicio del evento: {hora_inicio}\n"
-                                f"🕒 Hora de final del evento: {hora_final}\n\n"
-                                
-                                f"🧑 Paciente: {paciente.get('pa_nombre')} {paciente.get('pa_apllidos')}\n\n"
-                                f"🧑 Nombre del contacto de emergencia: {paciente.get('pa_nombre_contacto_emergencia')}\n\n"
-                                f"🧑 Número del contatco de emergencia {paciente.get('pa_tel_contatco_emergencia')}\n\n"
-                                
-                                 
-                                f"👩‍⚕️ Enfermera: {enfermera.get('us_nombre')} {enfermera.get('us_apellidos')}\n"
-                                f" 🆔 Cédula profesional: {enfermera.get('us_cedula')}\n"
-                                f" 🆔 Especialidad: {enfermera.get('us_especialidad')}\n\n"
-                                
-                                f"👨‍⚕️ Doctor: {doctor.get('us_nombre')} {doctor.get('us_apellidos')}\n\n"
-                                f" 🆔 Cédula profesional: {doctor.get('us_cedula')}\n"
-                                f" 🆔 Especialidad: {doctor.get('us_especialidad')}\n\n"
-                                
-                               
-                                f"📝 Observación evento: {observacion_evento}\n"
-                                f"💊 Observación tratamiento: {tratamiento.get('tr_descripcion')}"
-                            ),
-                        )
 
+                    messagebox.showinfo(
+                        f"📅 {evento['re_titulo']}\n",
+                        (
+
+                            f"⏰ Tu evento comienza en {diff_minutos} minutos\n\n"
+
+                            f"💊 Tratamiento: {tratamiento.get('tr_nombre')}"
+
+                            f"💊 Fecha de inicio del tratamiento: {tratamiento.get('tr_fecha_inicio')}"
+                            f"💊 Fecha final del tratamiento: {tratamiento.get('tr_fecha_final')}\n\n"
+
+
+                            f"🕒 Hora de inicio del evento: {hora_inicio}\n"
+                            f"🕒 Hora de final del evento: {hora_final}\n\n"
+
+                            f"🧑 Paciente: {paciente.get('pa_nombre')} {paciente.get('pa_apllidos')}\n\n"
+                            f"🧑 Nombre del contacto de emergencia: {paciente.get('pa_nombre_contacto_emergencia')}\n\n"
+                            f"🧑 Número del contatco de emergencia {paciente.get('pa_tel_contatco_emergencia')}\n\n"
+
+
+                            f"👩‍⚕️ Enfermera: {enfermera.get('us_nombre')} {enfermera.get('us_apellidos')}\n"
+                            f" 🆔 Cédula profesional: {enfermera.get('us_cedula')}\n"
+                            f" 🆔 Especialidad: {enfermera.get('us_especialidad')}\n\n"
+
+                            f"👨‍⚕️ Doctor: {doctor.get('us_nombre')} {doctor.get('us_apellidos')}\n\n"
+                            f" 🆔 Cédula profesional: {doctor.get('us_cedula')}\n"
+                            f" 🆔 Especialidad: {doctor.get('us_especialidad')}\n\n"
+
+
+                            f"📝 Observación evento: {observacion_evento}\n"
+                            f"💊 Observación tratamiento: {tratamiento.get('tr_descripcion')}"
+                        ),
+                    )
 
 
 def encriptar_contrasena(contrasena):

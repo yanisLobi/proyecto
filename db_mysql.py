@@ -6,12 +6,12 @@ def obtener_tabla(nombre_tabla, solo_activos=True):
     cursor = conexion.cursor(dictionary=True)
     letras = nombre_tabla[:2]
     valor_columna = letras + "_activo"
-    
+
     if solo_activos:
         query = f"SELECT * FROM {nombre_tabla} WHERE {valor_columna} = 1"
     else:
         query = f"SELECT * FROM {nombre_tabla}"
-        
+
     print(f"obtener_tabla: {query} \n")
     cursor.execute(query)
     resultados = cursor.fetchall()
@@ -24,7 +24,7 @@ def borrar_registro_fisico(nombre_tabla, nombre_columna, valor_columna):
     conexion = conectar()
     cursor = conexion.cursor()
     query = f"DELETE FROM {nombre_tabla} WHERE {nombre_columna} = {valor_columna}"
-    
+
     print(f"borrar_registro_fisico: {query} \n")
     cursor.execute(query)
     conexion.commit()
@@ -47,13 +47,17 @@ def borrar_registro(nombre_tabla, nombre_columna, valor_columna):
     conexion.close()
 
 
-def obtener_registros(nombre_tabla, nombre_columna, valor_columna, solo_activos=True):
+def obtener_registros(
+        nombre_tabla,
+        nombre_columna,
+        valor_columna,
+        solo_activos=True):
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
-    
+
     letras = nombre_tabla[:2]
     tabla_letras = letras + "_activo"
-    
+
     if solo_activos:
         query = f"SELECT * FROM {nombre_tabla} WHERE {nombre_columna} = {valor_columna} AND {tabla_letras} = 1"
     else:
@@ -80,8 +84,9 @@ def insertar_registro(tabla, diccionario_usuario):
     conexion.commit()
     cursor.close()
     conexion.close()
-    
+
     return id_generado
+
 
 def insertar_receta(id_tratamiento, id_medicamento):
     conexion = conectar()
@@ -97,7 +102,12 @@ def insertar_receta(id_tratamiento, id_medicamento):
     cursor.close()
     conexion.close()
 
-def actualizar_registro(tabla, diccionario_usuario, nombre_columna, valor_columna):
+
+def actualizar_registro(
+        tabla,
+        diccionario_usuario,
+        nombre_columna,
+        valor_columna):
     usuario_keys = "=%s, ".join(diccionario_usuario.keys())
 
     sql = f"UPDATE {tabla} set {usuario_keys} =%s WHERE {nombre_columna} = {valor_columna}"
@@ -110,7 +120,13 @@ def actualizar_registro(tabla, diccionario_usuario, nombre_columna, valor_column
     cursor.close()
     conexion.close()
 
-def obtener_valores(nombre_tabla, nombre_columna, nombre_columna1, nombre_columna2, solo_activos=True):
+
+def obtener_valores(
+        nombre_tabla,
+        nombre_columna,
+        nombre_columna1,
+        nombre_columna2,
+        solo_activos=True):
     conexion = conectar()
     cursor = conexion.cursor()
 
@@ -125,7 +141,12 @@ def obtener_valores(nombre_tabla, nombre_columna, nombre_columna1, nombre_column
     conexion.close()
     return resultados
 
-def obtener_valores_medicamentos(nombre_tabla, nombre_columna, nombre_columna1, solo_activos=True):
+
+def obtener_valores_medicamentos(
+        nombre_tabla,
+        nombre_columna,
+        nombre_columna1,
+        solo_activos=True):
     conexion = conectar()
     cursor = conexion.cursor()
 
@@ -140,7 +161,13 @@ def obtener_valores_medicamentos(nombre_tabla, nombre_columna, nombre_columna1, 
     conexion.close()
     return resultados
 
-def obtener_valores_usuarios(nombre_columna, nombre_columna1, nombre_columna2, tipo_usuario, solo_activos=True):
+
+def obtener_valores_usuarios(
+        nombre_columna,
+        nombre_columna1,
+        nombre_columna2,
+        tipo_usuario,
+        solo_activos=True):
     conexion = conectar()
     cursor = conexion.cursor()
 
@@ -153,6 +180,7 @@ def obtener_valores_usuarios(nombre_columna, nombre_columna1, nombre_columna2, t
     cursor.close()
     conexion.close()
     return resultados
+
 
 def obtener_medicinas_de_tratamientos(id_tratamiento):
     conexion = conectar()
@@ -173,6 +201,7 @@ def obtener_medicinas_de_tratamientos(id_tratamiento):
     conexion.close()
     return medicamentos
 
+
 def eliminar_recetas_tratamiento(id_tratamiento):
     conexion = conectar()
     cursor = conexion.cursor()
@@ -182,12 +211,13 @@ def eliminar_recetas_tratamiento(id_tratamiento):
         WHERE id_tratamiento = %s
     """
     print(f"eliminar_recetas_tratamiento: {sql} \n")
-    
+
     cursor.execute(sql, (id_tratamiento,))
     conexion.commit()
     cursor.close()
     conexion.close()
-    
+
+
 def obtener_valores_recetas(id_tratamiento):
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
@@ -213,6 +243,7 @@ def obtener_valores_recetas(id_tratamiento):
     conexion.close()
     return recetas
 
+
 def obtener_pacientes_doctor(id_doctor):
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
@@ -232,6 +263,7 @@ def obtener_pacientes_doctor(id_doctor):
     conexion.close()
     return pacientes
 
+
 def obtener_tratamientos_enfermera(id_enfermera_principal):
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
@@ -240,7 +272,7 @@ def obtener_tratamientos_enfermera(id_enfermera_principal):
         SELECT DISTINCT t.*
         FROM tratamientos t
         INNER JOIN pacientes p
-            ON p.id_pacientes = t.id_paciente 
+            ON p.id_pacientes = t.id_paciente
         WHERE t.tr_activo =1 AND p.pa_activo =1 AND p.id_enfermera_principal = %s
     """
     print(f"obtener_tratamientos_enfermera: {consulta} \n")
@@ -259,7 +291,8 @@ def obtener_ids_tratamientos_visibles(tipo_usuario, id_usuario):
     if tipo_usuario == "Administrador":
         return None
     if tipo_usuario == "Doctor":
-        tratamientos = obtener_registros("tratamientos", "id_doctor", id_usuario, False)
+        tratamientos = obtener_registros(
+            "tratamientos", "id_doctor", id_usuario, False)
     elif tipo_usuario == "Enfermera":
         tratamientos = obtener_tratamientos_enfermera(id_usuario)
     else:

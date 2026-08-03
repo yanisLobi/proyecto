@@ -86,11 +86,22 @@ class ListaEventosMongo:
             "re_medicamento"
         )
 
-        self.tree = ttk.Treeview(self.frame, columns=self.columnas_tupla, show="headings")
+        self.tree = ttk.Treeview(
+            self.frame,
+            columns=self.columnas_tupla,
+            show="headings")
         ancho_columna = int(1100 / len(self.columnas_tupla))
         for columna in self.columnas_tupla:
-            self.tree.heading(columna, text=regresar_string(columna), anchor="center")
-            self.tree.column(columna, width=ancho_columna, minwidth=50, stretch=False, anchor="center")
+            self.tree.heading(
+                columna,
+                text=regresar_string(columna),
+                anchor="center")
+            self.tree.column(
+                columna,
+                width=ancho_columna,
+                minwidth=50,
+                stretch=False,
+                anchor="center")
 
         self.fk_paginas = {
             "id_tr": "Actualizar tratamientos",
@@ -120,7 +131,8 @@ class ListaEventosMongo:
         for registro in obtener_tabla(self.tabla):
             registro = cast(dict[str, Any], registro)
             # filtrar por tratamientos visibles (None = sin restricción)
-            if ids_permitidos is not None and str(registro.get("id_tr", "")) not in ids_permitidos:
+            if ids_permitidos is not None and str(
+                    registro.get("id_tr", "")) not in ids_permitidos:
                 continue
             valores = []
             fk_ids = {}
@@ -157,7 +169,8 @@ class ListaEventosMongo:
     def obtener_id_seleccionado(self):
         item_id = self.tree.selection()
         if not item_id:
-            messagebox.showinfo("Error", "Debes seleccionar un recordatorio de la tabla")
+            messagebox.showinfo(
+                "Error", "Debes seleccionar un recordatorio de la tabla")
             return None
 
         valores = self.tree.item(item_id[0], "values")
@@ -173,7 +186,9 @@ class ListaEventosMongo:
             return
 
         borrar_registro(self.tabla, "id", id_seleccionado)
-        messagebox.showinfo("Eliminar", f"Haz eliminado el recordatorio con ID = {id_seleccionado}")
+        messagebox.showinfo(
+            "Eliminar",
+            f"Haz eliminado el recordatorio con ID = {id_seleccionado}")
         self.recargar_tabla()
 
     def ir_actualizar(self):
@@ -190,7 +205,8 @@ class ListaEventosMongo:
 
     def _cargar_display_map_tratamientos(self):
         try:
-            tratamientos = obtener_tabla_mysql("tratamientos", solo_activos=False)
+            tratamientos = obtener_tabla_mysql(
+                "tratamientos", solo_activos=False)
             pacientes = obtener_tabla_mysql("pacientes", solo_activos=False)
             mapa_pacientes = {
                 str(p.get("id_pacientes", "")): f"{p.get('pa_nombre', '')} {p.get('pa_apellidos', '')}".strip()

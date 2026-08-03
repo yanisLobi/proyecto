@@ -1,5 +1,6 @@
-./.venv2/Scripts/python.exe -m pip install mysql-connector-python
+./.venv2/Scripts/python.exe -m pip install -r requirements.txt
 ./.venv2/Scripts/python.exe -m pip freeze
 ./.venv2/Scripts/python.exe -m pip install ttkbootstrap
 ./.venv2/Scripts/python.exe -m pip install --upgrade --force-reinstall ttkbootstrap
 pip install --upgrade --force-reinstall ttkbootstrap
+autopep8 --in-place --recursive --aggressive --aggressive --exclude .venv .

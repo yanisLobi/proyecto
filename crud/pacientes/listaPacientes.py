@@ -9,8 +9,8 @@ from db_mysql import obtener_pacientes_doctor, obtener_registros, obtener_tabla,
 
 class ListaPacientes:
     def __init__(self, parent, usuario={}):
-        
-        self.tabla = 'pacientes' 
+
+        self.tabla = 'pacientes'
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
         self.usuario = usuario
@@ -45,39 +45,48 @@ class ListaPacientes:
                 bootstyle="info",
             )
             self.boton_actualizar.grid(row=0, column=2, sticky="ew", padx=6)
-        
+
         self.id_usuario = usuario.get("id_usuarios")
-        
+
         self.etiqueta = ttkb.Label(
             self.frame,
             text=f"lista de {self.tabla}",
             font=("Arial", 14, "bold")
         )
         self.etiqueta.pack(pady=(40, 30))
-        
+
         try:
             lista_pacientes = obtener_tabla(self.tabla)
             primer_paciente = lista_pacientes[0]
         except Exception as e:
             self.etiqueta_error = ttkb.Label(
-                        self.frame,
-                        text=f"No se encontraron registros",
-                        font=("Arial", 14, "bold")
-                    )
+                self.frame,
+                text=f"No se encontraron registros",
+                font=("Arial", 14, "bold")
+            )
             self.etiqueta_error.pack(pady=(40, 30))
             return
-        
-        self.columnas = obtener_columnas(primer_paciente.keys(), self.tipo_usuario)
+
+        self.columnas = obtener_columnas(
+            primer_paciente.keys(), self.tipo_usuario)
 
         self.columnas_tupla = tuple(self.columnas)
-        self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")
-        ancho_columna =int(1000/len(self.columnas))
+        self.tree = ttk. Treeview(
+            self.frame,
+            columns=self.columnas_tupla,
+            show="headings")
+        ancho_columna = int(1000 / len(self.columnas))
         for columna in self.columnas:
-            
+
             self.tree.heading(columna, text=regresar_string(columna))
-            self.tree.column(columna, width=ancho_columna, minwidth=30, stretch=False)
-        
-        # Mapear la foreign key con la pagina que se abre cuando le damos doble clic
+            self.tree.column(
+                columna,
+                width=ancho_columna,
+                minwidth=30,
+                stretch=False)
+
+        # Mapear la foreign key con la pagina que se abre cuando le damos doble
+        # clic
         self.fk_paginas = {
             "id_enfermera_principal": "Actualizar usuarios",
         }
@@ -100,14 +109,15 @@ class ListaPacientes:
         self.tree.pack(pady=(10, 0))
 
     def recargar_tabla(self):
-        
+
         if self.tipo_usuario == "Doctor":
             lista_pacientes = obtener_pacientes_doctor(self.id_usuario)
         elif self.tipo_usuario == "Administrador":
             lista_pacientes = obtener_tabla(self.tabla, solo_activos=False)
-        else: # Enfermeras
-            lista_pacientes = obtener_registros(self.tabla, "id_enfermera_principal", self.id_usuario)
-            
+        else:  # Enfermeras
+            lista_pacientes = obtener_registros(
+                self.tabla, "id_enfermera_principal", self.id_usuario)
+
         # limpiar filas
         for item in self.tree.get_children():
             self.tree.delete(item)
@@ -133,10 +143,14 @@ class ListaPacientes:
             iid = self.tree.insert("", tk.END, values=tuple(valores))
             self.fk_ids_por_fila[iid] = fk_ids
         self.on_seleccion()
-    
+
     def ir_crear(self):
-        navegar_a_pagina(self.frame, f"Crear {self.tabla}", usuario=self.usuario)
-        
+        navegar_a_pagina(
+            self.frame,
+            f"Crear {
+                self.tabla}",
+            usuario=self.usuario)
+
     def on_seleccion(self, event=None):
         if self.boton_actualizar is None and self.boton_eliminar is None:
             return
@@ -145,11 +159,13 @@ class ListaPacientes:
             self.boton_actualizar.config(state=estado)
         if self.boton_eliminar is not None:
             self.boton_eliminar.config(state=estado)
-            
+
     def obtener_id_seleccionado(self):
         item_id = self.tree.selection()
         if not item_id:
-            messagebox.showinfo("Error", f"Debes seleccionar un {self.tabla.title()} de la tabla")
+            messagebox.showinfo(
+                "Error", f"Debes seleccionar un {
+                    self.tabla.title()} de la tabla")
             return
 
         self.valores = self.tree.item(item_id[0], "values")
@@ -157,33 +173,46 @@ class ListaPacientes:
             messagebox.showinfo("Error", "La fila seleccionada no tiene datos")
             return
 
-        return self.valores[0]       
+        return self.valores[0]
+
     def borrar(self):
-        
+
         id = self.obtener_id_seleccionado()
         borrar_registro(self.tabla, self.columnas_tupla[0], id)
-        messagebox.showinfo("Eliminar", f"Haz eliminado el {self.tabla.title()} con ID = {id}")
+        messagebox.showinfo(
+            "Eliminar", f"Haz eliminado el {
+                self.tabla.title()} con ID = {id}")
         self.recargar_tabla()
-    
+
     def ir_actualizar(self):
-        
+
         item_id = self.tree.selection()
         if not item_id:
-            messagebox.showinfo("Sin selección", f"seleccione un {self.tabla} ")
-            
+            messagebox.showinfo(
+                "Sin selección",
+                f"seleccione un {
+                    self.tabla} ")
+
             return
-        
+
         id = self.obtener_id_seleccionado()
-        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, usuario=self.usuario)
-        #ActualizarUsuario(self.frame, self.id_selccionado)
+        navegar_a_pagina(
+            self.frame,
+            f"Actualizar {
+                self.tabla}",
+            id_seleccionado=id,
+            usuario=self.usuario)
+        # ActualizarUsuario(self.frame, self.id_selccionado)
 
     def _cargar_display_map_enfermeras(self):
         try:
-            filas = obtener_valores_usuarios("id_usuarios", "us_nombre", "us_apellidos", "Enfermera")
+            filas = obtener_valores_usuarios(
+                "id_usuarios", "us_nombre", "us_apellidos", "Enfermera")
         except Exception:
             return {}
 
-        return {str(id_us): f"{nombre} {apellido}".strip() for id_us, nombre, apellido in filas}
+        return {str(id_us): f"{nombre} {apellido}".strip()
+                for id_us, nombre, apellido in filas}
 
     def obtener_celda_evento(self, event):
         region = self.tree.identify_region(event.x, event.y)
@@ -220,7 +249,9 @@ class ListaPacientes:
         if not pagina:
             return
 
-        id_real = self.fk_ids_por_fila.get(row_iid, {}).get(col_name, cell_value)
+        id_real = self.fk_ids_por_fila.get(
+            row_iid, {}).get(
+            col_name, cell_value)
         if id_real in (None, ""):
             return
 
@@ -237,4 +268,3 @@ class ListaPacientes:
             self.tree.configure(cursor="hand2")
         else:
             self.tree.configure(cursor="")
-

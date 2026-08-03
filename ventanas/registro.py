@@ -34,5 +34,6 @@ def iniciar_registro(ventana_login):
     # Ejecutar la aplicación
     ventana.mainloop()
 
+
 if __name__ == "__main__":
     pass

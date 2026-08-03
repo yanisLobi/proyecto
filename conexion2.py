@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 
+
 class Conexion:
     def __init__(self):
         self.url = "mongodb+srv://2025310115_db_user:o4QXDEqGOwWePdNs@cluster0.b5kz2o4.mongodb.net/?appName=Cluster0"
@@ -20,9 +21,8 @@ class Conexion:
     def obtener_coleccion(self):
         return self.coleccion
 
+
 if __name__ == "__main__":
     conexion = Conexion()
     print(conexion.obtener_coleccion())
     print("conexion")
-    
-    

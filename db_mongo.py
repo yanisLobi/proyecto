@@ -54,14 +54,16 @@ def obtener_tabla(nombre_tabla):
 
 def borrar_registro(nombre_tabla, nombre_columna, valor_columna):
     coleccion = _obtener_coleccion(nombre_tabla)
-    valor = _transformar_id(valor_columna) if nombre_columna in ["id", "_id"] else valor_columna
+    valor = _transformar_id(valor_columna) if nombre_columna in [
+        "id", "_id"] else valor_columna
     columna = "_id" if nombre_columna == "id" else nombre_columna
     coleccion.delete_one({columna: valor})
 
 
 def obtener_registros(nombre_tabla, nombre_columna, valor_columna):
     coleccion = _obtener_coleccion(nombre_tabla)
-    valor = _transformar_id(valor_columna) if nombre_columna in ["id", "_id"] else valor_columna
+    valor = _transformar_id(valor_columna) if nombre_columna in [
+        "id", "_id"] else valor_columna
     columna = "_id" if nombre_columna == "id" else nombre_columna
 
     resultados = [
@@ -82,20 +84,29 @@ def insertar_registro(tabla, diccionario_usuario):
     coleccion.insert_one(documento)
 
 
-def actualizar_registro(tabla, diccionario_usuario, nombre_columna, valor_columna):
+def actualizar_registro(
+        tabla,
+        diccionario_usuario,
+        nombre_columna,
+        valor_columna):
     coleccion = _obtener_coleccion(tabla)
     documento = deepcopy(diccionario_usuario)
 
     if "id" in documento:
         del documento["id"]
 
-    valor = _transformar_id(valor_columna) if nombre_columna in ["id", "_id"] else valor_columna
+    valor = _transformar_id(valor_columna) if nombre_columna in [
+        "id", "_id"] else valor_columna
     columna = "_id" if nombre_columna == "id" else nombre_columna
 
     coleccion.update_one({columna: valor}, {"$set": documento})
 
 
-def obtener_valores(nombre_tabla, nombre_columna, nombre_columna1, nombre_columna2):
+def obtener_valores(
+        nombre_tabla,
+        nombre_columna,
+        nombre_columna1,
+        nombre_columna2):
     coleccion = _obtener_coleccion(nombre_tabla)
     resultados = []
     for doc in coleccion.find({}):
@@ -108,7 +119,11 @@ def obtener_valores(nombre_tabla, nombre_columna, nombre_columna1, nombre_column
     return resultados
 
 
-def obtener_valores_usuarios(nombre_columna, nombre_columna1, nombre_columna2, tipo_usuario):
+def obtener_valores_usuarios(
+        nombre_columna,
+        nombre_columna1,
+        nombre_columna2,
+        tipo_usuario):
     coleccion = _obtener_coleccion("usuarios")
     resultados = []
     for doc in coleccion.find({"us_tipo_usuario": tipo_usuario}):
@@ -124,7 +139,8 @@ def obtener_valores_usuarios(nombre_columna, nombre_columna1, nombre_columna2, t
 def obtener_tabla_condicion(nombre_tabla, columna_condicion, valor_condicion):
     coleccion = _obtener_coleccion(nombre_tabla)
     columna = "_id" if columna_condicion == "id" else columna_condicion
-    valor = _transformar_id(valor_condicion) if columna in ["_id", "id"] else valor_condicion
+    valor = _transformar_id(valor_condicion) if columna in [
+        "_id", "id"] else valor_condicion
 
     resultados = [
         _normalizar_documento(doc)

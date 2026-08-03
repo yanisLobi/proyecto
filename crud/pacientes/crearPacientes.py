@@ -10,7 +10,7 @@ from db_mysql import insertar_registro, obtener_valores_usuarios
 
 class CrearPacientes:
     def __init__(self, parent, titulo="Crear", usuario={}):
-        
+
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
         self.tabla = "pacientes"
@@ -55,78 +55,124 @@ class CrearPacientes:
         form_frame.grid_columnconfigure(2, weight=0)
         form_frame.grid_columnconfigure(3, weight=1)
 
-        ttkb.Label(form_frame, text="Nombre").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(
+            form_frame,
+            text="Nombre").grid(
+            row=0,
+            column=0,
+            sticky="w",
+            padx=(
+                0,
+                10),
+            pady=(
+                0,
+                16))
         self.pa_nombre = ttkb.Entry(form_frame, width=30)
         self.pa_nombre.grid(row=0, column=1, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Apellidos").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(
+            form_frame,
+            text="Apellidos").grid(
+            row=0,
+            column=2,
+            sticky="w",
+            padx=(
+                20,
+                10),
+            pady=(
+                0,
+                16))
         self.pa_apellidos = ttkb.Entry(form_frame, width=30)
         self.pa_apellidos.grid(row=0, column=3, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Fecha de nacimiento").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(
+            form_frame, text="Fecha de nacimiento").grid(
+            row=1, column=0, sticky="w", padx=(
+                0, 10), pady=(
+                0, 16))
         self.pa_fecha_nacimiento = DateEntry(form_frame, year=2026)
-        self.pa_fecha_nacimiento.grid(row=1, column=1, sticky="w", pady=(0, 16))
+        self.pa_fecha_nacimiento.grid(
+            row=1, column=1, sticky="w", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Telefono del Contacto de emergencia").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(
+            form_frame, text="Telefono del Contacto de emergencia").grid(
+            row=1, column=2, sticky="w", padx=(
+                20, 10), pady=(
+                0, 16))
         self.pa_tel_contacto_emergencia = ttkb.Entry(form_frame, width=30)
-        self.pa_tel_contacto_emergencia.grid(row=1, column=3, sticky="ew", pady=(0, 16))
+        self.pa_tel_contacto_emergencia.grid(
+            row=1, column=3, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Nombre del contacto de emergencia").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(
+            form_frame, text="Nombre del contacto de emergencia").grid(
+            row=2, column=0, sticky="w", padx=(
+                0, 10), pady=(
+                0, 16))
         self.pa_nombre_contacto_emergencia = ttkb.Entry(form_frame, width=30)
-        self.pa_nombre_contacto_emergencia.grid(row=2, column=1, sticky="ew", pady=(0, 16))
+        self.pa_nombre_contacto_emergencia.grid(
+            row=2, column=1, sticky="ew", pady=(0, 16))
         # columnspan es para definir cuantas seldad de ancho
-        
-        ttkb.Label(form_frame, text="Enfermera a cargo").grid(row=2, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
-        self.enfermeras = obtener_valores_usuarios("id_usuarios", "us_apellidos", "us_tipo_usuario", "Enfermera")
+
+        ttkb.Label(
+            form_frame, text="Enfermera a cargo").grid(
+            row=2, column=2, sticky="w", padx=(
+                20, 10), pady=(
+                0, 16))
+        self.enfermeras = obtener_valores_usuarios(
+            "id_usuarios", "us_apellidos", "us_tipo_usuario", "Enfermera")
         self.id_enfermera = tk.StringVar(value="ninguno")
         self.combo_id_enfermera = ttk.Combobox(
             form_frame,
             textvariable=self.id_enfermera,
             state="readonly",
             width=27,
-            values= self.enfermeras,
+            values=self.enfermeras,
         )
-        self.combo_id_enfermera.grid(row=2, column=3, sticky="ew", pady=(0, 16))
-        
-         
+        self.combo_id_enfermera.grid(
+            row=2, column=3, sticky="ew", pady=(0, 16))
+
     def limpiar(self):
         limpiar_frame(self.frame)
-    
+
     def ir_lista(self):
-        navegar_a_pagina(self.frame, f"Lista {self.tabla}", usuario=self.usuario)
-        
+        navegar_a_pagina(
+            self.frame,
+            f"Lista {
+                self.tabla}",
+            usuario=self.usuario)
+
     def guardar_valores(self):
-        #actualizar los valores del diccionario con los valores de lo widgets
-        self.nuevo_registro ={
-                        'pa_nombre': '',
-                        'pa_apellidos': '', 
-                        'pa_fecha_nacimiento': "1980-01-01", 
-                        'pa_nombre_contacto_emergencia': '',
-                        'pa_tel_contacto_emergencia': '',
-                        'id_enfermera_principal': '',
-                        
-                        
-                        }
-        
+        # actualizar los valores del diccionario con los valores de lo widgets
+        self.nuevo_registro = {
+            'pa_nombre': '',
+            'pa_apellidos': '',
+            'pa_fecha_nacimiento': "1980-01-01",
+            'pa_nombre_contacto_emergencia': '',
+            'pa_tel_contacto_emergencia': '',
+            'id_enfermera_principal': '',
+
+
+        }
+
         self.nuevo_registro["pa_nombre"] = self.pa_nombre.get()
         self.nuevo_registro["pa_apellidos"] = self.pa_apellidos.get()
-        self.nuevo_registro["pa_fecha_nacimiento"] = self.pa_fecha_nacimiento.get_date().strftime("%Y-%m-%d")
-        self.nuevo_registro["pa_nombre_contacto_emergencia"] = self.pa_nombre_contacto_emergencia.get()
-        self.nuevo_registro["pa_tel_contacto_emergencia"] = self.pa_tel_contacto_emergencia.get()
-        self.nuevo_registro["id_enfermera_principal"] = self.id_enfermera.get().split()[0] #sirve para sacar el id, dentro de muchos valores
-        
-        
-        
-    
+        self.nuevo_registro["pa_fecha_nacimiento"] = self.pa_fecha_nacimiento.get_date(
+        ).strftime("%Y-%m-%d")
+        self.nuevo_registro["pa_nombre_contacto_emergencia"] = self.pa_nombre_contacto_emergencia.get(
+        )
+        self.nuevo_registro["pa_tel_contacto_emergencia"] = self.pa_tel_contacto_emergencia.get(
+        )
+        self.nuevo_registro["id_enfermera_principal"] = self.id_enfermera.get(
+        ).split()[0]  # sirve para sacar el id, dentro de muchos valores
+
     def crear_paciente(self):
         self.guardar_valores()
         insertar_registro(self.tabla, self.nuevo_registro)
-     
+
         messagebox.showinfo("Crear", "Se creó correctamente el paciente")
         navegar_a_pagina(self.frame, "Lista pacientes", usuario=self.usuario)
-        #messabox, se actualizo correctamente.
-        #regresar a lista usuarios
-    
+        # messabox, se actualizo correctamente.
+        # regresar a lista usuarios
+
     def guardar(self):
         self.crear_paciente()
-           

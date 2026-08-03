@@ -1,6 +1,8 @@
+from tkinter import messagebox
 import tkinter as tk
 from tkinter import ttk, messagebox
 import ttkbootstrap as ttkb
+
 
 def mostrar_info():
     info = (
@@ -13,6 +15,7 @@ def mostrar_info():
         f"Scale: {scale.get()}"
     )
     messagebox.showinfo("Información", info)
+
 
 root = ttkb.Window(themename="darkly")
 root.title("Cheatsheet Completo Tkinter")
@@ -36,8 +39,16 @@ chk.pack(pady=5)
 
 # Radiobutton
 var_radio = tk.StringVar(value="Opción 1")
-tk.Radiobutton(root, text="Opción 1", variable=var_radio, value="Opción 1").pack()
-tk.Radiobutton(root, text="Opción 2", variable=var_radio, value="Opción 2").pack()
+tk.Radiobutton(
+    root,
+    text="Opción 1",
+    variable=var_radio,
+    value="Opción 1").pack()
+tk.Radiobutton(
+    root,
+    text="Opción 2",
+    variable=var_radio,
+    value="Opción 2").pack()
 
 # Combobox
 combo = ttk.Combobox(root, values=["A", "B", "C"])
@@ -91,7 +102,11 @@ scroll_frame = ttkb.Frame(root)
 scroll_frame.pack(pady=5)
 scrollbar = tk.Scrollbar(scroll_frame)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-text_scroll = tk.Text(scroll_frame, height=4, width=40, yscrollcommand=scrollbar.set)
+text_scroll = tk.Text(
+    scroll_frame,
+    height=4,
+    width=40,
+    yscrollcommand=scrollbar.set)
 text_scroll.pack(side=tk.LEFT)
 scrollbar.config(command=text_scroll.yview)
 
@@ -104,17 +119,25 @@ tree.insert("", tk.END, values=("Dato 2", "Valor 2"))
 tree.pack(pady=10)
 
 # Button
-btn = ttkb.Button(root, text="Mostrar información", command=mostrar_info, bootstyle="primary")
+btn = ttkb.Button(
+    root,
+    text="Mostrar información",
+    command=mostrar_info,
+    bootstyle="primary")
 btn.pack(pady=10)
 
-#messabox
-import tkinter as tk
-from tkinter import messagebox
+# messabox
+
 
 def saludar():
     messagebox.showinfo("Saludo", "¡Hola! Has presionado el botón.")
 
-btn = ttkb.Button(root, text="Haz clic aquí", command=saludar, bootstyle="primary")
+
+btn = ttkb.Button(
+    root,
+    text="Haz clic aquí",
+    command=saludar,
+    bootstyle="primary")
 btn.pack(pady=50)
 
 root.mainloop()

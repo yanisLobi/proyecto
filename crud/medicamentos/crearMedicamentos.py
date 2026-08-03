@@ -10,12 +10,12 @@ from db_mysql import insertar_registro
 
 class CrearMedicamentos:
     def __init__(self, parent=None, usuario={}, titulo="Crear"):
-        #me queda la duda de que es parent
+        # me queda la duda de que es parent
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
         self.tabla = 'medicamentos'
         self.usuario = usuario
-        self.tipo_usuario = usuario.get("us_tipo_usuario")        
+        self.tipo_usuario = usuario.get("us_tipo_usuario")
         self.etiqueta = ttkb.Label(
             self.frame,
             text=f"{titulo} {self.tabla}",
@@ -55,64 +55,97 @@ class CrearMedicamentos:
         form_frame.grid_columnconfigure(2, weight=0)
         form_frame.grid_columnconfigure(3, weight=1)
 
-        ttkb.Label(form_frame, text="Nombre comercial").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(
+            form_frame, text="Nombre comercial").grid(
+            row=0, column=0, sticky="w", padx=(
+                0, 10), pady=(
+                0, 16))
         self.me_nombre_comercial = ttkb.Entry(form_frame, width=30)
-        self.me_nombre_comercial.grid(row=0, column=1, sticky="ew", pady=(0, 16))
+        self.me_nombre_comercial.grid(
+            row=0, column=1, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Forma farmacéutica").grid(row=0, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
+        ttkb.Label(
+            form_frame, text="Forma farmacéutica").grid(
+            row=0, column=2, sticky="w", padx=(
+                20, 10), pady=(
+                0, 16))
         self.me_forma_farmaceutica = tk.StringVar(value="ninguno")
         self.combo_forma_framaceutica = ttk.Combobox(
             form_frame,
             textvariable=self.me_forma_farmaceutica,
             state="readonly",
             width=27,
-            values=["Sólidas", "Semisólidas", "Líquidas","Inhalables"]
+            values=["Sólidas", "Semisólidas", "Líquidas", "Inhalables"]
         )
-        self.combo_forma_framaceutica.grid(row=0, column=3, sticky="ew", pady=(0, 16))
+        self.combo_forma_framaceutica.grid(
+            row=0, column=3, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Concentración").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(
+            form_frame, text="Concentración").grid(
+            row=1, column=0, sticky="w", padx=(
+                0, 10), pady=(
+                0, 16))
         self.me_concentracion = ttkb.Entry(form_frame, width=30)
         self.me_concentracion.grid(row=1, column=1, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Fecha de caducidad").grid(row=1, column=2, sticky="w", padx=(20, 10), pady=(0, 16))
-        self.me_fecha_caducidad = DateEntry(form_frame, year= 2026)
+        ttkb.Label(
+            form_frame, text="Fecha de caducidad").grid(
+            row=1, column=2, sticky="w", padx=(
+                20, 10), pady=(
+                0, 16))
+        self.me_fecha_caducidad = DateEntry(form_frame, year=2026)
         self.me_fecha_caducidad.grid(row=1, column=3, sticky="w", pady=(0, 16))
 
-        ttkb.Label(form_frame, text="Descripción").grid(row=2, column=0, sticky="nw", padx=(0, 10), pady=(0, 16))
+        ttkb.Label(
+            form_frame, text="Descripción").grid(
+            row=2, column=0, sticky="nw", padx=(
+                0, 10), pady=(
+                0, 16))
         self.me_descripcion = tk.Text(form_frame, width=40, height=4)
         self.me_descripcion.grid(row=2, column=1, sticky="ew", pady=(0, 16))
-        
+
     def limpiar(self):
         limpiar_frame(self.frame)
-    
+
     def ir_lista(self):
-        navegar_a_pagina(self.frame, f"Lista {self.tabla}", usuario=self.usuario)
-        
+        navegar_a_pagina(
+            self.frame,
+            f"Lista {
+                self.tabla}",
+            usuario=self.usuario)
+
     def guardar_valores(self):
-        #actualizar los valores del diccionario con los valores de lo widgets
-        self.nuevo_registro ={
-                        'me_nombre_comercial': '', 
-                        'me_forma_farmaceutica': '', 
-                        'me_concentracion': '',
-                        'me_fecha_caducidad': "1980-01-01", 
-                        'me_descripcion': ''
-                        }
-        
-        self.nuevo_registro["me_nombre_comercial"] = self.me_nombre_comercial.get()
-        self.nuevo_registro["me_forma_farmaceutica"] = self.me_forma_farmaceutica.get()
+        # actualizar los valores del diccionario con los valores de lo widgets
+        self.nuevo_registro = {
+            'me_nombre_comercial': '',
+            'me_forma_farmaceutica': '',
+            'me_concentracion': '',
+            'me_fecha_caducidad': "1980-01-01",
+            'me_descripcion': ''
+        }
+
+        self.nuevo_registro["me_nombre_comercial"] = self.me_nombre_comercial.get(
+        )
+        self.nuevo_registro["me_forma_farmaceutica"] = self.me_forma_farmaceutica.get(
+        )
         self.nuevo_registro["me_concentracion"] = self.me_concentracion.get()
-        self.nuevo_registro["me_fecha_caducidad"] = self.me_fecha_caducidad.get_date().strftime("%Y-%m-%d")
-        self.nuevo_registro["me_descripcion"] = self.me_descripcion.get("1.0","end-1c")
-       
-    
+        self.nuevo_registro["me_fecha_caducidad"] = self.me_fecha_caducidad.get_date(
+        ).strftime("%Y-%m-%d")
+        self.nuevo_registro["me_descripcion"] = self.me_descripcion.get(
+            "1.0", "end-1c")
+
     def crear_medicamentos(self):
         self.guardar_valores()
         insertar_registro(self.tabla, self.nuevo_registro)
-     
+
         messagebox.showinfo("Crear", "Se creó correctamente el medicamento")
-        navegar_a_pagina(self.frame, f"Lista {self.tabla}", usuario=self.usuario)
-        #messabox, se actualizo correctamente.
-        #regresar a lista usuarios
-    
+        navegar_a_pagina(
+            self.frame,
+            f"Lista {
+                self.tabla}",
+            usuario=self.usuario)
+        # messabox, se actualizo correctamente.
+        # regresar a lista usuarios
+
     def guardar(self):
         self.crear_medicamentos()

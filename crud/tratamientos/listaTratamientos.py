@@ -9,8 +9,8 @@ from db_mysql import obtener_registros, obtener_tabla, borrar_registro, obtener_
 
 class ListaTratamientos:
     def __init__(self, parent, usuario={}):
-        
-        self.tabla = 'tratamientos' 
+
+        self.tabla = 'tratamientos'
         self.usuario = usuario
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
@@ -46,15 +46,14 @@ class ListaTratamientos:
                 bootstyle="info",
             )
             self.boton_actualizar.grid(row=0, column=2, sticky="ew", padx=6)
-        
-            
+
         self.etiqueta = ttkb.Label(
             self.frame,
             text=f"lista de {self.tabla}",
             font=("Arial", 14, "bold")
         )
         self.etiqueta.pack(pady=(40, 30))
-        
+
         self.id_usuario = usuario.get("id_usuarios")
         self.lista_tratamiento = obtener_tabla(self.tabla)
 
@@ -66,20 +65,32 @@ class ListaTratamientos:
                 font=("Arial", 12, "italic"),
             ).pack(pady=(20, 0))
             return
-        
+
         tratamiento = cast(dict[str, Any], self.lista_tratamiento[0])
-        
+
         self.columnas = obtener_columnas(tratamiento.keys(), self.tipo_usuario)
         self.columnas_tupla = tuple(self.columnas)
-        
-        self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")
-        ancho_columna =int(1000/len(self.columnas))
-        for columna in self.columnas:
-        
-            self.tree.heading(columna, text=regresar_string(columna), anchor="center")
-            self.tree.column(columna, width=ancho_columna, minwidth=30, stretch=False, anchor="center")
 
-        # Mapear la foreign key con la pagina que se abre cuando le damos doble clic
+        self.tree = ttk. Treeview(
+            self.frame,
+            columns=self.columnas_tupla,
+            show="headings")
+        ancho_columna = int(1000 / len(self.columnas))
+        for columna in self.columnas:
+
+            self.tree.heading(
+                columna,
+                text=regresar_string(columna),
+                anchor="center")
+            self.tree.column(
+                columna,
+                width=ancho_columna,
+                minwidth=30,
+                stretch=False,
+                anchor="center")
+
+        # Mapear la foreign key con la pagina que se abre cuando le damos doble
+        # clic
         self.fk_paginas = {
             "id_paciente": "Actualizar pacientes",
             "id_doctor": "Actualizar usuarios",
@@ -90,34 +101,35 @@ class ListaTratamientos:
             "id_paciente": self._cargar_display_map_pacientes(),
             "id_doctor": self._cargar_display_map_usuarios(),
         }
-        # Guardar el id real por fila/columna (porque en la tabla se mostrará el nombre)
+        # Guardar el id real por fila/columna (porque en la tabla se mostrará
+        # el nombre)
         self.fk_ids_por_fila = {}
 
         self.tree.bind("<Double-1>", self.on_doble_click)
         self.tree.bind("<Motion>", self.on_mouse_move)
-        
+
         self.recargar_tabla()
         self.tree.bind("<<TreeviewSelect>>", self.on_seleccion)
         self.on_seleccion()
-       
+
         self.tree.pack(pady=(10, 0))
 
     def recargar_tabla(self):
-        
+
         if self.tipo_usuario == "Doctor":
-            lista_registros = obtener_registros(self.tabla, "id_doctor", self.id_usuario )
+            lista_registros = obtener_registros(
+                self.tabla, "id_doctor", self.id_usuario)
         elif self.tipo_usuario == "Administrador":
             lista_registros = obtener_tabla(self.tabla, solo_activos=False)
-        else: # Enfermeras
+        else:  # Enfermeras
             lista_registros = obtener_tratamientos_enfermera(self.id_usuario)
 
-        
-        #limpiar filas
+        # limpiar filas
         for item in self.tree.get_children():
             self.tree.delete(item)
 
         self.fk_ids_por_fila = {}
-        #llenar tabla
+        # llenar tabla
         for registro in lista_registros:
             registro = cast(dict[str, Any], registro)
             valores = []
@@ -138,10 +150,14 @@ class ListaTratamientos:
             iid = self.tree.insert("", tk.END, values=tuple(valores))
             self.fk_ids_por_fila[iid] = fk_ids
         self.on_seleccion()
-      
+
     def ir_crear(self):
-        navegar_a_pagina(self.frame, f"Crear {self.tabla}", usuario=self.usuario)
-        
+        navegar_a_pagina(
+            self.frame,
+            f"Crear {
+                self.tabla}",
+            usuario=self.usuario)
+
     def on_seleccion(self, event=None):
         if self.boton_actualizar is None and self.boton_eliminar is None:
             return
@@ -150,11 +166,13 @@ class ListaTratamientos:
             self.boton_actualizar.config(state=estado)
         if self.boton_eliminar is not None:
             self.boton_eliminar.config(state=estado)
-            
+
     def obtener_id_seleccionado(self):
         item_id = self.tree.selection()
         if not item_id:
-            messagebox.showinfo("Error", f"Debes seleccionar un {self.tabla.title()} de la tabla")
+            messagebox.showinfo(
+                "Error", f"Debes seleccionar un {
+                    self.tabla.title()} de la tabla")
             return
 
         self.valores = self.tree.item(item_id[0], "values")
@@ -162,23 +180,33 @@ class ListaTratamientos:
             messagebox.showinfo("Error", "La fila seleccionada no tiene datos")
             return
 
-        return self.valores[0]     
-      
+        return self.valores[0]
+
     def borrar(self):
         id = self.obtener_id_seleccionado()
         borrar_registro(self.tabla, self.columnas_tupla[0], id)
-        messagebox.showinfo("Eliminar", f"Haz eliminado el {self.tabla.title()} con ID = {id}")
+        messagebox.showinfo(
+            "Eliminar", f"Haz eliminado el {
+                self.tabla.title()} con ID = {id}")
         self.recargar_tabla()
-    
+
     def ir_actualizar(self):
         item_id = self.tree.selection()
         if not item_id:
-            messagebox.showinfo("Sin selección", f"seleccione un {self.tabla} ")
-            
+            messagebox.showinfo(
+                "Sin selección",
+                f"seleccione un {
+                    self.tabla} ")
+
             return
-        
+
         id = self.obtener_id_seleccionado()
-        navegar_a_pagina(self.frame, f"Actualizar {self.tabla}", id_seleccionado=id, usuario=self.usuario)
+        navegar_a_pagina(
+            self.frame,
+            f"Actualizar {
+                self.tabla}",
+            id_seleccionado=id,
+            usuario=self.usuario)
 
     def obtener_celda_evento(self, event):
         region = self.tree.identify_region(event.x, event.y)
@@ -217,7 +245,9 @@ class ListaTratamientos:
             return
 
         # Recuperar el ID real (aunque se muestre el nombre)
-        id_real = self.fk_ids_por_fila.get(row_iid, {}).get(col_name, cell_value)
+        id_real = self.fk_ids_por_fila.get(
+            row_iid, {}).get(
+            col_name, cell_value)
         if id_real in (None, ""):
             return
 
@@ -237,16 +267,26 @@ class ListaTratamientos:
 
     def _cargar_display_map_pacientes(self):
         try:
-            filas = obtener_valores("pacientes", "id_pacientes", "pa_nombre", "pa_apellidos")
+            filas = obtener_valores(
+                "pacientes",
+                "id_pacientes",
+                "pa_nombre",
+                "pa_apellidos")
         except Exception:
             return {}
 
-        return {str(id_paciente): f"{nombre} {apellido}".strip() for id_paciente, nombre, apellido in filas}
+        return {str(id_paciente): f"{nombre} {apellido}".strip()
+                for id_paciente, nombre, apellido in filas}
 
     def _cargar_display_map_usuarios(self):
         try:
-            filas = obtener_valores("usuarios", "id_usuarios", "us_nombre", "us_apellidos")
+            filas = obtener_valores(
+                "usuarios",
+                "id_usuarios",
+                "us_nombre",
+                "us_apellidos")
         except Exception:
             return {}
 
-        return {str(id_us): f"{nombre} {apellido}".strip() for id_us, nombre, apellido in filas}
+        return {str(id_us): f"{nombre} {apellido}".strip()
+                for id_us, nombre, apellido in filas}
