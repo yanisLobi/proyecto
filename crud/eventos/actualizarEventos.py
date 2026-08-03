@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from tkcalendar import DateEntry
 
 from crud.eventos.crearEventos import CrearEventosMongo, COLORES_EVENTO

@@ -3,7 +3,7 @@ import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
 from typing import Any, cast
-from herramients import navegar_a_pagina, obtener_columnas, regresar_string
+from herramients import mostrar_sin_registros, navegar_a_pagina, obtener_columnas, regresar_string
 from db_mysql import obtener_registros, obtener_tabla, borrar_registro, obtener_tratamientos_enfermera, obtener_valores
 
 
