@@ -13,6 +13,7 @@ from seguridad import encriptar_contrasena
 class CrearUsuario:
     def __init__(self, parent, titulo="Crear", usuario={}):
         self.frame = ttkb.Frame(parent)
+        self.accion = titulo
         self.frame.pack(fill="both", expand=True)
         self.tabla = "usuarios"
         self.usuario = usuario
@@ -114,6 +115,19 @@ class CrearUsuario:
         self.us_direccion = ttkb.Entry(form_frame, width=30)
         self.us_direccion.grid(row=4, column=3, sticky="ew", pady=(0, 16))
 
+        especialidades_medicas = [
+            "Geriatria",
+            "Cardiología",
+            "Dermatología",
+            "Neurología",
+            "Pediatría",
+            "Psiquiatría",
+            "Oncología",
+            "Gastroenterología",
+            "Neumología",
+            "Endocrinología",
+            "Oftalmología"
+        ]
         ttkb.Label(form_frame, text="Especialidad").grid(row=4, column=0, sticky="w", padx=(0, 10), pady=(0, 16))
         self.us_especialidad = tk.StringVar(value="ninguno")
         self.combo_especialidad = ttk.Combobox(
@@ -121,7 +135,7 @@ class CrearUsuario:
             textvariable=self.us_especialidad,
             state="readonly",
             width=27,
-            values=["Geriatría", "Cuidados Críticos Geriátricos"]
+            values=especialidades_medicas
         )
         self.combo_especialidad.grid(row=4, column=1, sticky="ew", pady=(0, 16))
 

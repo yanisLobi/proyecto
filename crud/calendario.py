@@ -3,6 +3,8 @@ from tkinter import ttk
 from datetime import datetime, timedelta, date
 import random
 
+from herramients import regresar_string
+
 try:
     from db_mongo import obtener_tabla, actualizar_registro as _mongo_actualizar
 except Exception:
@@ -10,9 +12,10 @@ except Exception:
     _mongo_actualizar = None
 
 try:
-    from db_mysql import obtener_registros as _mysql_get
+    from db_mysql import obtener_registros as _mysql_get, obtener_medicinas_de_tratamientos as _mysql_medicinas_tratamiento
 except Exception:
     _mysql_get = None
+    _mysql_medicinas_tratamiento = None
 
 _COLORES_EVENTO = ["#26a69a", "#29b6f6", "#ab47bc", "#ff7043", "#66bb6a", "#ffa726", "#ec407a"]
 _NOMBRES_DIA = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
@@ -97,7 +100,7 @@ class CalendarioRecordatorios(ttk.Frame):
     def _hora_a_float(self, hora_str):
         try:
             partes = str(hora_str).strip().split(":")
-            return int(partes[0]) + int(partes[1]) / 60 if len(partes) >= 2 else int(partes[0])
+            return int(partes[0]) + (int(partes[1]) / 60 if len(partes) >= 2 else int(partes[0]))
         except Exception:
             return None
 
@@ -281,13 +284,79 @@ class CalendarioRecordatorios(ttk.Frame):
         if self.navegar_cb:
             self.navegar_cb(tipo, nombre_clase, **kwargs)
 
+    def _normalizar_valor(self, valor):
+        if valor is None:
+            return "—"
+        if isinstance(valor, bool):
+            return "Sí" if valor else "No"
+        if isinstance(valor, (list, tuple, dict)):
+            return str(valor)
+        return str(valor)
+
+    def _identificador_registro(self, datos):
+        if not isinstance(datos, dict):
+            return None
+
+        id_val = None
+        for clave in ("id", "id_tratamientos", "id_pacientes", "id_usuarios", "id_medicamentos", "id_paciente", "id_doctor", "id_enfermera_principal"):
+            if clave in datos and datos[clave] not in (None, "", 0):
+                id_val = datos[clave]
+                break
+
+        nombre = None
+        apellido = None
+
+        for clave in ("tr_nombre", "pa_nombre", "us_nombre", "me_nombre_comercial"):
+            if clave in datos and datos[clave] not in (None, ""):
+                nombre = datos[clave]
+                break
+
+        for clave in ("pa_apellidos", "us_apellidos", "me_nombre_tecnico"):
+            if clave in datos and datos[clave] not in (None, ""):
+                apellido = datos[clave]
+                break
+
+        partes = []
+        if id_val is not None:
+            partes.append(str(id_val))
+        if nombre:
+            partes.append(str(nombre))
+        if apellido:
+            partes.append(str(apellido))
+
+        return " ".join(partes).strip() or None
+
+    def _filtrar_campos(self, datos, incluir_identificador=False):
+        if not isinstance(datos, dict):
+            return []
+        campos = []
+
+        if incluir_identificador:
+            resumen = self._identificador_registro(datos)
+            if resumen:
+                campos.append(("Identificación", resumen))
+
+        for nombre, valor in datos.items():
+            clave = str(nombre).strip()
+            if not clave:
+                continue
+            clave_lower = clave.lower()
+            if clave_lower in {"id", "_id"} or clave_lower.startswith("id_") or clave_lower.endswith("_id"):
+                continue
+            if clave_lower.endswith("_activo") or "_activo" in clave_lower:
+                continue
+            if "contrase" in clave_lower or "password" in clave_lower or "passwd" in clave_lower:
+                continue
+            campos.append((regresar_string(clave), self._normalizar_valor(valor)))
+        return campos
+
     def _campo(self, parent, etiqueta, valor, bg):
         fila = tk.Frame(parent, bg=bg)
         fila.pack(fill="x", padx=10, pady=1)
         tk.Label(fila, text=f"{etiqueta}:", fg="#aaaaaa", bg=bg,
-                 font=("Arial", 8), anchor="w", width=12).pack(side="left")
-        tk.Label(fila, text=str(valor) if valor else "—", fg="#e0e0e0", bg=bg,
-                 font=("Arial", 8), anchor="w", wraplength=155, justify="left").pack(side="left", fill="x", expand=True)
+                 font=("Arial", 8), anchor="w", width=18).pack(side="left")
+        tk.Label(fila, text=str(valor) if valor not in (None, "", "—") else "—", fg="#e0e0e0", bg=bg,
+                 font=("Arial", 8), anchor="w", wraplength=360, justify="left").pack(side="left", fill="x", expand=True)
 
     def _seccion(self, parent, titulo_sec, campos, bg_header, bg_body, link_cmd=None):
         header = tk.Frame(parent, bg=bg_header)
@@ -312,6 +381,7 @@ class CalendarioRecordatorios(ttk.Frame):
 
         # ── Cargar datos relacionados desde MySQL ──
         trat, pac, doc, enf = {}, {}, {}, {}
+        medicinas = []
         id_trat, id_paciente, id_doctor, id_enfermera = None, None, None, None
         if _mysql_get and id_tr:
             try:
@@ -341,6 +411,11 @@ class CalendarioRecordatorios(ttk.Frame):
                     enf = enf_list[0] if enf_list else {}
                 except Exception as e:
                     print(f"[Popup] Error enfermera: {e}")
+            if id_trat and _mysql_medicinas_tratamiento:
+                try:
+                    medicinas = _mysql_medicinas_tratamiento(id_trat) or []
+                except Exception as e:
+                    print(f"[Popup] Error medicinas: {e}")
 
         # ── Construir el frame del popup ──
         BG       = "#1e1e2e"
@@ -348,7 +423,7 @@ class CalendarioRecordatorios(ttk.Frame):
         BG_BODY  = "#252535"
 
         popup = tk.Frame(self, bg=BG, bd=1, relief="solid")
-        popup.place(relx=1.0, rely=0.04, anchor="ne", x=-20, relheight=0.90, width=290)
+        popup.place(relx=1.0, rely=0.04, anchor="ne", x=-20, relheight=0.90, width=620)
         self._popup_frame = popup
 
         # Barra de título
@@ -399,45 +474,49 @@ class CalendarioRecordatorios(ttk.Frame):
 
         # ── Sección Evento ──
         self._seccion(inner, "Evento", [
-            ("Título",        titulo),
-            ("Fecha",         raw.get("re_fecha", "—")),
-            ("Inicio",        raw.get("re_hora_inicio", "—")),
-            ("Fin",           raw.get("re_hora_fin", "—")),
-            ("Estado",        raw.get("re_estado", "—")),
+            ("Título", titulo),
+            ("Fecha", raw.get("re_fecha", "—")),
+            ("Inicio", raw.get("re_hora_inicio", "—")),
+            ("Fin", raw.get("re_hora_fin", "—")),
+            ("Estado", raw.get("re_estado", "—")),
             ("Observaciones", raw.get("re_observaciones", "—")),
         ], BG_HDR, BG_BODY,
         link_cmd=lambda iv=id_evento: self._navegar("mongo", "Actualizar eventos", id_seleccionado=iv))
 
         # ── Sección Tratamiento ──
-        self._seccion(inner, "Tratamiento", [
-            ("Nombre",      trat.get("tr_nombre", "—")),
-            ("Inicio",      trat.get("tr_fecha_inicio", "—")),
-            ("Fin",         trat.get("tr_fecha_final", "—")),
-            ("Descripción", trat.get("tr_descripcion", "—")),
-        ], BG_HDR, BG_BODY,
-        link_cmd=lambda it=id_trat: self._navegar("mysql", "Actualizar tratamientos", id_seleccionado=it) if it else None)
+        if trat:
+            self._seccion(inner, "Tratamiento", self._filtrar_campos(trat, incluir_identificador=True), BG_HDR, BG_BODY,
+                         link_cmd=lambda it=id_trat: self._navegar("mysql", "Actualizar tratamientos", id_seleccionado=it) if it else None)
+        else:
+            self._seccion(inner, "Tratamiento", [("Detalle", "Sin tratamiento asociado")], BG_HDR, BG_BODY)
 
         # ── Sección Paciente ──
-        self._seccion(inner, "Paciente", [
-            ("Nombre",    f"{pac.get('pa_nombre', '')} {pac.get('pa_apellidos', '')}".strip() or "—"),
-            ("Nacimiento", pac.get("pa_fecha_nacimiento", "—")),
-            ("Contacto",  pac.get("pa_nombre_contacto_emergencia", "—")),
-            ("Tel. emergencia", pac.get("pa_tel_contacto_emergencia", "—")),
-        ], BG_HDR, BG_BODY,
-        link_cmd=lambda ip=id_paciente: self._navegar("mysql", "Actualizar pacientes", id_seleccionado=ip) if ip else None)
+        if pac:
+            self._seccion(inner, "Paciente", self._filtrar_campos(pac, incluir_identificador=True), BG_HDR, BG_BODY,
+                         link_cmd=lambda ip=id_paciente: self._navegar("mysql", "Actualizar pacientes", id_seleccionado=ip) if ip else None)
+        else:
+            self._seccion(inner, "Paciente", [("Detalle", "Sin paciente asociado")], BG_HDR, BG_BODY)
 
         # ── Sección Doctor ──
-        self._seccion(inner, "Doctor", [
-            ("Nombre",      f"{doc.get('us_nombre', '')} {doc.get('us_apellidos', '')}".strip() or "—"),
-            ("Especialidad", doc.get("us_especialidad", "—")),
-        ], BG_HDR, BG_BODY,
-        link_cmd=lambda id_d=id_doctor: self._navegar("mysql", "Actualizar usuarios", id_seleccionado=id_d) if id_d else None)
+        if doc:
+            self._seccion(inner, "Doctor", self._filtrar_campos(doc, incluir_identificador=True), BG_HDR, BG_BODY,
+                         link_cmd=lambda id_d=id_doctor: self._navegar("mysql", "Actualizar usuarios", id_seleccionado=id_d) if id_d else None)
+        else:
+            self._seccion(inner, "Doctor", [("Detalle", "Sin doctor asociado")], BG_HDR, BG_BODY)
 
         # ── Sección Enfermera ──
-        self._seccion(inner, "Enfermera", [
-            ("Nombre", f"{enf.get('us_nombre', '')} {enf.get('us_apellidos', '')}".strip() or "—"),
-        ], BG_HDR, BG_BODY,
-        link_cmd=lambda id_e=id_enfermera: self._navegar("mysql", "Actualizar usuarios", id_seleccionado=id_e) if id_e else None)
+        if enf:
+            self._seccion(inner, "Enfermera", self._filtrar_campos(enf, incluir_identificador=True), BG_HDR, BG_BODY,
+                         link_cmd=lambda id_e=id_enfermera: self._navegar("mysql", "Actualizar usuarios", id_seleccionado=id_e) if id_e else None)
+        else:
+            self._seccion(inner, "Enfermera", [("Detalle", "Sin enfermera asociada")], BG_HDR, BG_BODY)
+
+        # ── Sección Medicinas ──
+        if medicinas:
+            for i, med in enumerate(medicinas, start=1):
+                self._seccion(inner, f"Medicina {i}", self._filtrar_campos(med, incluir_identificador=True), BG_HDR, BG_BODY)
+        else:
+            self._seccion(inner, "Medicinas", [("Detalle", "Sin medicinas asociadas al tratamiento")], BG_HDR, BG_BODY)
 
 
 if __name__ == "__main__":

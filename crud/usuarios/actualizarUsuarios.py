@@ -29,7 +29,6 @@ class ActualizarUsuarios(CrearUsuario):
                 fecha_nacimiento = datetime.strptime(fecha_nacimiento, "%Y-%m-%d").date()
             self.us_fecha_nacimiento.set_date(fecha_nacimiento)
 
-        self.us_contra.insert(0, self.usuario.get("us_contraseña", ""))
         self.us_cedula.insert(0, str(self.usuario.get("us_cedula", "")))
         self.us_telefono.insert(0, str(self.usuario.get("us_telefono", "")))
         self.us_correo_electronico.insert(0, self.usuario.get("us_correo_electronico", ""))

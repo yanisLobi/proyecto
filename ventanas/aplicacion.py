@@ -65,10 +65,9 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
     imagen_pequena = imagen_original.subsample(10)
     ttkb.Label(
                 menu_frame,
-                
                 text=f"Hola, {tipo_usu}(a) {usuario.get("us_nombre").title()}",
                 font=("Arial", 12)
-            ).pack(padx=15)
+            ).pack(padx=15, pady=20)
     etiqueta_logo = ttkb.Label(menu_frame, image=imagen_pequena)
     etiqueta_logo.pack(pady=50)
    

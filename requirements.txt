@@ -1,4 +1,5 @@
 mysql-connector-python
 pymongo
 tkcalendar
-ttkbootstrap 
+ttkbootstrap
+bcrypt

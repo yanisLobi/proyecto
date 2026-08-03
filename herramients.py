@@ -75,10 +75,6 @@ def navegar_a_pagina(frame, nombre_clase, **kwargs):
     from crud.eventos.consultarEventos import ConsultarEventosMongo
     from crud.eventos.crearEventos import CrearEventosMongo
     from crud.eventos.listaEventos import ListaEventosMongo
-    
-    
-    
-    
     from crud.calendario import CalendarioRecordatorios
 
     paginas = {
@@ -100,6 +96,8 @@ def navegar_a_pagina(frame, nombre_clase, **kwargs):
         "Crear eventos": CrearEventosMongo,
         "Consultar eventos": ConsultarEventosMongo
     }
+    
+    
 
     for widget in frame.winfo_children():
         widget.destroy()
@@ -112,6 +110,8 @@ def navegar_a_pagina(frame, nombre_clase, **kwargs):
 
  
 def obtener_columnas(columnas):
+    columnas_ocultar = ["_activo",
+                        "_contraseña"] 
     return [
         columna for columna in columnas
         if not str(columna).endswith("_activo")

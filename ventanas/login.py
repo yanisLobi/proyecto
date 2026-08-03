@@ -10,9 +10,6 @@ from seguridad import verificar_contrasena
 from herramients import agregar_boton_mostrar_contrasena
         
 def main():
-    # esto se actualizara con datos de la db despues
-    # Abre la conexión
-    
     # temas: minty (verde), cosmo (blanco), darkly (obscuro)
     ventana = ttkb.Window(themename="minty") 
     ventana.title("AbueCare Login")
@@ -52,9 +49,6 @@ def main():
         pady=(0, 10),
         width=3,
     )
-    #-------------------------------------------------------------------------------
-    
-
 
     def intentar_login():
         lista_usuarios = obtener_tabla('usuarios')
@@ -83,15 +77,41 @@ def main():
             messagebox.showinfo("Error al iniciar sesión", "La contraseña es incorrecta")
             return
         
-        
+        # Usuario y contraseña correctos:
+
         usuario = [usuario for usuario in lista_usuarios if usuario.get("us_correo_electronico") == correo_introducido ][0]
         nombre_usuario = [usuario.get("us_nombre") for usuario in lista_usuarios if usuario.get("us_correo_electronico") == correo_introducido ][0]
-        messagebox.showinfo("Inicio de sesion exitoso", f"Bienvenido a Abuecare {nombre_usuario}")
-        iniciar_aplicacion(ventana, usuario, contra)
+
+        contenido_frame.pack_forget()
+        frame_bienvenida = ttkb.Frame(ventana)
+        frame_bienvenida.grid_columnconfigure(0, weight=1)
+        frame_bienvenida.grid_columnconfigure(1, weight=0)
+        
+        ttkb.Label(
+            frame_bienvenida,
+            text="Inicio de sesión exitoso",
+            font=("Arial", 13, "bold"),
+            bootstyle="success",
+        ).pack(pady=(20, 10))
+        ttkb.Label(
+            frame_bienvenida,
+            text=f"Bienvenido a Abuecare {nombre_usuario}",
+            font=("Arial", 8),
+            wraplength=260,
+            justify="center",
+        ).pack(padx=20)
+        
+        frame_bienvenida.pack(padx=30, fill="x")
+        
+        def avanzar_y_limpiar():
+                    frame_bienvenida.pack_forget() 
+                    frame_bienvenida.destroy() 
+                    contenido_frame.pack(padx=30, fill="x")
+                    iniciar_aplicacion(ventana, usuario, contra)
+        ventana.after(3000, avanzar_y_limpiar)
 
     def abrir_registro():
         iniciar_registro(ventana)
-        
         
     botones_frame = ttkb.Frame(contenido_frame)
     botones_frame.grid(row=4, column=0, sticky="ew", pady=(20, 30))
