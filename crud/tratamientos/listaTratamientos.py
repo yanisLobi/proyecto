@@ -69,7 +69,7 @@ class ListaTratamientos:
         
         tratamiento = cast(dict[str, Any], self.lista_tratamiento[0])
         
-        self.columnas = obtener_columnas(tratamiento.keys())
+        self.columnas = obtener_columnas(tratamiento.keys(), self.tipo_usuario)
         self.columnas_tupla = tuple(self.columnas)
         
         self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")

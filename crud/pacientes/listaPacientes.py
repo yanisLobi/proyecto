@@ -67,7 +67,7 @@ class ListaPacientes:
             self.etiqueta_error.pack(pady=(40, 30))
             return
         
-        self.columnas = obtener_columnas(primer_paciente.keys())
+        self.columnas = obtener_columnas(primer_paciente.keys(), self.tipo_usuario)
 
         self.columnas_tupla = tuple(self.columnas)
         self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")

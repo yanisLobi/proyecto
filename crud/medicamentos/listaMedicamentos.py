@@ -67,7 +67,7 @@ class ListaMedicamentos:
 
         usuario = self.lista_medicamentos[0]
 
-        self.columnas = obtener_columnas(usuario.keys())
+        self.columnas = obtener_columnas(usuario.keys(), self.tipo_usuario)
         self.columnas_tupla = tuple(self.columnas)# Se cambio para ocultar la columna de activo
             
         self.tree = ttk. Treeview(self.frame, columns=self.columnas_tupla, show="headings")
