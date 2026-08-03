@@ -6,7 +6,7 @@ from tkinter import ttk
 
 from herramients import navegar_a_pagina
 from db_mongo import insertar_registro
-from db_mysql import obtener_medicinas_de_tratamientos, obtener_valores as obtener_valores_mysql
+from db_mysql import obtener_medicinas_de_tratamientos, obtener_valores as obtener_valores_mysql, obtener_ids_tratamientos_visibles
 
 COLORES_EVENTO = {
     "Azul": "#29b6f6",
@@ -268,13 +268,21 @@ class CrearEventosMongo:
 
     def _cargar_tratamientos_combo(self):
         try:
-            return obtener_valores_mysql(
+            todos = obtener_valores_mysql(
                 "tratamientos",
                 "id_tratamientos",
                 "tr_nombre",
                 "tr_descripcion",
                 solo_activos=True,
             )
+            tipo = self.usuario.get("us_tipo_usuario", "")
+            ids_visibles = obtener_ids_tratamientos_visibles(
+                tipo, self.usuario.get("id_usuarios")
+            )
+            # None = Administrador ve todos
+            if ids_visibles is None:
+                return todos
+            return [t for t in todos if str(t[0]) in ids_visibles]
         except Exception:
             return []
 
