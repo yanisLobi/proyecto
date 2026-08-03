@@ -129,6 +129,58 @@ def mostrar_sin_registros(frame, nombre_tabla):
     ).pack(pady=(40, 10))
 
 
+def validar_widget(widget, nombre_campo, max_len=None, tipo="texto",
+                   requerido=True, min_len=None):
+    """
+    Valida tipo y longitud de un Entry / Text / Spinbox.
+    tipo: "texto" | "numerico"
+    Retorna True si válido; False y muestra error si no.
+    """
+    import tkinter as tk
+    from tkinter import messagebox
+
+    if isinstance(widget, tk.Text):
+        valor = widget.get("1.0", "end-1c").strip()
+    else:
+        valor = str(widget.get()).strip()
+
+    if requerido and not valor:
+        messagebox.showerror("Campo requerido",
+                             f"El campo '{nombre_campo}' es obligatorio.")
+        widget.focus_set()
+        return False
+
+    if valor:
+        if tipo == "numerico" and not valor.isdigit():
+            messagebox.showerror("Tipo inválido",
+                                 f"'{nombre_campo}' solo acepta números.")
+            widget.focus_set()
+            return False
+        if max_len and len(valor) > max_len:
+            messagebox.showerror("Longitud excedida",
+                                 f"'{nombre_campo}' no puede superar {max_len} caracteres.")
+            widget.focus_set()
+            return False
+        if min_len and len(valor) < min_len:
+            messagebox.showerror("Longitud insuficiente",
+                                 f"'{nombre_campo}' debe tener al menos {min_len} caracteres.")
+            widget.focus_set()
+            return False
+
+    return True
+
+
+def validar_combo(stringvar, nombre_campo):
+    """Verifica que un combo FK no esté en su valor por defecto 'ninguno'."""
+    from tkinter import messagebox
+    val = stringvar.get() if hasattr(stringvar, "get") else str(stringvar)
+    if not val.strip() or val.strip().lower() == "ninguno":
+        messagebox.showerror("Campo requerido",
+                             f"Debes seleccionar un valor para '{nombre_campo}'.")
+        return False
+    return True
+
+
 def obtener_columnas(columnas, tipo_usuario=""):
     if tipo_usuario == "Administrador":
         columnas_ocultar = {"contraseña", "password", "passwd"}

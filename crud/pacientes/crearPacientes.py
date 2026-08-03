@@ -4,7 +4,7 @@ import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkcalendar import DateEntry
 from tkinter import messagebox
-from herramients import navegar_a_pagina, limpiar_frame
+from herramients import navegar_a_pagina, limpiar_frame, validar_widget, validar_combo
 from db_mysql import insertar_registro, obtener_valores_usuarios
 
 
@@ -60,7 +60,7 @@ class CrearPacientes:
 
         ttkb.Label(
             form_frame,
-            text="Nombre").grid(
+            text="Nombre *").grid(
             row=0,
             column=0,
             sticky="w",
@@ -75,7 +75,7 @@ class CrearPacientes:
 
         ttkb.Label(
             form_frame,
-            text="Apellidos").grid(
+            text="Apellidos *").grid(
             row=0,
             column=2,
             sticky="w",
@@ -98,7 +98,7 @@ class CrearPacientes:
             row=1, column=1, sticky="w", pady=(0, 16))
 
         ttkb.Label(
-            form_frame, text="Telefono del Contacto de emergencia").grid(
+            form_frame, text="Telefono del Contacto de emergencia *").grid(
             row=1, column=2, sticky="w", padx=(
                 20, 10), pady=(
                 0, 16))
@@ -107,7 +107,7 @@ class CrearPacientes:
             row=1, column=3, sticky="ew", pady=(0, 16))
 
         ttkb.Label(
-            form_frame, text="Nombre del contacto de emergencia").grid(
+            form_frame, text="Nombre del contacto de emergencia *").grid(
             row=2, column=0, sticky="w", padx=(
                 0, 10), pady=(
                 0, 16))
@@ -117,7 +117,7 @@ class CrearPacientes:
         # columnspan es para definir cuantas seldad de ancho
 
         ttkb.Label(
-            form_frame, text="Enfermera a cargo").grid(
+            form_frame, text="Enfermera a cargo *").grid(
             row=2, column=2, sticky="w", padx=(
                 20, 10), pady=(
                 0, 16))
@@ -169,6 +169,11 @@ class CrearPacientes:
         ).split()[0]  # sirve para sacar el id, dentro de muchos valores
 
     def crear_paciente(self):
+        if not validar_widget(self.pa_nombre, "Nombre", max_len=50): return
+        if not validar_widget(self.pa_apellidos, "Apellidos", max_len=50): return
+        if not validar_widget(self.pa_nombre_contacto_emergencia, "Nombre contacto emergencia", max_len=50): return
+        if not validar_widget(self.pa_tel_contacto_emergencia, "Teléfono contacto", max_len=10, tipo="numerico"): return
+        if not validar_combo(self.id_enfermera, "Enfermera a cargo"): return
         self.guardar_valores()
         insertar_registro(self.tabla, self.nuevo_registro)
 

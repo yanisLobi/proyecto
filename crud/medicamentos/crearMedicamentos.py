@@ -4,7 +4,7 @@ from tkinter import messagebox
 from tkcalendar import DateEntry
 from tkinter import ttk
 from tkcalendar import DateEntry
-from herramients import navegar_a_pagina, limpiar_frame
+from herramients import navegar_a_pagina, limpiar_frame, validar_widget, validar_combo
 from db_mysql import insertar_registro
 
 
@@ -56,7 +56,7 @@ class CrearMedicamentos:
         form_frame.grid_columnconfigure(3, weight=1)
 
         ttkb.Label(
-            form_frame, text="Nombre comercial").grid(
+            form_frame, text="Nombre comercial *").grid(
             row=0, column=0, sticky="w", padx=(
                 0, 10), pady=(
                 0, 16))
@@ -65,7 +65,7 @@ class CrearMedicamentos:
             row=0, column=1, sticky="ew", pady=(0, 16))
 
         ttkb.Label(
-            form_frame, text="Forma farmacéutica").grid(
+            form_frame, text="Forma farmacéutica *").grid(
             row=0, column=2, sticky="w", padx=(
                 20, 10), pady=(
                 0, 16))
@@ -81,7 +81,7 @@ class CrearMedicamentos:
             row=0, column=3, sticky="ew", pady=(0, 16))
 
         ttkb.Label(
-            form_frame, text="Concentración").grid(
+            form_frame, text="Concentración *").grid(
             row=1, column=0, sticky="w", padx=(
                 0, 10), pady=(
                 0, 16))
@@ -135,6 +135,10 @@ class CrearMedicamentos:
             "1.0", "end-1c")
 
     def crear_medicamentos(self):
+        if not validar_widget(self.me_nombre_comercial, "Nombre comercial", max_len=50): return
+        if not validar_widget(self.me_concentracion, "Concentración", max_len=50): return
+        if not validar_widget(self.me_descripcion, "Descripción", max_len=100, requerido=False): return
+        if not validar_combo(self.me_forma_farmaceutica, "Forma farmacéutica"): return
         self.guardar_valores()
         insertar_registro(self.tabla, self.nuevo_registro)
 

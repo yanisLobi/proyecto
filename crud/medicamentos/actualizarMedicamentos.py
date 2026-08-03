@@ -1,7 +1,7 @@
 from datetime import datetime
 from crud.medicamentos.crearMedicamentos import CrearMedicamentos
 import tkinter as tk
-from herramients import navegar_a_pagina, obtener_indice, mostrar_sin_registros
+from herramients import navegar_a_pagina, obtener_indice, mostrar_sin_registros, validar_widget, validar_combo
 from db_mysql import obtener_registros, actualizar_registro
 
 
@@ -42,6 +42,10 @@ class ActualizarMedicamentos(CrearMedicamentos):
                     "me_descripcion", "")))
 
     def actualizar_medicamento(self):
+        if not validar_widget(self.me_nombre_comercial, "Nombre comercial", max_len=50): return
+        if not validar_widget(self.me_concentracion, "Concentración", max_len=50): return
+        if not validar_widget(self.me_descripcion, "Descripción", max_len=100, requerido=False): return
+        if not validar_combo(self.me_forma_farmaceutica, "Forma farmacéutica"): return
         self.guardar_valores()
         actualizar_registro(
             self.tabla,

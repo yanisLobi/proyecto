@@ -2,7 +2,7 @@ from datetime import datetime
 from tkinter import messagebox
 from crud.usuarios.crearUsuarios import CrearUsuario
 import tkinter as tk
-from herramients import navegar_a_pagina, obtener_indice, mostrar_sin_registros
+from herramients import navegar_a_pagina, obtener_indice, mostrar_sin_registros, validar_widget, validar_combo
 from db_mysql import obtener_registros, actualizar_registro
 
 
@@ -44,6 +44,15 @@ class ActualizarUsuarios(CrearUsuario):
                 "ninguno"))
 
     def actualizar_usuario(self):
+        if not validar_combo(self.us_tipo_usuario, "Tipo de usuario"): return
+        if not validar_widget(self.us_nombre, "Nombre", max_len=50): return
+        if not validar_widget(self.us_apellidos, "Apellidos", max_len=50): return
+        # contraseña opcional al actualizar; si se llena, validar longitud mínima
+        if self.us_contra.get().strip() and not validar_widget(self.us_contra, "Contraseña", max_len=255, min_len=6): return
+        if not validar_widget(self.us_correo_electronico, "Correo", max_len=50): return
+        if not validar_widget(self.us_cedula, "Cédula", max_len=11, tipo="numerico"): return
+        if not validar_widget(self.us_telefono, "Teléfono", max_len=10, tipo="numerico"): return
+        if not validar_widget(self.us_direccion, "Dirección", max_len=200, requerido=False): return
         self.guardar_valores()
         actualizar_registro(
             self.tabla,

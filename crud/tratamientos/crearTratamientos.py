@@ -4,7 +4,7 @@ from tkinter import messagebox
 from tkcalendar import DateEntry
 from tkinter import ttk
 from tkcalendar import DateEntry
-from herramients import navegar_a_pagina, limpiar_frame
+from herramients import navegar_a_pagina, limpiar_frame, validar_widget, validar_combo
 from db_mysql import insertar_registro, obtener_medicinas_de_tratamientos, obtener_valores, obtener_valores_medicamentos, obtener_valores_usuarios, insertar_receta
 
 
@@ -70,7 +70,7 @@ class CrearTratamientos:
 
         ttkb.Label(
             form_frame,
-            text="Nombre").grid(
+            text="Nombre *").grid(
             row=0,
             column=0,
             sticky="w",
@@ -85,7 +85,7 @@ class CrearTratamientos:
 
         ttkb.Label(
             form_frame,
-            text="Paciente").grid(
+            text="Paciente *").grid(
             row=0,
             column=2,
             sticky="w",
@@ -108,7 +108,7 @@ class CrearTratamientos:
 
         ttkb.Label(
             form_frame,
-            text="Doctor").grid(
+            text="Doctor *").grid(
             row=1,
             column=0,
             sticky="w",
@@ -226,6 +226,10 @@ class CrearTratamientos:
                 self.medicamentos_seleccionados}")
 
     def crear_tratamientos(self):
+        if not validar_widget(self.tr_nombre, "Nombre", max_len=50): return
+        if not validar_widget(self.tr_descripcion, "Descripción", max_len=100, requerido=False): return
+        if not validar_combo(self.id_paciente, "Paciente"): return
+        if not validar_combo(self.id_doctor, "Doctor"): return
         self.guardar_valores()
         id_tratamiento = insertar_registro(self.tabla, self.nuevo_registro)
        # medicamentos = obtener_medicinas_de_tratamientos(id_tratamiento)
