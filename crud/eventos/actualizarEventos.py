@@ -20,7 +20,7 @@ class ActualizarEventosMongo(CrearEventosMongo):
             return
 
         self.combo_id_tr.current(obtener_indice(
-            str(self.evento.get("id_tr", "")), self.tratamientos))
+            int(self.evento.get("id_tr", 0)), self.tratamientos))
 
         # poblar medicamentos del tratamiento guardado y seleccionar el correcto
         id_tr_guardado = str(self.evento.get("id_tr", "")).strip()
@@ -31,11 +31,20 @@ class ActualizarEventosMongo(CrearEventosMongo):
                 f"{m['id_medicamentos']} {m['me_nombre_comercial']}" for m in meds]
             if self.re_medicamento:
                 self.re_medicamento.config(state="readonly", values=self.medicamentos)
-                med_guardado = str(self.evento.get("re_medicamento", "")).strip()
-                if med_guardado in self.medicamentos:
-                    self.re_medicamento.set(med_guardado)
+                # la DB almacena solo el ID; buscamos la entrada que empiece con ese ID
+                med_id_guardado = str(self.evento.get("re_medicamento", "")).strip()
+                entrada = next(
+                    (v for v in self.medicamentos if v.split()[0] == med_id_guardado),
+                    None,
+                )
+                if entrada:
+                    self.re_medicamento.set(entrada)
                 elif self.medicamentos:
                     self.re_medicamento.current(0)
+
+        frecuencia = self.evento.get("re_frecuencia", "")
+        self.re_frecuencia.delete(0, tk.END)
+        self.re_frecuencia.insert(0, str(frecuencia))
 
         self.re_estado.set(str(self.evento.get("re_estado", "Pendiente")))
 
