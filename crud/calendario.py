@@ -270,14 +270,44 @@ class CalendarioRecordatorios(ttk.Frame):
 
     def dibujar_eventos(self):
         self.evento_rects = []
+
+        # Asignar carriles horizontales a eventos que se solapan en el mismo día
+        from collections import defaultdict
+        eventos_por_dia = defaultdict(list)
+        for idx, (titulo, dia_idx, h_inicio, h_fin, *_) in enumerate(self.eventos):
+            eventos_por_dia[dia_idx].append((idx, h_inicio, h_fin))
+
+        lane_info = {}  # idx -> (lane, total_lanes)
+        for dia_idx, evs in eventos_por_dia.items():
+            evs_sorted = sorted(evs, key=lambda e: e[1])
+            lane_ends = []
+            ev_lane = {}
+            for idx, h_inicio, h_fin in evs_sorted:
+                placed = False
+                for lane_i, end in enumerate(lane_ends):
+                    if h_inicio >= end:
+                        lane_ends[lane_i] = h_fin
+                        ev_lane[idx] = lane_i
+                        placed = True
+                        break
+                if not placed:
+                    ev_lane[idx] = len(lane_ends)
+                    lane_ends.append(h_fin)
+            total = len(lane_ends)
+            for idx, _, _ in evs:
+                lane_info[idx] = (ev_lane.get(idx, 0), total)
+
         for idx, (titulo, dia_idx, h_inicio, h_fin, color, id_evento,
                   id_tr, nombre_paciente) in enumerate(self.eventos):
-            x_inicial = self.MARGEN_IZQUIERDO + (dia_idx * self.ancho_columna)
-            x_final = x_inicial + self.ancho_columna
+            lane, total_lanes = lane_info.get(idx, (0, 1))
+            lane_width = self.ancho_columna / total_lanes
+            x_inicial = self.MARGEN_IZQUIERDO + (dia_idx * self.ancho_columna) + (lane * lane_width)
+            x_final = x_inicial + lane_width - 2
             y_inicial = (h_inicio - self.HORA_INICIO) * self.PIXELS_POR_HORA
             y_final = (h_fin - self.HORA_INICIO) * self.PIXELS_POR_HORA
-            # altura mínima para dos líneas
-            y_final = max(y_final, y_inicial + 30)
+            # altura mínima para una línea de texto
+            y_final = max(y_final, y_inicial + 22)
+            altura_evento = y_final - y_inicial
 
             self.evento_rects.append(
                 (x_inicial, y_inicial, x_final, y_final, idx))
@@ -289,26 +319,24 @@ class CalendarioRecordatorios(ttk.Frame):
             sub_fill = "#555555" if completado else "#d0d0d0"
 
             self.canvas.create_rectangle(
-                x_inicial,
-                y_inicial,
-                x_final,
-                y_final,
-                fill=color_rect,
-                outline="",
-                width=0)
+                x_inicial, y_inicial, x_final, y_final,
+                fill=color_rect, outline="", width=0)
 
-            ancho_texto_maximo = int(self.ancho_columna - 10)
+            ancho_texto_maximo = max(int(lane_width - 10), 10)
+            # no envolver texto en eventos pequeños para evitar desbordamiento
+            wrap_titulo = ancho_texto_maximo if altura_evento >= 40 else 0
             self.canvas.create_text(
                 x_inicial + 5, y_inicial + 10,
                 text=titulo, anchor="w", fill=texto_fill,
-                font=("Arial", 9, "bold"), width=ancho_texto_maximo
+                font=("Arial", 9, "bold"), width=wrap_titulo
             )
-            if nombre_paciente:
+            if nombre_paciente and altura_evento >= 42:
                 self.canvas.create_text(
                     x_inicial + 5, y_inicial + 22,
                     text=nombre_paciente, anchor="w", fill=sub_fill,
                     font=("Arial", 8), width=ancho_texto_maximo
                 )
+
 
     def dibujar_indicador_tiempo(self):
         # 1. Calcular la posición Y basada en la hora hardcodeada

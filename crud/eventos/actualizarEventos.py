@@ -5,6 +5,7 @@ from tkcalendar import DateEntry
 from crud.eventos.crearEventos import CrearEventosMongo, COLORES_EVENTO
 from herramients import navegar_a_pagina, obtener_indice, mostrar_sin_registros
 from db_mongo import actualizar_registro, obtener_registros
+from db_mysql import obtener_valores as _obtener_valores_mysql
 
 
 class ActualizarEventosMongo(CrearEventosMongo):
@@ -19,8 +20,20 @@ class ActualizarEventosMongo(CrearEventosMongo):
             mostrar_sin_registros(self.frame, self.tabla)
             return
 
-        self.combo_id_tr.current(obtener_indice(
-            int(self.evento.get("id_tr", 0)), self.tratamientos))
+        # Mismo filtro de rol que al crear; si el tratamiento guardado no está en la
+        # lista (inactivo o de otro rol), se carga igualmente para mostrarlo correctamente.
+        id_tr_int = int(self.evento.get("id_tr", 0))
+        ids_en_lista = {t[0] for t in self.tratamientos}
+        if id_tr_int and id_tr_int not in ids_en_lista:
+            extra = _obtener_valores_mysql(
+                "tratamientos", "id_tratamientos", "tr_nombre", "tr_descripcion",
+                solo_activos=False)
+            faltante = next((t for t in extra if t[0] == id_tr_int), None)
+            if faltante:
+                self.tratamientos = list(self.tratamientos) + [faltante]
+            self.combo_id_tr.config(values=self.tratamientos)
+
+        self.combo_id_tr.current(obtener_indice(id_tr_int, self.tratamientos))
 
         # poblar medicamentos del tratamiento guardado y seleccionar el correcto
         id_tr_guardado = str(self.evento.get("id_tr", "")).strip()
