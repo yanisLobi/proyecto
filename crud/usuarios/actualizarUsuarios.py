@@ -50,6 +50,11 @@ class ActualizarUsuarios(CrearUsuario):
         # contraseña opcional al actualizar; si se llena, validar longitud mínima
         if self.us_contra.get().strip() and not validar_widget(self.us_contra, "Contraseña", max_len=255, min_len=6): return
         if not validar_widget(self.us_correo_electronico, "Correo", max_len=50): return
+        correo = self.us_correo_electronico.get().strip()
+        if "@" not in correo or ".com" not in correo:
+            messagebox.showerror("Correo inválido", "El correo debe contener '@' y '.com'")
+            self.us_correo_electronico.focus_set()
+            return
         if not validar_widget(self.us_cedula, "Cédula", max_len=11, tipo="numerico"): return
         if not validar_widget(self.us_telefono, "Teléfono", max_len=10, tipo="numerico"): return
         if not validar_widget(self.us_direccion, "Dirección", max_len=200, requerido=False): return
