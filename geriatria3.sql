@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-08-2026 a las 04:46:39
+-- Tiempo de generación: 03-08-2026 a las 07:29:24
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -150,7 +150,7 @@ CREATE TABLE `usuarios` (
   `us_telefono` bigint(10) NOT NULL,
   `us_correo_electronico` varchar(50) NOT NULL,
   `us_direccion` varchar(200) NOT NULL,
-  `us_especialidad` enum('Geriatría',',Cuidados Críticos Geriátricos') NOT NULL,
+  `us_especialidad` enum('Geriatría',',Cardiología','Dermatología','Neurología','Pediatría','Psiquiatría','Oncología','Gastroenterología','Neumología','Endocrinología','Oftalmología') NOT NULL,
   `us_activo` tinyint(4) NOT NULL DEFAULT 1,
   `us_cedula` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -169,12 +169,13 @@ INSERT INTO `usuarios` (`id_usuarios`, `us_tipo_usuario`, `us_nombre`, `us_apell
 (20, 'Doctor', 'Juan', 'camacho', '2000-12-02', '12345', 1122334455, 'juan@camacho', '2 de octubre', '', 0, 1975434),
 (21, 'Enfermera', 'Lupe', 'juarez juarez', '2001-07-19', '12345', 1122334455, 'a', 'calle 1 de enero', 'Geriatría', 0, 1234567),
 (22, 'Doctor', 'Jessica', 'García Cruz', '2026-08-02', '12345', 9988771122, 'garciacruz@jessica', 'Avenida Plateros #115', '', 0, 2345678),
-(23, 'Administrador', 'Luis ', 'Patrick Juárez', '2094-07-12', '$2b$12$ea9k7peI7geh6GySVx2DRe6VyBidS8D7HgCcvbxE7kxCw0xihmkNu', 4424593888, 'patrick0102@juarez', 'Calle Juárez #302', 'Geriatría', 1, 4567890),
+(23, 'Administrador', 'Luis ', 'Patrick Juárez', '2094-07-12', '$2b$12$mD34BWpLKAmQWxKCJHYrdeB7Q0oGpuc129d30uV3p4vRKj8a2QpzS', 4424593888, 'patrick0102@juarez', 'Calle Juárez #302', '', 1, 4567890),
 (24, 'Doctor', 'Ernesto ', 'Suárez López', '2098-12-16', '$2b$12$sFSatnwYz3CsWF9hg6EGROX3gsGdrdURaTfrS1jpU8PUjAzAwFDtG', 4455332255, 'ernesto@suarezlopez', 'Avenida Tolmán #406', '', 1, 67854328),
 (25, 'Enfermera', 'pon', 'pin', '2026-08-02', '$2b$12$bzUV00REQof4wPaLJPDm2uKq9FIsD3BfBT9c6lx9enQ0X9aVP3VQ2', 1234567890, 'ddf@', 'rfrgg', 'Geriatría', 1, 3456788),
 (26, 'Doctor', 'Cosme', 'Lozano Lozano', '2001-07-19', '12345', 4424567888, 'cosme@lozano', 'Avenida', 'Geriatría', 1, 67854328),
-(27, 'Doctor', 'Fabian', 'Carmona Juárez', '2091-08-15', '$2b$12$macT2lbTu0lpLa1XJKqste1Q703XTMOvPQtYXF4q1jIHy0eYxrk8a', 4455662324, 'fabian@carmona', 'Avenida Belén #102', 'Geriatría', 1, 3456788),
-(28, 'Enfermera', 'Yanet', 'Lázaro Campos', '2000-08-18', '$2b$12$51ZM8QlUhyYq94AeelzK8uBXWQBagPfxuU2Yqx8GAitPBLzGwAg/q', 5537196729, 'lazarocamposyanet@gmail.com', 'Avenida escuadrón 201', 'Geriatría', 1, 3456624);
+(27, 'Administrador', 'Fabian', 'Carmona Juárez', '2091-08-15', '$2b$12$LJ1rCxwk5hR2pQbFrX2LGeAkEsZPlKia.2JhcjE1480527SSk22bW', 4455662324, 'fabian@carmona', 'Avenida Belén #102', '', 1, 3456788),
+(28, 'Enfermera', 'Yanetyanetyanet', 'Lázaro Campos', '2000-08-18', '$2b$12$51ZM8QlUhyYq94AeelzK8uBXWQBagPfxuU2Yqx8GAitPBLzGwAg/q', 5537196729, 'lazarocamposyanet@gmail.com', 'Avenida escuadrón 201', 'Geriatría', 1, 3456624),
+(29, 'Doctor', 'prueba3', 'ggh', '2026-08-04', '$2b$12$KB4AIwgTfJsl0m5rfmlYpOk1eW4bB/n7ZaAoggk9X18Pw/pxFTXOO', 4424591299, 'fhg', 'ggf', '', 1, 45676435);
 
 --
 -- Índices para tablas volcadas
@@ -247,7 +248,7 @@ ALTER TABLE `tratamientos`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuarios` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id_usuarios` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- Restricciones para tablas volcadas
