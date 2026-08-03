@@ -37,7 +37,7 @@ class CrearPacientes:
         ).grid(row=0, column=0, sticky="ew", padx=6)
        
         if self.tipo_usuario in ["Doctor", "Administrador"]:
-             ttkb.Button(
+            ttkb.Button(
                         botones_frame,
                         text="Limpiar campos",
                         command=self.limpiar,
