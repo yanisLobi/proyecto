@@ -2,7 +2,7 @@ from datetime import datetime
 from crud.pacientes.crearPacientes import CrearPacientes
 from tkinter import messagebox, ttk
 import tkinter as tk
-from herramients import obtener_columnas, obtener_indice, navegar_a_pagina, regresar_string, mostrar_sin_registros
+from herramients import obtener_columnas, obtener_indice, navegar_a_pagina, regresar_string, mostrar_sin_registros, validar_widget, validar_combo
 from db_mysql import obtener_registros, actualizar_registro
 
 
@@ -85,6 +85,11 @@ class ActualizarPacientes(CrearPacientes):
             self.tree.insert("", tk.END, values=valores_tupla)
 
     def actualizar_pacientes(self):
+        if not validar_widget(self.pa_nombre, "Nombre", max_len=50): return
+        if not validar_widget(self.pa_apellidos, "Apellidos", max_len=50): return
+        if not validar_widget(self.pa_nombre_contacto_emergencia, "Nombre contacto emergencia", max_len=50): return
+        if not validar_widget(self.pa_tel_contacto_emergencia, "Teléfono contacto", max_len=10, tipo="numerico"): return
+        if not validar_combo(self.id_enfermera, "Enfermera a cargo"): return
         self.guardar_valores()
         actualizar_registro(
             self.tabla,
