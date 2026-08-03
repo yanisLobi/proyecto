@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-08-2026 a las 05:30:00
+-- Tiempo de generación: 03-08-2026 a las 04:46:39
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -44,8 +44,9 @@ CREATE TABLE `medicamentos` (
 INSERT INTO `medicamentos` (`id_medicamentos`, `me_nombre_comercial`, `me_forma_farmaceutica`, `me_concentracion`, `me_fecha_caducidad`, `me_descripcion`, `me_activo`) VALUES
 (1, 'Paracetamol', 'Liquidas', '500mg', '2027-12-31', 'Analgésico', 1),
 (2, 'Amoxicilina', 'Liquidas', '250mg/5ml', '2026-06-30', 'Recomedable.', 1),
-(7, 'Buscapina', 'Solidas', '10mg', '2027-07-21', 'hmj', 1),
-(8, 'Benzac', 'Semisolidas', '60g', '2028-08-17', 'Aplica con cuidado', 1);
+(7, 'Buscapina', 'Solidas', '10mg', '2027-07-21', 'Alivio estomacal', 1),
+(8, 'Benzac', 'Semisolidas', '60g', '2028-08-17', 'Aplica con cuidado', 0),
+(9, 'Ibuprofeno', 'Solidas', '500mg', '2028-08-10', 'Analgésico', 1);
 
 -- --------------------------------------------------------
 
@@ -72,7 +73,9 @@ INSERT INTO `pacientes` (`id_pacientes`, `pa_nombre`, `pa_apellidos`, `pa_fecha_
 (9, 'karla', 'Medina', '2026-07-24', 'Eli', 1122334455, 17, 1),
 (10, 'Monse', 'Campusano Juarez', '2026-07-31', 'Juan', 1122334455, 19, 1),
 (11, 'Emili', 'Garcia Lopes', '2026-07-01', 'Paloma juarez', 2233445566, 17, 0),
-(12, 'Monica', 'Juarez Cholula', '2026-07-31', 'Fernando', 4455667788, 19, 1);
+(12, 'Monica', 'Juarez Cholula', '2026-07-31', 'Fernando', 4455667788, 19, 1),
+(14, 'María Del Refugio', 'Rivera Flores', '2065-08-11', '', 0, 19, 1),
+(15, 'María Del Refugio', 'Rivera Flores', '2066-08-18', 'Enrique Castro Lara', 4434235667, 19, 1);
 
 -- --------------------------------------------------------
 
@@ -94,7 +97,10 @@ INSERT INTO `receta` (`id_recetas`, `id_medicamento`, `id_tratamiento`) VALUES
 (8, 1, 12),
 (9, 2, 12),
 (10, 1, 13),
-(11, 2, 13);
+(11, 2, 13),
+(12, 2, 8),
+(13, 7, 8),
+(14, 9, 14);
 
 -- --------------------------------------------------------
 
@@ -125,7 +131,8 @@ INSERT INTO `tratamientos` (`id_tratamientos`, `tr_nombre`, `id_paciente`, `id_d
 (10, 'prueba', 10, 18, '2026-07-31', '2026-07-16', 'ffgbg', 1),
 (11, 'Rehabilitación', 9, 20, '2026-07-31', '2026-08-05', 'Tomar el paracetamol para el dolor', 0),
 (12, 'Optometria', 12, 15, '2026-08-03', '2026-08-20', 'Acudir con los estudios realizados previamente.', 0),
-(13, 'Anemia3', 12, 20, '2026-08-04', '2026-08-20', 'Toma tus mediacamentos', 1);
+(13, 'Anemia3', 12, 20, '2026-08-04', '2026-08-20', 'Toma tus mediacamentos', 1),
+(14, 'Quimioterapia', 12, 15, '2026-08-02', '2026-09-08', 'Tomar los fármacos correspondientes', 1);
 
 -- --------------------------------------------------------
 
@@ -143,9 +150,9 @@ CREATE TABLE `usuarios` (
   `us_telefono` bigint(10) NOT NULL,
   `us_correo_electronico` varchar(50) NOT NULL,
   `us_direccion` varchar(200) NOT NULL,
-  `us_especialidad` enum('Geriatría',',Cuidados Críticos Geriátricos') DEFAULT NULL,
+  `us_especialidad` enum('Geriatría',',Cuidados Críticos Geriátricos') NOT NULL,
   `us_activo` tinyint(4) NOT NULL DEFAULT 1,
-  `us_cedula` int(11) NOT NULL DEFAULT 10000000
+  `us_cedula` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -154,13 +161,20 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id_usuarios`, `us_tipo_usuario`, `us_nombre`, `us_apellidos`, `us_fecha_nacimiento`, `us_contraseña`, `us_telefono`, `us_correo_electronico`, `us_direccion`, `us_especialidad`, `us_activo`, `us_cedula`) VALUES
 (7, 'Enfermera', 'Camila', 'Santiago Juárez', '2091-07-17', '12345', 2147483647, 'camila@gmail.com', 'Calle 1 de enero', 'Geriatría', 0, 1234566),
-(15, 'Doctor', 'Camila', 'Camacho', '2026-07-15', '12345', 4455667788, 'camila', 'calle 1 de enero', '', 1, 1678988),
-(16, 'Administrador', 'Pedro', 'García', '2026-07-15', '12345', 4455667788, 'pedro@garcia', 'calle falsa', '', 1, 6784343),
-(17, 'Enfermera', 'Juan carlos', 'Lopez velazsquez', '2026-07-08', '12345', 1122334455, 'carlos@gamil.com', 'calle falsa', '', 1, 5689433),
-(18, 'Doctor', 'Paola', 'Montayo Nose', '2026-07-15', '12345', 5537196729, 'paola@montayo', 'calle falsa', '', 1, 1564323),
-(19, 'Enfermera', 'Manuel', 'Santiago Garcia', '2091-07-18', '12345', 1122334455, 'santi@gmail', 'calle 1 de enero ', 'Geriatría', 1, 1675432),
-(20, 'Doctor', 'Juan', 'camacho', '2000-12-02', '12345', 1122334455, 'juan@camacho', '2 de octubre', '', 1, 1975434),
-(21, 'Enfermera', 'Lupe', 'juarez juarez', '2001-07-19', '12345', 1122334455, 'a', 'calle 1 de enero', 'Geriatría', 1, 1234567);
+(15, 'Doctor', 'Camila', 'Camacho', '2026-07-15', '12345', 4455667788, 'camila', 'calle 1 de enero', '', 0, 1678988),
+(16, 'Administrador', 'Pedro', 'García', '2026-07-15', '12345', 4455667788, 'pedro@garcia', 'calle falsa', '', 0, 6784343),
+(17, 'Enfermera', 'Juan carlos', 'Lopez velazsquez', '2026-07-08', '12345', 1122334455, 'carlos@gamil.com', 'calle falsa', '', 0, 5689433),
+(18, 'Doctor', 'Paola', 'Montayo Nose', '2026-07-15', '12345', 5537196729, 'paola@montayo', 'calle falsa', '', 0, 1564323),
+(19, 'Enfermera', 'Manuel', 'Santiago Garcia', '2091-07-18', '12345', 1122334455, 'santi@gmail', 'calle 1 de enero ', 'Geriatría', 0, 1675432),
+(20, 'Doctor', 'Juan', 'camacho', '2000-12-02', '12345', 1122334455, 'juan@camacho', '2 de octubre', '', 0, 1975434),
+(21, 'Enfermera', 'Lupe', 'juarez juarez', '2001-07-19', '12345', 1122334455, 'a', 'calle 1 de enero', 'Geriatría', 0, 1234567),
+(22, 'Doctor', 'Jessica', 'García Cruz', '2026-08-02', '12345', 9988771122, 'garciacruz@jessica', 'Avenida Plateros #115', '', 0, 2345678),
+(23, 'Administrador', 'Luis ', 'Patrick Juárez', '2094-07-12', '$2b$12$ea9k7peI7geh6GySVx2DRe6VyBidS8D7HgCcvbxE7kxCw0xihmkNu', 4424593888, 'patrick0102@juarez', 'Calle Juárez #302', 'Geriatría', 1, 4567890),
+(24, 'Doctor', 'Ernesto ', 'Suárez López', '2098-12-16', '$2b$12$sFSatnwYz3CsWF9hg6EGROX3gsGdrdURaTfrS1jpU8PUjAzAwFDtG', 4455332255, 'ernesto@suarezlopez', 'Avenida Tolmán #406', '', 1, 67854328),
+(25, 'Enfermera', 'pon', 'pin', '2026-08-02', '$2b$12$bzUV00REQof4wPaLJPDm2uKq9FIsD3BfBT9c6lx9enQ0X9aVP3VQ2', 1234567890, 'ddf@', 'rfrgg', 'Geriatría', 1, 3456788),
+(26, 'Doctor', 'Cosme', 'Lozano Lozano', '2001-07-19', '12345', 4424567888, 'cosme@lozano', 'Avenida', 'Geriatría', 1, 67854328),
+(27, 'Doctor', 'Fabian', 'Carmona Juárez', '2091-08-15', '$2b$12$macT2lbTu0lpLa1XJKqste1Q703XTMOvPQtYXF4q1jIHy0eYxrk8a', 4455662324, 'fabian@carmona', 'Avenida Belén #102', 'Geriatría', 1, 3456788),
+(28, 'Enfermera', 'Yanet', 'Lázaro Campos', '2000-08-18', '$2b$12$51ZM8QlUhyYq94AeelzK8uBXWQBagPfxuU2Yqx8GAitPBLzGwAg/q', 5537196729, 'lazarocamposyanet@gmail.com', 'Avenida escuadrón 201', 'Geriatría', 1, 3456624);
 
 --
 -- Índices para tablas volcadas
@@ -209,31 +223,31 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `medicamentos`
 --
 ALTER TABLE `medicamentos`
-  MODIFY `id_medicamentos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_medicamentos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `pacientes`
 --
 ALTER TABLE `pacientes`
-  MODIFY `id_pacientes` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_pacientes` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `receta`
 --
 ALTER TABLE `receta`
-  MODIFY `id_recetas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_recetas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `tratamientos`
 --
 ALTER TABLE `tratamientos`
-  MODIFY `id_tratamientos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_tratamientos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuarios` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_usuarios` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- Restricciones para tablas volcadas
