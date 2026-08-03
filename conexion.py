@@ -7,10 +7,7 @@ def conectar():
         password= "",
         database = "geriatria3"
     )
-    
-    print("conexion exitosa")
     return conexion
-
 
 if __name__ == "__main__":
     # Solo se ejecuta si corremos este archivo 
