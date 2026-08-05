@@ -48,12 +48,12 @@ class ActualizarTratamientos(CrearTratamientos):
             obtener_indice(
                 self.id_paciente_seleccionado,
                 self.valores_pacientes))
-
-        self.id_doctor_seleccionado = self.tratamientos.get("id_doctor")
-        self.combo_id_doctor.current(
-            obtener_indice(
-                self.id_doctor_seleccionado,
-                self.valores_doctor))
+        if self.tipo_usuario == "Administrador": 
+            self.id_doctor_seleccionado = self.tratamientos.get("id_doctor")
+            self.combo_id_doctor.current(
+                obtener_indice(
+                    self.id_doctor_seleccionado,
+                    self.valores_doctor))
 
         medicamentos = obtener_medicinas_de_tratamientos(self.id_seleccionado)
         self.lista_recetas = obtener_valores_recetas(self.id_seleccionado)
@@ -96,8 +96,9 @@ class ActualizarTratamientos(CrearTratamientos):
     def actualizar_tratamientos(self):
         if not validar_widget(self.tr_nombre, "Nombre", max_len=50): return
         if not validar_widget(self.tr_descripcion, "Descripción", max_len=100, requerido=False): return
-        if not validar_combo(self.id_paciente, "Paciente"): return
-        if not validar_combo(self.id_doctor, "Doctor"): return
+        if not validar_combo(self.id_paciente, "Paciente"): return  
+        if self.tipo_usuario == "Administrador": 
+            if not validar_combo(self.id_doctor, "Doctor"): return
         self.guardar_valores()
         actualizar_registro(
             self.tabla,

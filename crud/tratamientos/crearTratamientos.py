@@ -106,21 +106,22 @@ class CrearTratamientos:
         # self.id_paciente.current(0)
         self.combo_id_paciente.grid(row=0, column=3, sticky="ew", pady=(0, 16))
 
-        ttkb.Label(
-            form_frame,
-            text="Doctor *").grid(
-            row=1,
-            column=0,
-            sticky="w",
-            padx=(
-                0,
-                10),
-            pady=(
-                0,
-                16))
+        
         
         if self.tipo_usuario == "Administrador":
             self.doctor = self.valores_doctor
+            ttkb.Label(
+                        form_frame,
+                        text="Doctor *").grid(
+                        row=1,
+                        column=0,
+                        sticky="w",
+                        padx=(
+                            0,
+                            10),
+                        pady=(
+                            0,
+                            16))
             self.id_doctor = tk.StringVar(value="ninguno")
             self.combo_id_doctor = ttk.Combobox(
                 form_frame,
@@ -130,24 +131,26 @@ class CrearTratamientos:
                 values=self.doctor,
             )
             
+            
         # self.id_doctor.current(0)
-        self.combo_id_doctor.grid(row=1, column=1, sticky="ew", pady=(0, 16))
+            self.combo_id_doctor.grid(row=1, column=1, sticky="ew", pady=(0, 16))
+        
 
         ttkb.Label(
             form_frame, text="Fecha de inicio").grid(
-            row=1, column=2, sticky="w", padx=(
-                20, 10), pady=(
+            row=1, column=0, sticky="w", padx=(
+                0, 10), pady=(
                 0, 16))
         self.tr_fecha_inicio = DateEntry(form_frame, year=2026)
-        self.tr_fecha_inicio.grid(row=1, column=3, sticky="w", pady=(0, 16))
+        self.tr_fecha_inicio.grid(row=1, column=1, sticky="w", pady=(0, 16))
 
         ttkb.Label(
             form_frame, text="Fecha de terminación").grid(
-            row=2, column=0, sticky="w", padx=(
-                0, 10), pady=(
+            row=1, column=2, sticky="w", padx=(
+                20, 10), pady=(
                 0, 16))
         self.tr_fecha_final = DateEntry(form_frame, year=2026)
-        self.tr_fecha_final.grid(row=2, column=1, sticky="w", pady=(0, 16))
+        self.tr_fecha_final.grid(row=1, column=3, sticky="w", pady=(0, 16))
 
         ttkb.Label(
             form_frame,
@@ -166,13 +169,13 @@ class CrearTratamientos:
 
         ttkb.Label(
             form_frame, text="Medicamentos").grid(
-            row=3, column=0, sticky="w", padx=(
+            row=2, column=0, sticky="w", padx=(
                 0, 10), pady=(
                 0, 16))
         self.check_medicamentos = {}
         frame_medicamentos = ttkb.Frame(form_frame)
         frame_medicamentos.grid(
-            row=3,
+            row=2,
             column=1,
             sticky="w",
             pady=(0, 16)
@@ -237,7 +240,8 @@ class CrearTratamientos:
         if not validar_widget(self.tr_nombre, "Nombre", max_len=50): return
         if not validar_widget(self.tr_descripcion, "Descripción", max_len=100, requerido=False): return
         if not validar_combo(self.id_paciente, "Paciente"): return
-        if not validar_combo(self.id_doctor, "Doctor"): return
+        if self.tipo_usuario == "Administrador": 
+            if not validar_combo(self.id_doctor, "Doctor"): return
         self.guardar_valores()
         id_tratamiento = insertar_registro(self.tabla, self.nuevo_registro)
        # medicamentos = obtener_medicinas_de_tratamientos(id_tratamiento)
