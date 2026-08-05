@@ -118,15 +118,18 @@ class CrearTratamientos:
             pady=(
                 0,
                 16))
-        self.doctor = self.valores_doctor
-        self.id_doctor = tk.StringVar(value="ninguno")
-        self.combo_id_doctor = ttk.Combobox(
-            form_frame,
-            textvariable=self.id_doctor,
-            state="readonly",
-            width=27,
-            values=self.doctor,
-        )
+        
+        if self.tipo_usuario == "Administrador":
+            self.doctor = self.valores_doctor
+            self.id_doctor = tk.StringVar(value="ninguno")
+            self.combo_id_doctor = ttk.Combobox(
+                form_frame,
+                textvariable=self.id_doctor,
+                state="readonly",
+                width=27,
+                values=self.doctor,
+            )
+            
         # self.id_doctor.current(0)
         self.combo_id_doctor.grid(row=1, column=1, sticky="ew", pady=(0, 16))
 
@@ -215,8 +218,13 @@ class CrearTratamientos:
             "1.0", "end-1c")
         self.nuevo_registro["id_paciente"] = self.id_paciente.get().split(" ")[
             0]
-        self.nuevo_registro["id_doctor"] = self.id_doctor.get().split(" ")[0]
         self.medicamentos_seleccionados = []
+
+        if self.tipo_usuario == "Administrador": 
+            self.nuevo_registro["id_doctor"] = self.id_doctor.get().split(" ")[
+                            0]
+        else: # si es doctor o enfermera
+            self.nuevo_registro["id_doctor"] = self.usuario.get("id_usuarios")
 
         for id_medicamento, var in self.check_medicamentos.items():
             if var.get():
