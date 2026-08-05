@@ -4,7 +4,7 @@ from tkinter import messagebox
 from tkcalendar import DateEntry
 from tkinter import ttk
 
-from herramients import navegar_a_pagina, validar_widget, validar_combo
+from herramients import limpiar_frame, navegar_a_pagina, validar_widget, validar_combo
 from db_mongo import insertar_registro
 from db_mysql import obtener_medicinas_de_tratamientos, obtener_valores as obtener_valores_mysql, obtener_ids_tratamientos_visibles
 
@@ -225,7 +225,7 @@ class CrearEventosMongo:
         ttkb.Label(
             form_frame, text="Medicamento").grid(
             row=4, column=2, sticky="w", padx=(
-                0, 10), pady=(
+                20, 10), pady=(
                 0, 16))
         self.re_medicamento = ttk.Combobox(
             form_frame,
@@ -250,7 +250,7 @@ class CrearEventosMongo:
         )[0] if id_tr_seleccionado and id_tr_seleccionado != "ninguno" else ""
 
         self.nuevo_registro = {
-            "id_tr": id_tr_valor,
+            "id_tr": int(id_tr_valor),
             "re_estado": self.re_estado.get().strip() or "Pendiente",
             "re_observaciones": self.re_observaciones.get(
                 "1.0",

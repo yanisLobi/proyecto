@@ -5,8 +5,14 @@ from tkinter import messagebox
 from typing import Any, cast
 
 from herramients import navegar_a_pagina, regresar_string, mostrar_sin_registros
-from db_mongo import obtener_tabla, borrar_registro
-from db_mysql import obtener_tabla as obtener_tabla_mysql, obtener_ids_tratamientos_visibles
+from db_mongo import (
+    obtener_eventos_doctor,
+    obtener_eventos_enfermera,
+    obtener_tabla,
+    borrar_registro
+   
+)
+from db_mysql import obtener_tabla as obtener_tabla_mysql
 
 
 class ListaEventos:
@@ -16,7 +22,7 @@ class ListaEventos:
 
         self.etiqueta = ttkb.Label(
             self.frame,
-            text="Lista de pacientes",
+            text="Lista de recordatorios",
             font=("Arial", 14, "bold")
         )
         self.etiqueta.pack(pady=20)
@@ -67,7 +73,7 @@ class ListaEventosMongo:
 
         self.etiqueta = ttkb.Label(
             self.frame,
-            text="lista de eventos",
+            text="lista de recordatorios",
             font=("Arial", 14, "bold")
         )
         self.etiqueta.pack(pady=(40, 30))
@@ -123,17 +129,16 @@ class ListaEventosMongo:
         for item in self.tree.get_children():
             self.tree.delete(item)
 
-        ids_permitidos = obtener_ids_tratamientos_visibles(
-            self.tipo_usuario, self.usuario.get("id_usuarios")
-        )
+        if self.tipo_usuario == "Doctor":
+            registros = obtener_eventos_doctor(self.usuario.get("id_usuarios"))
+        elif self.tipo_usuario == "Enfermera":
+            registros = obtener_eventos_enfermera(self.usuario.get("id_usuarios"))
+        else:
+            registros = obtener_tabla(self.tabla)
 
         self.fk_ids_por_fila = {}
-        for registro in obtener_tabla(self.tabla):
+        for registro in registros:
             registro = cast(dict[str, Any], registro)
-            # filtrar por tratamientos visibles (None = sin restricción)
-            if ids_permitidos is not None and str(
-                    registro.get("id_tr", "")) not in ids_permitidos:
-                continue
             valores = []
             fk_ids = {}
 
@@ -262,7 +267,7 @@ class ListaEventosMongo:
         if id_real in (None, ""):
             return
 
-        navegar_mysql(
+        navegar_a_pagina(
             self.frame,
             pagina,
             id_seleccionado=id_real,

@@ -31,7 +31,11 @@ def mostrar_contenido(contenido_frame, titulo, texto, clase_contenido=None):
 def iniciar_aplicacion(ventana_login, usuario, campo_password):
     tipo_usu = usuario.get("us_tipo_usuario")
     # Crear el hilo indicando la función objetivo
-    hilo = threading.Thread(target=mostrar_recordatorios, daemon=True)
+    hilo = threading.Thread(
+        target=mostrar_recordatorios,
+        args=(usuario.get("id_usuarios"), tipo_usu),
+        daemon=True,
+    )
     # Iniciar el hilo
     hilo.start()
 

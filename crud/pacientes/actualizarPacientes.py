@@ -3,7 +3,7 @@ from crud.pacientes.crearPacientes import CrearPacientes
 from tkinter import messagebox, ttk
 import tkinter as tk
 from herramients import obtener_columnas, obtener_indice, navegar_a_pagina, regresar_string, mostrar_sin_registros, validar_widget, validar_combo
-from db_mysql import obtener_registros, actualizar_registro
+from db_mysql import obtener_registros, obtener_tabla, actualizar_registro
 
 
 class ActualizarPacientes(CrearPacientes):
@@ -47,14 +47,13 @@ class ActualizarPacientes(CrearPacientes):
             mostrar_sin_registros(self.frame, "tratamientos")
             return
 
-        tratamiento = self.lista_tratamientos[0]
-        self.columnas = tratamiento.keys()
-        print(self.lista_tratamientos)
+        # Cargar datos para transformación de ids a etiquetas legibles
+        self.pacientes = obtener_tabla("pacientes", solo_activos=False)
+        self.usuarios = obtener_tabla("usuarios", solo_activos=False)
 
-        self.columnas_tupla = tuple(
-            obtener_columnas(
-                self.columnas,
-            self.tipo_usuario))
+        self.columnas =  self.lista_tratamientos[0].keys()
+             
+        self.columnas_tupla = tuple(obtener_columnas(self.columnas, self.tipo_usuario))
 
         tk.Label(
             self.frame,
@@ -79,10 +78,29 @@ class ActualizarPacientes(CrearPacientes):
 
         self.tree.pack(pady=(10, 0))
 
-        for tratamiento in self.lista_tratamientos:
-            valores_tupla = tuple(tratamiento.values())
+        paciente_map = {
+            str(p.get("id_pacientes")): f"{p.get('id_pacientes', '')} - {p.get('pa_nombre', '')} {p.get('pa_apellidos', '')}".strip()
+            for p in self.pacientes
+        }
+        usuario_map = {
+            str(u.get("id_usuarios")): f"{u.get('id_usuarios', '')} - {u.get('us_nombre', '')} {u.get('us_apellidos', '')}".strip()
+            for u in self.usuarios
+        }
 
-            self.tree.insert("", tk.END, values=valores_tupla)
+        for tratamiento in self.lista_tratamientos:
+            valores = []
+            for col in self.columnas_tupla:
+                if col == "id_tratamientos":
+                    valores.append(tratamiento.get(col))
+                elif col == "tr_nombre":
+                    valores.append(tratamiento.get(col))
+                elif col == "id_doctor":
+                    valores.append(usuario_map.get(str(tratamiento.get(col, "")), ""))
+                elif col == "id_paciente":
+                    valores.append(paciente_map.get(str(tratamiento.get(col, "")), ""))
+                else:
+                    valores.append(tratamiento.get(col))
+            self.tree.insert("", tk.END, values=tuple(valores))
 
     def actualizar_pacientes(self):
         if not validar_widget(self.pa_nombre, "Nombre", max_len=50): return

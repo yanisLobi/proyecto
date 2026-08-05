@@ -55,14 +55,14 @@ class ListaTratamientos:
         self.etiqueta.pack(pady=(40, 30))
 
         self.id_usuario = usuario.get("id_usuarios")
-        self.lista_tratamiento = obtener_tabla(self.tabla)
+        lista_tratamiento = obtener_tabla(self.tabla, solo_activos=False)
 
         # Si no hay registros, evitar error con self.lista_tratamiento[0]
-        if not self.lista_tratamiento:
+        if not lista_tratamiento:
             mostrar_sin_registros(self.frame, self.tabla)
             return
 
-        tratamiento = cast(dict[str, Any], self.lista_tratamiento[0])
+        tratamiento = cast(dict[str, Any], lista_tratamiento[0])
 
         self.columnas = obtener_columnas(tratamiento.keys(), self.tipo_usuario)
         self.columnas_tupla = tuple(self.columnas)

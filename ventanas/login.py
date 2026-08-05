@@ -30,6 +30,11 @@ def main():
     contenido_frame.pack(padx=30, fill="x")
     contenido_frame.grid_columnconfigure(0, weight=1)
     contenido_frame.grid_columnconfigure(1, weight=0)
+    
+    contenido_frame2 = ttkb.Frame(contenido_frame)
+    contenido_frame2.grid(row=3, column=0, sticky="ew", pady=(0, 30))
+    contenido_frame2.grid_columnconfigure(0, weight=10)
+    contenido_frame2.grid_columnconfigure(1, weight=1)
 
     # Entry para correo
     ttkb.Label(
@@ -54,14 +59,14 @@ def main():
         pady=(
             5,
             2))
-    contra = ttkb.Entry(contenido_frame, show="*")
+    contra = ttkb.Entry(contenido_frame2, show="*")
     contra.grid(row=3, column=0, sticky="ew", pady=(0, 10))
     agregar_boton_mostrar_contrasena(
-        contenido_frame,
+        contenido_frame2,
         contra,
         row=3,
         column=1,
-        sticky="w",
+        sticky="ew",
         padx=(6, 0),
         pady=(0, 10),
         width=3,
@@ -75,7 +80,7 @@ def main():
         if correo_introducido == "":
             messagebox.showinfo(
                 "Error al iniciar sesion",
-                "Debes introducir correo\n nmhjmjmjm\n thhththth\n hngngn \n\n\n y contraseña")
+                "Debes introducir correo y contraseña")
             return
 
         correos = [usuario.get("us_correo_electronico")

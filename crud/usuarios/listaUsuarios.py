@@ -87,7 +87,7 @@ class ListaUsuarios:
         for item in self.tree.get_children():
             self.tree.delete(item)
         # llenar tabla
-        for usuario in obtener_tabla(self.tabla):
+        for usuario in obtener_tabla(self.tabla, solo_activos=False):
             valores_tupla = tuple(usuario.get(col)
                                   for col in self.columnas_tupla)
             self.tree.insert("", tk.END, values=valores_tupla)

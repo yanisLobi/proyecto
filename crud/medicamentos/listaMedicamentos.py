@@ -3,7 +3,7 @@ import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
 from herramients import navegar_a_pagina, obtener_columnas, regresar_string, mostrar_sin_registros
-from db_mysql import obtener_tabla, borrar_registro
+from db_mysql import obtener_tabla, borrar_registro, obtener_tratamientos_enfermera
 
 
 class ListaMedicamentos:
@@ -91,7 +91,12 @@ class ListaMedicamentos:
         for item in self.tree.get_children():
             self.tree.delete(item)
         # llenar tabla
-        for registro in obtener_tabla(self.tabla):
+        if self.tipo_usuario == "Administrador":
+            lista_registros = obtener_tabla(self.tabla, solo_activos=False)
+        else:  # Enfermeras y doctores
+            lista_registros = obtener_tabla(self.tabla)
+            
+        for registro in lista_registros:
             valores_tupla = tuple(registro.get(col)
                                   for col in self.columnas_tupla)
             self.tree.insert("", tk.END, values=valores_tupla)

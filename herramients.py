@@ -7,7 +7,11 @@ import time
 from datetime import datetime
 import ttkbootstrap as ttkb
 from db_mysql import obtener_registros
-from db_mongo import obtener_tabla
+from db_mongo import (
+    obtener_tabla,
+    obtener_eventos_doctor,
+    obtener_eventos_enfermera,
+)
 
 
 def agregar_boton_mostrar_contrasena(
@@ -27,7 +31,7 @@ def agregar_boton_mostrar_contrasena(
     def toggle_password_visibility():
         mostrar.set(not mostrar.get())
         entry.config(show="" if mostrar.get() else "*")
-        boton.config(text="🙈" if mostrar.get() else "👁")
+        boton.config(text="_" if mostrar.get() else "👁")
 
     boton = ttkb.Button(
         parent,
@@ -221,13 +225,18 @@ def obtener_indice(id_registro: int, opciones: list[tuple]):
     return 0
 
 
-def mostrar_recordatorios():
+def mostrar_recordatorios(id_usuario=None, tipo_usuario=None):
     dif_eventos = [15, 5, 0]
-    # (id_evento, diff_minutos) ya notificados en esta sesión
-    _mostrados = set()
+    # Guardar umbral mostrado por evento: {id_evento: {diff_minutos}}
+    _mostrados = {}
     while True:
-        time.sleep(50)
-        eventos = obtener_tabla("consultas")
+        time.sleep(1)
+        if tipo_usuario == "Doctor":
+            eventos = obtener_eventos_doctor(id_usuario)
+        elif tipo_usuario == "Enfermera":
+            eventos = obtener_eventos_enfermera(id_usuario)
+        else:
+            eventos = obtener_tabla("consultas")
 
         for evento in eventos:
             fecha_partes = evento["re_fecha"].split("-")
@@ -259,12 +268,14 @@ def mostrar_recordatorios():
             diff_minutos = minuto - minuto_a
 
             if diff_hora == 0:
-                print(
-                    f"{year_1} {mes_1} {dia_1} {hora} {minuto} - {year_2} {mes_1} {mes_2} {hora_a} {minuto_a}  ")
-                print(f" La diferencia es {diff_hora} {diff_minutos} ")
+               # print(
+                   # f"{year_1} {mes_1} {dia_1} {hora} {minuto} - {year_2} {mes_1} {mes_2} {hora_a} {minuto_a}  ")
+               # print(f" La diferencia es {diff_hora} {diff_minutos} ")
                 if diff_minutos in dif_eventos:
-                    clave = (str(evento.get("id")), diff_minutos)
-                    if clave in _mostrados:
+                    id_evento = str(evento.get("id"))
+                    if id_evento not in _mostrados:
+                        _mostrados[id_evento] = set()
+                    if diff_minutos in _mostrados[id_evento]:
                         continue
 
                     tratamiento = obtener_registros(
@@ -326,7 +337,7 @@ def mostrar_recordatorios():
                             f" Observación tratamiento: {tratamiento.get('tr_descripcion')}"
                         ),
                     )
-                    _mostrados.add(clave)
+                    _mostrados[id_evento].add(diff_minutos)
 
 
 

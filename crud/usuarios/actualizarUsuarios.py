@@ -19,27 +19,27 @@ class ActualizarUsuarios(CrearUsuario):
         if not resultado:
             mostrar_sin_registros(self.frame, self.tabla)
             return
-        self.usuario = resultado[0]
+        self.usuario1 = resultado[0]
 
-        self.us_tipo_usuario.set(self.tipo_usuario)
-        self.us_nombre.insert(0, self.usuario.get("us_nombre", ""))
-        self.us_apellidos.insert(0, self.usuario.get("us_apellidos", ""))
+        self.us_tipo_usuario.set(self.usuario1.get("us_tipo_usuario"))
+        self.us_nombre.insert(0, self.usuario1.get("us_nombre", ""))
+        self.us_apellidos.insert(0, self.usuario1.get("us_apellidos", ""))
 
-        fecha_nacimiento = self.usuario.get("us_fecha_nacimiento")
+        fecha_nacimiento = self.usuario1.get("us_fecha_nacimiento")
         if fecha_nacimiento:
             if isinstance(fecha_nacimiento, str):
                 fecha_nacimiento = datetime.strptime(
                     fecha_nacimiento, "%Y-%m-%d").date()
             self.us_fecha_nacimiento.set_date(fecha_nacimiento)
 
-        self.us_cedula.insert(0, str(self.usuario.get("us_cedula", "")))
-        self.us_telefono.insert(0, str(self.usuario.get("us_telefono", "")))
+        self.us_cedula.insert(0, str(self.usuario1.get("us_cedula", "")))
+        self.us_telefono.insert(0, str(self.usuario1.get("us_telefono", "")))
         self.us_correo_electronico.insert(
-            0, self.usuario.get(
+            0, self.usuario1.get(
                 "us_correo_electronico", ""))
-        self.us_direccion.insert(0, self.usuario.get("us_direccion", ""))
+        self.us_direccion.insert(0, self.usuario1.get("us_direccion", ""))
         self.us_especialidad.set(
-            self.usuario.get(
+            self.usuario1.get(
                 "us_especialidad",
                 "ninguno"))
 

@@ -5,6 +5,7 @@ from bson.objectid import ObjectId
 from pymongo.collection import Collection
 
 from conexion2 import Conexion
+from db_mysql import obtener_registros as obtener_registros_mysql
 
 
 def _obtener_coleccion(nombre_tabla=None):
@@ -43,6 +44,34 @@ def _normalizar_documento(documento):
     return doc
 
 
+def _convertir_id_tratamiento(valor):
+    if isinstance(valor, str) and valor.isdigit():
+        return int(valor)
+    return valor
+
+
+def _obtener_eventos_por_tratamientos(id_tratamientos):
+    if not id_tratamientos:
+        return []
+
+    coleccion = _obtener_coleccion("consultas")
+    ids_convertidos = [
+        _convertir_id_tratamiento(valor)
+        for valor in id_tratamientos
+        if valor is not None
+    ]
+    if not ids_convertidos:
+        return []
+    print(f"_obtener_eventos_por_tratamientos {ids_convertidos}")
+
+    registros = list(coleccion.find({"id_tr": {"$in": ids_convertidos}}))
+    
+        
+    print(f"encontrados {registros}")
+
+    return [_normalizar_documento(doc) for doc in registros]
+
+
 def obtener_tabla(nombre_tabla):
     coleccion = _obtener_coleccion(nombre_tabla)
     resultados = [
@@ -71,6 +100,38 @@ def obtener_registros(nombre_tabla, nombre_columna, valor_columna):
         for doc in coleccion.find({columna: valor})
     ]
     return resultados
+
+
+def obtener_eventos_doctor(id_doctor):
+    tratamientos = obtener_registros_mysql(
+        "tratamientos", "id_doctor", id_doctor)
+    ids_tratamientos = [
+        trat.get("id_tratamientos")
+        for trat in tratamientos
+        if trat.get("id_tratamientos") is not None
+    ]
+    print(f"obtener_eventos_doctor {ids_tratamientos}")
+    return _obtener_eventos_por_tratamientos(ids_tratamientos)
+
+
+def obtener_eventos_enfermera(id_enfermera):
+    pacientes = obtener_registros_mysql(
+        "pacientes", "id_enfermera_principal", id_enfermera)
+    ids_tratamientos = []
+    for paciente in pacientes:
+        id_paciente = paciente.get("id_pacientes")
+        if id_paciente is None:
+            continue
+        tratamientos = obtener_registros(
+            "tratamientos", "id_paciente", id_paciente, False)
+        ids_tratamientos.extend(
+            trat.get("id_tratamientos")
+            for trat in tratamientos
+            if trat.get("id_tratamientos") is not None
+        )
+    print(f"obtener_eventos_enfermeras {ids_tratamientos}")
+    
+    return _obtener_eventos_por_tratamientos(ids_tratamientos)
 
 
 def insertar_registro(tabla, diccionario_usuario):
