@@ -62,12 +62,12 @@ def _obtener_eventos_por_tratamientos(id_tratamientos):
     ]
     if not ids_convertidos:
         return []
-    print(f"_obtener_eventos_por_tratamientos {ids_convertidos}")
+    #print(f"_obtener_eventos_por_tratamientos {ids_convertidos}")
 
     registros = list(coleccion.find({"id_tr": {"$in": ids_convertidos}}))
     
         
-    print(f"encontrados {registros}")
+    #print(f"encontrados {registros}")
 
     return [_normalizar_documento(doc) for doc in registros]
 
@@ -110,7 +110,7 @@ def obtener_eventos_doctor(id_doctor):
         for trat in tratamientos
         if trat.get("id_tratamientos") is not None
     ]
-    print(f"obtener_eventos_doctor {ids_tratamientos}")
+    #print(f"obtener_eventos_doctor {ids_tratamientos}")
     return _obtener_eventos_por_tratamientos(ids_tratamientos)
 
 
@@ -122,14 +122,14 @@ def obtener_eventos_enfermera(id_enfermera):
         id_paciente = paciente.get("id_pacientes")
         if id_paciente is None:
             continue
-        tratamientos = obtener_registros(
-            "tratamientos", "id_paciente", id_paciente, False)
+        tratamientos = obtener_registros_mysql(
+            "tratamientos", "id_paciente", id_paciente)
         ids_tratamientos.extend(
             trat.get("id_tratamientos")
             for trat in tratamientos
             if trat.get("id_tratamientos") is not None
         )
-    print(f"obtener_eventos_enfermeras {ids_tratamientos}")
+    #print(f"obtener_eventos_enfermeras {ids_tratamientos}")
     
     return _obtener_eventos_por_tratamientos(ids_tratamientos)
 
