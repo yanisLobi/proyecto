@@ -225,12 +225,21 @@ def obtener_indice(id_registro: int, opciones: list[tuple]):
     return 0
 
 
-def mostrar_recordatorios(id_usuario=None, tipo_usuario=None):
+def mostrar_recordatorios(id_usuario=None, tipo_usuario=None, stop_event=None):
     dif_eventos = [15, 5, 0]
     # Guardar umbral mostrado por evento: {id_evento: {diff_minutos}}
     _mostrados = {}
     while True:
-        time.sleep(1)
+        if stop_event is not None and stop_event.is_set():
+            break
+
+        if stop_event is None:
+            time.sleep(1)
+        else:
+            stop_event.wait(1)
+            if stop_event.is_set():
+                break
+
         if tipo_usuario == "Doctor":
             eventos = obtener_eventos_doctor(id_usuario)
         elif tipo_usuario == "Enfermera":

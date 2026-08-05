@@ -30,10 +30,13 @@ def mostrar_contenido(contenido_frame, titulo, texto, clase_contenido=None):
 
 def iniciar_aplicacion(ventana_login, usuario, campo_password):
     tipo_usu = usuario.get("us_tipo_usuario")
+    stop_event = threading.Event()
+
     # Crear el hilo indicando la función objetivo
     hilo = threading.Thread(
         target=mostrar_recordatorios,
         args=(usuario.get("id_usuarios"), tipo_usu),
+        kwargs={"stop_event": stop_event},
         daemon=True,
     )
     # Iniciar el hilo
@@ -48,9 +51,13 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
     imagen_original = tk.PhotoImage(file="recursos/1.png")
     ventana.iconphoto(True, imagen_original)
 
+    def cerrar_aplicacion():
+        stop_event.set()
+        ventana_login.destroy()
+
     # Asegurar que si el usuario cierra el Dashboard con la 'X', se cierre
     # todo el programa
-    ventana.protocol("WM_DELETE_WINDOW", ventana_login.destroy)
+    ventana.protocol("WM_DELETE_WINDOW", cerrar_aplicacion)
 
     # Columna 0 (Menú): ancho fijo. Columna 1 (Contenido): ocupa el resto del
     # espacio.
@@ -69,7 +76,7 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
     imagen_pequena = imagen_original.subsample(10)
     ttkb.Label(
         menu_frame,
-        text=f"Hola, {tipo_usu}(a) {usuario.get("us_nombre").title()}",
+        text=f"Hola, {tipo_usu}(a) {usuario.get('us_nombre').title()}",
         font=("Arial", 12)
     ).pack(padx=15, pady=20)
     etiqueta_logo = ttkb.Label(menu_frame, image=imagen_pequena)
@@ -118,6 +125,7 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
             usuario=usuario)
 
     def cerrar_sesion():
+        stop_event.set()
         ventana.destroy()          # Cierra por completo el Dashboard
         ventana_login.deiconify()  # Hace visible otra vez el Login
         # borra la contraseña de ulimo inicio de sesion
