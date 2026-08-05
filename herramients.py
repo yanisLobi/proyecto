@@ -227,7 +227,9 @@ def obtener_indice(id_registro: int, opciones: list[tuple]):
 
 def mostrar_recordatorios(id_usuario=None, tipo_usuario=None, stop_event=None):
     dif_eventos = [15, 5, 0]
-    # Guardar umbral mostrado por evento: {id_evento: {diff_minutos}}
+    # Guardar por evento qué umbrales ya fueron notificadas.
+    # Así se muestran 15 minutos antes, 5 minutos antes y a la hora exacta,
+    # pero sin repetir el mismo aviso varias veces.
     _mostrados = {}
     while True:
         if stop_event is not None and stop_event.is_set():
@@ -276,7 +278,7 @@ def mostrar_recordatorios(id_usuario=None, tipo_usuario=None, stop_event=None):
             diff_hora = hora - hora_a
             diff_minutos = minuto - minuto_a
 
-            if diff_hora == 0:
+            if diff_hora == 0 and diff_minutos >= 0:
                # print(
                    # f"{year_1} {mes_1} {dia_1} {hora} {minuto} - {year_2} {mes_1} {mes_2} {hora_a} {minuto_a}  ")
                # print(f" La diferencia es {diff_hora} {diff_minutos} ")
