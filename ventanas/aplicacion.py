@@ -1,7 +1,7 @@
 import tkinter as tk
 import ttkbootstrap as ttkb
 import threading
-import time
+
 
 from herramients import navegar_a_pagina, mostrar_recordatorios
 from crud.calendario import CalendarioRecordatorios

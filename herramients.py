@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from tkcalendar import DateEntry
-import threading
 import time
 from datetime import datetime
 import ttkbootstrap as ttkb
@@ -332,7 +331,7 @@ def mostrar_recordatorios(id_usuario=None, tipo_usuario=None, stop_event=None):
 
                             f" Paciente: {paciente.get('pa_nombre')} {paciente.get('pa_apellidos')}\n\n"
                             f" Nombre del contacto de emergencia: {paciente.get('pa_nombre_contacto_emergencia')}\n\n"
-                            f" Número del contatco de emergencia {paciente.get('pa_tel_contacto_emergencia')}\n\n"
+                            f" Número del contacto de emergencia {paciente.get('pa_tel_contacto_emergencia')}\n\n"
 
 
                             f" Enfermera: {enfermera.get('us_nombre')} {enfermera.get('us_apellidos')}\n"
