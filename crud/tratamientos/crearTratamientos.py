@@ -113,7 +113,7 @@ class CrearTratamientos:
             ttkb.Label(
                         form_frame,
                         text="Doctor *").grid(
-                        row=1,
+                        row=2,
                         column=0,
                         sticky="w",
                         padx=(
@@ -133,7 +133,7 @@ class CrearTratamientos:
             
             
         # self.id_doctor.current(0)
-            self.combo_id_doctor.grid(row=1, column=1, sticky="ew", pady=(0, 16))
+            self.combo_id_doctor.grid(row=2, column=1, sticky="ew", pady=(0, 16))
         
 
         ttkb.Label(
@@ -169,13 +169,13 @@ class CrearTratamientos:
 
         ttkb.Label(
             form_frame, text="Medicamentos").grid(
-            row=2, column=0, sticky="w", padx=(
+            row=3, column=0, sticky="w", padx=(
                 0, 10), pady=(
                 0, 16))
         self.check_medicamentos = {}
         frame_medicamentos = ttkb.Frame(form_frame)
         frame_medicamentos.grid(
-            row=2,
+            row=3,
             column=1,
             sticky="w",
             pady=(0, 16)

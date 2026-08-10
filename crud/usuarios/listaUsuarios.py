@@ -102,6 +102,7 @@ class ListaUsuarios:
             usuario=self.usuario)
 
     def on_seleccion(self, event=None):
+        #este metodo habilita los botones de actualizar y elimnar cuando seleccionamos una fila
         if self.boton_actualizar is None and self.boton_eliminar is None:
             return
         estado = "normal" if self.tree.selection() else "disabled"
@@ -135,7 +136,6 @@ class ListaUsuarios:
         self.recargar_tabla()
 
     def ir_actualizar(self):
-
         item_id = self.tree.selection()
         if not item_id:
             messagebox.showinfo(

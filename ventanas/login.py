@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
 
-from conexion import conectar
 from ventanas.aplicacion import iniciar_aplicacion
 from ventanas.registro import iniciar_registro
 from db_mysql import obtener_tabla
@@ -113,8 +112,7 @@ def main():
 
         usuario = [usuario for usuario in lista_usuarios if usuario.get(
             "us_correo_electronico") == correo_introducido][0]
-        nombre_usuario = [usuario.get("us_nombre") for usuario in lista_usuarios if usuario.get(
-            "us_correo_electronico") == correo_introducido][0]
+        nombre_usuario = usuario.get("us_nombre")
 
         contenido_frame.pack_forget()
         frame_bienvenida = ttkb.Frame(ventana)
@@ -142,6 +140,7 @@ def main():
             frame_bienvenida.destroy()
             contenido_frame.pack(padx=30, fill="x")
             iniciar_aplicacion(ventana, usuario, contra)
+            
         ventana.after(3000, avanzar_y_limpiar)
 
     def abrir_registro():

@@ -125,7 +125,7 @@ def iniciar_aplicacion(ventana_login, usuario, campo_password):
             usuario=usuario)
 
     def cerrar_sesion():
-        stop_event.set()
+        stop_event.set() #destruir robot de recordatorios
         ventana.destroy()          # Cierra por completo el Dashboard
         ventana_login.deiconify()  # Hace visible otra vez el Login
         # borra la contraseña de ulimo inicio de sesion
