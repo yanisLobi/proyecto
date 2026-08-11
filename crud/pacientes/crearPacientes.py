@@ -5,11 +5,16 @@ from tkinter import ttk
 from tkcalendar import DateEntry
 from tkinter import messagebox
 from herramients import navegar_a_pagina, limpiar_frame, validar_widget, validar_combo
-from db_mysql import insertar_registro, obtener_valores_usuarios
+from db.db_mysql import insertar_registro, obtener_valores_usuarios
 
 
 class CrearPacientes:
+    """Muestra un formulario para crear un nuevo registro (este mismo constructor se usa en Actualizar).
+    Permite ingresar los datos básicos y guardarlos en la base de datos."""
+
     def __init__(self, parent, titulo="Crear", usuario={}):
+        """Inicializa el formulario de creación de pacientes.
+        parent es el contenedor donde se dibuja la ventana y usuario guarda la sesión actual."""
 
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
@@ -135,9 +140,12 @@ class CrearPacientes:
             row=2, column=3, sticky="ew", pady=(0, 16))
 
     def limpiar(self):
+        """Limpia los campos del formulario para empezar de nuevo."""
         limpiar_frame(self.frame)
 
     def ir_lista(self):
+        """Regresa a la vista de lista de pacientes.
+        Cambia de pantalla usando la navegación de la aplicación."""
         navegar_a_pagina(
             self.frame,
             f"Lista {
@@ -145,6 +153,8 @@ class CrearPacientes:
             usuario=self.usuario)
 
     def guardar_valores(self):
+        """Recoge los datos escritos en los campos del formulario.
+        Convierte esa información en un diccionario listo para guardarse en la base de datos."""
         # actualizar los valores del diccionario con los valores de lo widgets
         self.nuevo_registro = {
             'pa_nombre': '',
@@ -169,6 +179,8 @@ class CrearPacientes:
         ).split()[0]  # sirve para sacar el id, dentro de muchos valores
 
     def crear_paciente(self):
+        """Ejecuta todas las validaciones de widgets y guarda el nuevo paciente.
+        Si falta información importante, muestra un mensaje de error y se detiene el metodo"""
         if not validar_widget(self.pa_nombre, "Nombre", max_len=50): return
         if not validar_widget(self.pa_apellidos, "Apellidos", max_len=50): return
         if not validar_widget(self.pa_nombre_contacto_emergencia, "Nombre contacto emergencia", max_len=50): return
@@ -183,4 +195,5 @@ class CrearPacientes:
         # regresar a lista usuarios
 
     def guardar(self):
+        """Ejecuta la creación del paciente desde el botón guardar."""
         self.crear_paciente()

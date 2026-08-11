@@ -1,7 +1,9 @@
-from conexion import conectar
+from .conexion_mysql import conectar
 
 
 def obtener_tabla(nombre_tabla, solo_activos=True):
+    """Recupera todos los registros de la tabla indicada.
+    Si solo_activos es True, muestra únicamente los que están marcados como activos."""
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
     letras = nombre_tabla[:2]
@@ -21,6 +23,8 @@ def obtener_tabla(nombre_tabla, solo_activos=True):
 
 
 def borrar_registro_fisico(nombre_tabla, nombre_columna, valor_columna):
+    """Elimina de forma definitiva un registro de la tabla seleccionada.
+    Se usa cuando se quiere quitar algo por completo y no dejarlo como inactivo."""
     conexion = conectar()
     cursor = conexion.cursor()
     query = f"DELETE FROM {nombre_tabla} WHERE {nombre_columna} = {valor_columna}"
@@ -33,6 +37,8 @@ def borrar_registro_fisico(nombre_tabla, nombre_columna, valor_columna):
 
 
 def borrar_registro(nombre_tabla, nombre_columna, valor_columna):
+    """Cambia el estado de un registro a inactivo.
+    Sirve para ocultarlo sin borrarlo de la base de datos."""
     letras = nombre_tabla[:2]
     columna_activo = letras + "_activo"
 
@@ -52,6 +58,8 @@ def obtener_registros(
         nombre_columna,
         valor_columna,
         solo_activos=True):
+    """Busca los registros que coincidan con un valor en una columna concreta.
+    El parámetro solo_activos limita la búsqueda a los elementos que siguen vigentes."""
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
 
@@ -72,6 +80,8 @@ def obtener_registros(
 
 
 def insertar_registro(tabla, diccionario_usuario):
+    """Guarda un nuevo registro en la tabla indicada.
+    El diccionario debe contener los nombres de las columnas y los valores que se van a guardar."""
     usuario_keys = ", ".join(diccionario_usuario.keys())
     separadores = ", %s" * len(diccionario_usuario.values())
     sql = f"INSERT INTO {tabla} ({usuario_keys}) VALUES ({separadores[1:]})"
@@ -89,6 +99,8 @@ def insertar_registro(tabla, diccionario_usuario):
 
 
 def insertar_receta(id_tratamiento, id_medicamento):
+    """Relaciona un tratamiento con un medicamento.
+    Se usa para guardar esa conexión en la tabla de recetas."""
     conexion = conectar()
     cursor = conexion.cursor()
 
@@ -108,6 +120,8 @@ def actualizar_registro(
         diccionario_usuario,
         nombre_columna,
         valor_columna):
+    """Modifica los datos de un registro ya existente.
+    El diccionario incluye los campos que se van a cambiar y el valor de búsqueda para encontrar el registro."""
     usuario_keys = "=%s, ".join(diccionario_usuario.keys())
 
     sql = f"UPDATE {tabla} set {usuario_keys} =%s WHERE {nombre_columna} = {valor_columna}"
@@ -127,6 +141,8 @@ def obtener_valores(
         nombre_columna1,
         nombre_columna2,
         solo_activos=True):
+    """Extrae algunos campos específicos de una tabla para mostrarlos.
+    Es útil cuando no se necesitan todos los datos, solo los más importantes."""
     conexion = conectar()
     cursor = conexion.cursor()
 
@@ -147,6 +163,8 @@ def obtener_valores_medicamentos(
         nombre_columna,
         nombre_columna1,
         solo_activos=True):
+    """Devuelve información básica de los medicamentos.
+    Se usa para llenar listas o combos sin cargar toda la tabla."""
     conexion = conectar()
     cursor = conexion.cursor()
 
@@ -168,6 +186,8 @@ def obtener_valores_usuarios(
         nombre_columna2,
         tipo_usuario,
         solo_activos=True):
+    """Recupera datos de usuarios según su tipo.
+    Esto ayuda a mostrar, por ejemplo, solo doctores o solo enfermeras."""
     conexion = conectar()
     cursor = conexion.cursor()
 
@@ -183,6 +203,8 @@ def obtener_valores_usuarios(
 
 
 def obtener_medicinas_de_tratamientos(id_tratamiento):
+    """Encuentra los medicamentos asociados a un tratamiento.
+    El id_tratamiento sirve como clave para buscar esa relación."""
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
 
@@ -203,6 +225,8 @@ def obtener_medicinas_de_tratamientos(id_tratamiento):
 
 
 def eliminar_recetas_tratamiento(id_tratamiento):
+    """Quita todas las relaciones de medicamentos de un tratamiento.
+    Se usa antes de actualizar o borrar un tratamiento completo."""
     conexion = conectar()
     cursor = conexion.cursor()
 
@@ -219,6 +243,8 @@ def eliminar_recetas_tratamiento(id_tratamiento):
 
 
 def obtener_valores_recetas(id_tratamiento):
+    """Muestra qué medicamentos están ligados a un tratamiento.
+    Sirve para ver la lista de recetas relacionadas con ese registro."""
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
 
@@ -245,6 +271,8 @@ def obtener_valores_recetas(id_tratamiento):
 
 
 def obtener_pacientes_doctor(id_doctor):
+    """Busca los pacientes que pertenecen a un doctor.
+    El id_doctor se usa como filtro para encontrar esa relación."""
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
 
@@ -265,6 +293,8 @@ def obtener_pacientes_doctor(id_doctor):
 
 
 def obtener_tratamientos_enfermera(id_enfermera_principal):
+    """Encuentra los tratamientos asignados a una enfermera.
+    El id_enfermera_principal permite filtrar por la persona encargada."""
     conexion = conectar()
     cursor = conexion.cursor(dictionary=True)
 
@@ -286,8 +316,9 @@ def obtener_tratamientos_enfermera(id_enfermera_principal):
 
 
 def obtener_ids_tratamientos_visibles(tipo_usuario, id_usuario):
-    """Devuelve un set de str con los id_tratamientos que el usuario puede ver.
-    Administrador recibe None (sin restricción)."""
+    """Devuelve los tratamientos que un usuario puede ver.
+    Dependiendo del tipo de usuario, ya que un tratamiento si tiene id_doctor 
+    pero enfermera ocupa revisar los pacientes que tiene asignados."""
     if tipo_usuario == "Administrador":
         return None
     if tipo_usuario == "Doctor":

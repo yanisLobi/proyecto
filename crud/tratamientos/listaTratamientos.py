@@ -4,11 +4,16 @@ from tkinter import ttk
 from tkinter import messagebox
 from typing import Any, cast
 from herramients import mostrar_sin_registros, navegar_a_pagina, obtener_columnas, regresar_string
-from db_mysql import obtener_registros, obtener_tabla, borrar_registro, obtener_tratamientos_enfermera, obtener_valores
+from db.db_mysql import obtener_registros, obtener_tabla, borrar_registro, obtener_tratamientos_enfermera, obtener_valores
 
 
 class ListaTratamientos:
+    """Muestra la lista de registros en una tabla interactiva.
+    Permite ver, eliminar y navegar a otras pantallas según el tipo de usuario."""
+
     def __init__(self, parent, usuario={}):
+        """Inicializa la vista de lista con los botones y la tabla de registros.
+        parent es el contenedor de la interfaz y usuario guarda la sesión actual."""
 
         self.tabla = 'tratamientos'
         self.usuario = usuario
@@ -101,9 +106,6 @@ class ListaTratamientos:
         # el nombre)
         self.fk_ids_por_fila = {}
 
-        self.tree.bind("<Double-1>", self.on_doble_click)
-        self.tree.bind("<Motion>", self.on_mouse_move)
-
         self.recargar_tabla()
         self.tree.bind("<<TreeviewSelect>>", self.on_seleccion)
         self.on_seleccion()
@@ -111,6 +113,8 @@ class ListaTratamientos:
         self.tree.pack(pady=(10, 0))
 
     def recargar_tabla(self):
+        """Actualiza la información mostrada en la tabla según el usuario actual.
+        Carga los registros disponibles y los muestra en la vista."""
 
         if self.tipo_usuario == "Doctor":
             lista_registros = obtener_registros(
@@ -148,6 +152,8 @@ class ListaTratamientos:
         self.on_seleccion()
 
     def ir_crear(self):
+        """Abre la pantalla para crear un nuevo registro.
+        Cambia de vista y pasa el usuario activo como contexto."""
         navegar_a_pagina(
             self.frame,
             f"Crear {
@@ -155,6 +161,8 @@ class ListaTratamientos:
             usuario=self.usuario)
 
     def on_seleccion(self, event=None):
+        """Activa o desactiva los botones de acción según haya una fila seleccionada.
+        Esto evita ejecutar acciones sin un registro elegido."""
         if self.boton_actualizar is None and self.boton_eliminar is None:
             return
         estado = "normal" if self.tree.selection() else "disabled"
@@ -164,6 +172,8 @@ class ListaTratamientos:
             self.boton_eliminar.config(state=estado)
 
     def obtener_id_seleccionado(self):
+        """Devuelve el identificador del registro que está seleccionado.
+        Si no hay selección, muestra un mensaje de advertencia."""
         item_id = self.tree.selection()
         if not item_id:
             messagebox.showinfo(
@@ -179,6 +189,8 @@ class ListaTratamientos:
         return self.valores[0]
 
     def borrar(self):
+        """Elimina el registro seleccionado de la lista.
+        Usa el identificador actual para borrar el elemento correspondiente."""
         id = self.obtener_id_seleccionado()
         borrar_registro(self.tabla, self.columnas_tupla[0], id)
         messagebox.showinfo(
@@ -187,6 +199,8 @@ class ListaTratamientos:
         self.recargar_tabla()
 
     def ir_actualizar(self):
+        """Abre la pantalla para ver o modificar el registro seleccionado.
+        Pasa el identificador del elemento elegido a la siguiente vista."""
         item_id = self.tree.selection()
         if not item_id:
             messagebox.showinfo(
@@ -204,64 +218,9 @@ class ListaTratamientos:
             id_seleccionado=id,
             usuario=self.usuario)
 
-    def obtener_celda_evento(self, event):
-        region = self.tree.identify_region(event.x, event.y)
-        if region != "cell":
-            return None
-
-        row_id = self.tree.identify_row(event.y)
-        col_id = self.tree.identify_column(event.x)
-
-        if not row_id or not col_id:
-            return None
-
-        try:
-            col_index = int(col_id.lstrip("#")) - 1
-        except ValueError:
-            return None
-
-        if col_index < 0 or col_index >= len(self.columnas_tupla):
-            return None
-
-        col_name = self.columnas_tupla[col_index]
-        values = self.tree.item(row_id, "values")
-        if not values:
-            return None
-
-        return row_id, col_name, values[col_index]
-
-    def on_doble_click(self, event):
-        info = self.obtener_celda_evento(event)
-        if not info:
-            return
-
-        row_iid, col_name, cell_value = info
-        pagina = self.fk_paginas.get(col_name)
-        if not pagina:
-            return
-
-        # Recuperar el ID real (aunque se muestre el nombre)
-        id_real = self.fk_ids_por_fila.get(
-            row_iid, {}).get(
-            col_name, cell_value)
-        if id_real in (None, ""):
-            return
-
-        navegar_a_pagina(
-            self.frame,
-            pagina,
-            id_seleccionado=id_real,
-            tipo_usuario=self.tipo_usuario,
-        )
-
-    def on_mouse_move(self, event):
-        info = self.obtener_celda_evento(event)
-        if info and info[1] in self.fk_paginas:
-            self.tree.configure(cursor="hand2")
-        else:
-            self.tree.configure(cursor="")
-
     def _cargar_display_map_pacientes(self):
+        """Carga un mapa para mostrar nombres de pacientes en lugar de sus identificadores.
+        Esto hace más clara la información mostrada en la tabla."""
         try:
             filas = obtener_valores(
                 "pacientes",
@@ -275,6 +234,8 @@ class ListaTratamientos:
                 for id_paciente, nombre, apellido in filas}
 
     def _cargar_display_map_usuarios(self):
+        """Carga un mapa para mostrar nombres de usuarios en lugar de sus identificadores.
+        Esto facilita la lectura de la información en la tabla."""
         try:
             filas = obtener_valores(
                 "usuarios",

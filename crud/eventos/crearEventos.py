@@ -5,8 +5,8 @@ from tkcalendar import DateEntry
 from tkinter import ttk
 
 from herramients import limpiar_frame, navegar_a_pagina, validar_widget, validar_combo
-from db_mongo import insertar_registro
-from db_mysql import obtener_medicinas_de_tratamientos, obtener_valores as obtener_valores_mysql, obtener_ids_tratamientos_visibles
+from db.db_mongo import insertar_registro
+from db.db_mysql import obtener_medicinas_de_tratamientos, obtener_valores as obtener_valores_mysql, obtener_ids_tratamientos_visibles
 
 COLORES_EVENTO = {
     "Azul": "#29b6f6",
@@ -20,7 +20,12 @@ COLORES_EVENTO = {
 
 
 class CrearEventosMongo:
+    """Muestra un formulario para crear un nuevo recordatorio.
+    Permite capturar la información principal y guardarla en la aplicación."""
+
     def __init__(self, parent=None, titulo="Crear", usuario=None):
+        """Inicializa la vista de creación del recordatorio.
+        Prepara los campos, botones y valores iniciales del formulario."""
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
         self.tabla = "consultas"
@@ -239,12 +244,16 @@ class CrearEventosMongo:
         self.re_medicamento.grid(row=4, column=3, sticky="ew", pady=(0, 16))
 
     def limpiar(self):
+        """Limpia la pantalla para volver a ingresar datos desde cero."""
         limpiar_frame(self.frame)
 
     def ir_lista(self):
+        """Regresa a la vista donde se muestran los recordatorios."""
         navegar_a_pagina(self.frame, "Lista eventos", usuario=self.usuario)
 
     def guardar_valores(self):
+        """Recoge los valores escritos en los controles del formulario.
+        Convierte esa información en un diccionario listo para guardarse."""
         id_tr_seleccionado = self.id_tr.get().strip()
         id_tr_valor = id_tr_seleccionado.split(
         )[0] if id_tr_seleccionado and id_tr_seleccionado != "ninguno" else ""
@@ -267,6 +276,8 @@ class CrearEventosMongo:
             "re_medicamento": self.re_medicamento.get().split()[0]}
 
     def _cargar_tratamientos_combo(self):
+        """Carga los tratamientos visibles para el usuario activo.
+        Devuelve una lista filtrada según el tipo de usuario cuando aplica."""
         try:
             todos = obtener_valores_mysql(
                 "tratamientos",
@@ -287,6 +298,8 @@ class CrearEventosMongo:
             return []
 
     def crear_evento(self):
+        """Valida la información ingresada y guarda el nuevo recordatorio.
+        Si falta algún dato importante, muestra un mensaje y detiene el proceso."""
         if not validar_widget(self.re_titulo, "Título", max_len=100): return
         if not validar_combo(self.id_tr, "Tratamiento"): return
         if not validar_widget(self.re_hora_inicio, "Hora inicio", max_len=5): return
@@ -297,4 +310,5 @@ class CrearEventosMongo:
         navegar_a_pagina(self.frame, "Lista eventos", usuario=self.usuario)
 
     def guardar(self):
+        """Ejecuta la creación del recordatorio desde el botón guardar."""
         self.crear_evento()

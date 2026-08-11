@@ -3,11 +3,16 @@ from crud.pacientes.crearPacientes import CrearPacientes
 from tkinter import messagebox, ttk
 import tkinter as tk
 from herramients import obtener_columnas, obtener_indice, navegar_a_pagina, regresar_string, mostrar_sin_registros, validar_widget, validar_combo
-from db_mysql import obtener_registros, obtener_tabla, actualizar_registro
+from db.db_mysql import obtener_registros, obtener_tabla, actualizar_registro
 
 
 class ActualizarPacientes(CrearPacientes):
+    """Muestra un formulario para actualizar un registro existente.
+    Permite cambiar la información básica y revisar los elementos relacionados."""
+
     def __init__(self, parent, id_seleccionado, usuario={}):
+        """Inicializa la vista de actualización.
+        Carga la información del elemento seleccionado y la muestra en el formulario."""
         super().__init__(parent, "Actualizar", usuario=usuario)
         self.id_seleccionado = id_seleccionado
         self.usuario = usuario
@@ -103,6 +108,8 @@ class ActualizarPacientes(CrearPacientes):
             self.tree.insert("", tk.END, values=tuple(valores))
 
     def actualizar_pacientes(self):
+        """Valida la información ingresada y guarda los cambios realizados.
+        Si falta algo importante, muestra un mensaje de error y deten la ejecucion del metodo"""
         if not validar_widget(self.pa_nombre, "Nombre", max_len=50): return
         if not validar_widget(self.pa_apellidos, "Apellidos", max_len=50): return
         if not validar_widget(self.pa_nombre_contacto_emergencia, "Nombre contacto emergencia", max_len=50): return
@@ -119,4 +126,5 @@ class ActualizarPacientes(CrearPacientes):
         navegar_a_pagina(self.frame, "Lista pacientes", usuario=self.usuario)
 
     def guardar(self):
+        """Ejecuta la actualización desde el botón de guardar."""
         self.actualizar_pacientes()

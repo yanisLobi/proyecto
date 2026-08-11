@@ -5,8 +5,8 @@ from tkcalendar import DateEntry
 import time
 from datetime import datetime
 import ttkbootstrap as ttkb
-from db_mysql import obtener_registros
-from db_mongo import (
+from db.db_mysql import obtener_registros
+from db.db_mongo import (
     obtener_tabla,
     obtener_eventos_doctor,
     obtener_eventos_enfermera,
@@ -25,6 +25,8 @@ def agregar_boton_mostrar_contrasena(
     pady=0,
     width=3,
         bootstyle="outline-secondary"):
+    """Agrega un botón para mostrar u ocultar la contraseña en un campo de entrada.
+    Devuelve el botón y la variable de control para manejar su estado."""
     mostrar = tk.BooleanVar(value=False)
 
     def toggle_password_visibility():
@@ -44,6 +46,10 @@ def agregar_boton_mostrar_contrasena(
 
 
 def limpiar_widget(widget):
+    """Limpia el contenido de un widget de interfaz.
+    Funciona con widgets de texto, combosboxeses, Radiobuttons, etc.
+    este metodo no ahorra codigo en cada una de las clases de formularios
+    """
     if isinstance(widget, (tk.Entry, ttk.Entry)):
         widget.delete(0, tk.END)
     elif isinstance(widget, tk.Text):
@@ -68,11 +74,18 @@ def limpiar_widget(widget):
 
 
 def limpiar_frame(frame):
+    """Limpia todos los widgets de un contenedor de la interfaz.
+    Se usa para reiniciar formularios o paneles de forma rápida."""
     for widget in frame.winfo_children():
         limpiar_widget(widget)
 
 
 def navegar_a_pagina(frame, nombre_clase, **kwargs):
+    """Cambia la vista actual por otra pantalla de la aplicación.
+    Recibe el nombre de la pantalla y los datos necesarios para construirla.
+    
+    Al importar las clases aqui, se evita un error de importación circular
+    """
     from crud.pacientes.listaPacientes import ListaPacientes
     from crud.pacientes.crearPacientes import CrearPacientes
     from crud.pacientes.actualizarPacientes import ActualizarPacientes
@@ -123,6 +136,8 @@ def navegar_a_pagina(frame, nombre_clase, **kwargs):
 
 
 def mostrar_sin_registros(frame, nombre_tabla):
+    """Muestra un mensaje cuando no hay registros para mostrar.
+    Recibe el nombre del elemento o sección para hacerlo más claro al usuario."""
     ttkb.Label(
         frame,
         text=f"La tabla \"{nombre_tabla}\" no contiene ningún registro.\nSi tienes algún problema contacta a tu administrador.",
@@ -134,11 +149,8 @@ def mostrar_sin_registros(frame, nombre_tabla):
 
 def validar_widget(widget, nombre_campo, max_len=None, tipo="texto",
                    requerido=True, min_len=None):
-    """
-    Valida tipo y longitud de un Entry / Text / Spinbox.
-    tipo: "texto" | "numerico"
-    Retorna True si válido; False y muestra error si no.
-    """
+    """Valida el contenido de un campo de formulario.
+    Revisaa si está vacío, si tiene el tipo correcto y si cumple con la longitud permitida."""
     import tkinter as tk
     from tkinter import messagebox
 
@@ -174,7 +186,8 @@ def validar_widget(widget, nombre_campo, max_len=None, tipo="texto",
 
 
 def validar_combo(stringvar, nombre_campo):
-    """Verifica que un combo FK no esté en su valor por defecto 'ninguno'."""
+    """Verifica que un combo haya recibido una opción válida.
+    Evita que se guarde el valor por defecto de 'ninguno'."""
     from tkinter import messagebox
     val = stringvar.get() if hasattr(stringvar, "get") else str(stringvar)
     if not val.strip() or val.strip().lower() == "ninguno":
@@ -185,6 +198,8 @@ def validar_combo(stringvar, nombre_campo):
 
 
 def obtener_columnas(columnas, tipo_usuario=""):
+    """Filtra las columnas que deben mostrarse en pantalla.
+    Oculta campos sensibles o internos según el tipo de usuario."""
     if tipo_usuario == "Administrador":
         columnas_ocultar = {"contraseña", "password", "passwd"}
     else:
@@ -198,6 +213,8 @@ def obtener_columnas(columnas, tipo_usuario=""):
 
 
 def regresar_string(titulos):
+    """Convierte un nombre técnico en texto más legible para la interfaz.
+    Elimina prefijos comunes y separa palabras con espacios."""
     palabras_remover = ["id", "tr", "us", "pa", "me", "re"]
 
     for palabra in palabras_remover:
@@ -214,6 +231,8 @@ def regresar_string(titulos):
 # indice encontrado igual a 1
 
 def obtener_indice(id_registro: int, opciones: list[tuple]):
+    """Busca la posición de un registro dentro de una lista de opciones.
+    Devuelve el índice correspondiente para usarlo en controles de selección."""
     indice_encontrado = 0
     for opcion in opciones:
         if id_registro == opcion[0]:
@@ -225,6 +244,8 @@ def obtener_indice(id_registro: int, opciones: list[tuple]):
 
 
 def mostrar_recordatorios(id_usuario=None, tipo_usuario=None, stop_event=None):
+    """Muestra recordatorios de eventos cuando se acercan a su hora.
+    Revisa los eventos pendientes y avisa al usuario según el tiempo restante."""
     dif_eventos = [15, 5, 0]
     # Guardar por evento qué umbrales ya fueron notificadas.
     # Así se muestran 15 minutos antes, 5 minutos antes y a la hora exacta,
@@ -300,19 +321,6 @@ def mostrar_recordatorios(id_usuario=None, tipo_usuario=None, stop_event=None):
 
                     hora_inicio = evento["re_hora_inicio"]
                     hora_final = evento["re_hora_fin"]
-
-                    """ tr_fecha_inicial = obtener_registros("tratamientos", "tr_fecha_inicio", tratamiento.get("tr_fecha_inicio"))[5].split("-")
-                    fecha_mes_1= int(tr_fecha_inicial[1])
-                    fecha_dia_1 = int(tr_fecha_inicial[2])
-
-                    tr_fecha_final = obtener_registros("tratamientos", "tr_fecha_final", tratamiento.get("tr_fecha_final"))[6].split("-")
-                    fecha_mes_2= int(tr_fecha_inicial[1])
-                    fecha_dia_2 = int(tr_fecha_final[2])
-
-                    dif_mes = fecha_mes_1 - fecha_mes_2
-                    print(dif_mes)
-                    dif_dia = fecha_dia_1 - fecha_dia_2
-                    print(dif_dia) """
 
                     messagebox.showinfo(
                         f"📅 {evento['re_titulo']}\n",

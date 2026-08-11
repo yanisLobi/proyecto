@@ -3,11 +3,16 @@ import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
 from herramients import navegar_a_pagina, obtener_columnas, regresar_string, mostrar_sin_registros
-from db_mysql import obtener_tabla, borrar_registro
+from db.db_mysql import obtener_tabla, borrar_registro
 
 
 class ListaUsuarios:
+    """Muestra la lista de usuarios en una tabla interactiva.
+    Permite ver, eliminar y abrir la vista de detalle según el tipo de usuario."""
+
     def __init__(self, parent, usuario={}):
+        """Inicializa la vista de lista con los botones y la tabla de usuarios.
+        Recibe el contenedor de la interfaz y la información del usuario activo."""
 
         self.tabla = 'usuarios'
         self.frame = ttkb.Frame(parent)
@@ -83,6 +88,8 @@ class ListaUsuarios:
         self.tree.pack(pady=(10, 0))
 
     def recargar_tabla(self):
+        """Actualiza los datos mostrados en la tabla.
+        Vuelve a cargar la información disponible y la presenta en la vista."""
         # limpiar filas
         for item in self.tree.get_children():
             self.tree.delete(item)
@@ -94,7 +101,7 @@ class ListaUsuarios:
         self.on_seleccion()
 
     def ir_crear(self):
-
+        """Abre la pantalla para crear un nuevo usuario."""
         navegar_a_pagina(
             self.frame,
             f"Crear {
@@ -102,6 +109,7 @@ class ListaUsuarios:
             usuario=self.usuario)
 
     def on_seleccion(self, event=None):
+        """Activa o desactiva los botones de acción según haya una fila seleccionada."""
         #este metodo habilita los botones de actualizar y elimnar cuando seleccionamos una fila
         if self.boton_actualizar is None and self.boton_eliminar is None:
             return
@@ -112,6 +120,7 @@ class ListaUsuarios:
             self.boton_eliminar.config(state=estado)
 
     def obtener_id_seleccionado(self):
+        """Devuelve el identificador del elemento seleccionado en la tabla."""
         item_id = self.tree.selection()
         if not item_id:
             messagebox.showinfo(
@@ -127,7 +136,7 @@ class ListaUsuarios:
         return self.valores[0]
 
     def borrar(self):
-
+        """Elimina el usuario seleccionado de la lista actual."""
         id = self.obtener_id_seleccionado()
         borrar_registro(self.tabla, self.columnas_tupla[0], id)
         messagebox.showinfo(
@@ -136,6 +145,7 @@ class ListaUsuarios:
         self.recargar_tabla()
 
     def ir_actualizar(self):
+        """Abre la vista para revisar o modificar el usuario seleccionado."""
         item_id = self.tree.selection()
         if not item_id:
             messagebox.showinfo(

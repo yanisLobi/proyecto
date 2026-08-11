@@ -4,12 +4,16 @@ from tkcalendar import DateEntry
 
 from crud.eventos.crearEventos import CrearEventosMongo, COLORES_EVENTO
 from herramients import navegar_a_pagina, obtener_indice, mostrar_sin_registros, validar_widget, validar_combo
-from db_mongo import actualizar_registro, obtener_registros
-from db_mysql import obtener_valores as _obtener_valores_mysql
+from db.db_mongo import actualizar_registro, obtener_registros
+from db.db_mysql import obtener_valores as _obtener_valores_mysql
 
 
 class ActualizarEventosMongo(CrearEventosMongo):
+    """Muestra un formulario para editar un recordatorio existente.
+    Reutiliza el formulario base y lo llena con la información actual."""
+
     def __init__(self, parent, id_seleccionado, usuario=None):
+        """Inicializa la vista de actualización con los datos del recordatorio elegido."""
         super().__init__(parent, "Actualizar", usuario=usuario)
         self.id_seleccionado = str(id_seleccionado)
 
@@ -38,7 +42,7 @@ class ActualizarEventosMongo(CrearEventosMongo):
         # poblar medicamentos del tratamiento guardado y seleccionar el correcto
         id_tr_guardado = str(self.evento.get("id_tr", "")).strip()
         if id_tr_guardado:
-            from db_mysql import obtener_medicinas_de_tratamientos
+            from db.db_mysql import obtener_medicinas_de_tratamientos
             meds = obtener_medicinas_de_tratamientos(id_tr_guardado)
             self.medicamentos = [
                 f"{m['id_medicamentos']} {m['me_nombre_comercial']}" for m in meds]
@@ -98,6 +102,7 @@ class ActualizarEventosMongo(CrearEventosMongo):
                 pass
 
     def actualizar_evento(self):
+        """Valida los cambios y guarda la información actualizada del recordatorio."""
         if not validar_widget(self.re_titulo, "Título", max_len=100): return
         if not validar_combo(self.id_tr, "Tratamiento"): return
         if not validar_widget(self.re_hora_inicio, "Hora inicio", max_len=5): return
@@ -113,4 +118,5 @@ class ActualizarEventosMongo(CrearEventosMongo):
         navegar_a_pagina(self.frame, "Lista eventos", usuario=self.usuario)
 
     def guardar(self):
+        """Ejecuta la actualización del recordatorio desde el botón guardar."""
         self.actualizar_evento()

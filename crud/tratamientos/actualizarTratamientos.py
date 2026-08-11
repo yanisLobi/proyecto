@@ -4,11 +4,16 @@ from tkinter import messagebox, ttk
 import tkinter as tk
 from typing import Any, cast
 from herramients import navegar_a_pagina, obtener_indice, regresar_string, mostrar_sin_registros, validar_widget, validar_combo
-from db_mysql import insertar_receta, obtener_registros, actualizar_registro, obtener_medicinas_de_tratamientos, eliminar_recetas_tratamiento, obtener_valores_recetas
+from db.db_mysql import insertar_receta, obtener_registros, actualizar_registro, obtener_medicinas_de_tratamientos, eliminar_recetas_tratamiento, obtener_valores_recetas
 
 
 class ActualizarTratamientos(CrearTratamientos):
+    """Muestra un formulario para actualizar un registro existente.
+    Permite cambiar la información básica y revisar los elementos relacionados."""
+
     def __init__(self, parent, id_seleccionado, usuario={}):
+        """Inicializa la vista de actualización.
+        Carga la información del elemento seleccionado y la muestra en el formulario."""
 
         self.usuario = usuario
         self.tipo_usuario = usuario.get("us_tipo_usuario")
@@ -94,6 +99,8 @@ class ActualizarTratamientos(CrearTratamientos):
                 self.check_medicamentos[id_medicamento].set(True)
 
     def actualizar_tratamientos(self):
+        """Valida la información ingresada y guarda los cambios realizados.
+        Si falta algo importante, muestra un mensaje y no continúa."""
         if not validar_widget(self.tr_nombre, "Nombre", max_len=50): return
         if not validar_widget(self.tr_descripcion, "Descripción", max_len=100, requerido=False): return
         if not validar_combo(self.id_paciente, "Paciente"): return  
@@ -118,4 +125,5 @@ class ActualizarTratamientos(CrearTratamientos):
             usuario=self.usuario)
 
     def guardar(self):
+        """Ejecuta la actualización desde el botón guardar."""
         self.actualizar_tratamientos()

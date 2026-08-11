@@ -3,11 +3,16 @@ from tkinter import messagebox
 from crud.medicamentos.crearMedicamentos import CrearMedicamentos
 import tkinter as tk
 from herramients import navegar_a_pagina, obtener_indice, mostrar_sin_registros, validar_widget, validar_combo
-from db_mysql import obtener_registros, actualizar_registro
+from db.db_mysql import obtener_registros, actualizar_registro
 
 
 class ActualizarMedicamentos(CrearMedicamentos):
+    """Muestra un formulario para actualizar un registro existente.
+    Permite cambiar la información básica y revisar los elementos relacionados."""
+
     def __init__(self, parent, id_seleccionado, usuario={}):
+        """Inicializa la vista de actualización.
+        Carga la información del elemento seleccionado y la muestra en el formulario."""
         super().__init__(parent, titulo="Actualizar")
         self.usuario = usuario
         self.tipo_usuario = usuario.get("us_tipo_usuario")
@@ -43,6 +48,8 @@ class ActualizarMedicamentos(CrearMedicamentos):
                     "me_descripcion", "")))
 
     def actualizar_medicamento(self):
+        """Valida la información ingresada y guarda los cambios realizados.
+        Si falta algo importante, muestra un mensaje y no continúa."""
         if not validar_widget(self.me_nombre_comercial, "Nombre comercial", max_len=50): return
         if not validar_widget(self.me_concentracion, "Concentración", max_len=50): return
         if not validar_widget(self.me_descripcion, "Descripción", max_len=100, requerido=False): return
@@ -61,6 +68,7 @@ class ActualizarMedicamentos(CrearMedicamentos):
             usuario=self.usuario)
 
     def guardar(self):
+        """Ejecuta la actualización desde el botón guardar."""
         self.actualizar_medicamento()
 
    # def actualizar_usuario(self):

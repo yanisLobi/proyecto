@@ -5,11 +5,16 @@ from tkcalendar import DateEntry
 from tkinter import ttk
 from tkcalendar import DateEntry
 from herramients import navegar_a_pagina, limpiar_frame, validar_widget, validar_combo
-from db_mysql import insertar_registro
+from db.db_mysql import insertar_registro
 
 
 class CrearMedicamentos:
+    """Muestra un formulario para crear un nuevo registro.
+    Permite ingresar los datos básicos y guardarlos en la base de datos."""
+
     def __init__(self, parent=None, usuario={}, titulo="Crear"):
+        """Inicializa la vista de creación.
+        Carga el formulario y prepara los controles para recibir la información."""
         # me queda la duda de que es parent
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
@@ -105,9 +110,12 @@ class CrearMedicamentos:
         self.me_descripcion.grid(row=2, column=1, sticky="ew", pady=(0, 16))
 
     def limpiar(self):
+        """Limpia los campos del formulario para empezar de nuevo."""
         limpiar_frame(self.frame)
 
     def ir_lista(self):
+        """Regresa a la vista de lista.
+        Cambia de pantalla usando la navegación de la aplicación."""
         navegar_a_pagina(
             self.frame,
             f"Lista {
@@ -115,6 +123,8 @@ class CrearMedicamentos:
             usuario=self.usuario)
 
     def guardar_valores(self):
+        """Recoge los datos escritos en los campos del formulario.
+        Convierte esa información en un diccionario listo para guardarse en la base de datos."""
         # actualizar los valores del diccionario con los valores de lo widgets
         self.nuevo_registro = {
             'me_nombre_comercial': '',
@@ -135,6 +145,8 @@ class CrearMedicamentos:
             "1.0", "end-1c")
 
     def crear_medicamentos(self):
+        """Valida la información ingresada y guarda el nuevo registro.
+        Si falta algo importante, muestra un mensaje y no continúa."""
         if not validar_widget(self.me_nombre_comercial, "Nombre comercial", max_len=50): return
         if not validar_widget(self.me_concentracion, "Concentración", max_len=50): return
         if not validar_widget(self.me_descripcion, "Descripción", max_len=100, requerido=False): return
@@ -152,4 +164,5 @@ class CrearMedicamentos:
         # regresar a lista usuarios
 
     def guardar(self):
+        """Ejecuta la creación desde el botón guardar."""
         self.crear_medicamentos()

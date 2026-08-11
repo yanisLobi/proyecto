@@ -6,13 +6,13 @@ import random
 from herramients import regresar_string
 
 try:
-    from db_mongo import obtener_tabla, actualizar_registro as _mongo_actualizar
+    from db.db_mongo import obtener_tabla, actualizar_registro as _mongo_actualizar
 except Exception:
     obtener_tabla = None
     _mongo_actualizar = None
 
 try:
-    from db_mysql import obtener_registros as _mysql_get, obtener_medicinas_de_tratamientos as _mysql_medicinas_tratamiento, obtener_ids_tratamientos_visibles as _mysql_ids_visibles
+    from db.db_mysql import obtener_registros as _mysql_get, obtener_medicinas_de_tratamientos as _mysql_medicinas_tratamiento, obtener_ids_tratamientos_visibles as _mysql_ids_visibles
 except Exception:
     _mysql_get = None
     _mysql_medicinas_tratamiento = None

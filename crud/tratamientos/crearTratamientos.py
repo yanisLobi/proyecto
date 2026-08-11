@@ -5,11 +5,16 @@ from tkcalendar import DateEntry
 from tkinter import ttk
 from tkcalendar import DateEntry
 from herramients import navegar_a_pagina, limpiar_frame, validar_widget, validar_combo
-from db_mysql import insertar_registro, obtener_medicinas_de_tratamientos, obtener_valores, obtener_valores_medicamentos, obtener_valores_usuarios, insertar_receta
+from db.db_mysql import insertar_registro, obtener_medicinas_de_tratamientos, obtener_valores, obtener_valores_medicamentos, obtener_valores_usuarios, insertar_receta
 
 
 class CrearTratamientos:
+    """Muestra un formulario para crear un nuevo registro.
+    Permite ingresar los datos básicos y guardarlos en la base de datos."""
+
     def __init__(self, parent=None, titulo="Crear", usuario={}):
+        """Inicializa la vista de creación.
+        Carga el formulario y prepara los controles para recibir la información."""
         # me queda la duda de que es parent
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
@@ -192,9 +197,12 @@ class CrearTratamientos:
             self.check_medicamentos[id_medicamento] = var
 
     def limpiar(self):
+        """Limpia los campos del formulario para empezar de nuevo."""
         limpiar_frame(self.frame)
 
     def ir_lista(self):
+        """Regresa a la vista de lista.
+        Cambia de pantalla usando la navegación de la aplicación."""
         navegar_a_pagina(
             self.frame,
             f"Lista {
@@ -202,6 +210,8 @@ class CrearTratamientos:
             usuario=self.usuario)
 
     def guardar_valores(self):
+        """Recoge los datos escritos en los campos del formulario.
+        Convierte esa información en un diccionario listo para guardarse en la base de datos."""
         # actualizar los valores del diccionario con los valores de lo widgets
         self.nuevo_registro = {
             'tr_nombre': '',
@@ -237,6 +247,8 @@ class CrearTratamientos:
                 self.medicamentos_seleccionados}")
 
     def crear_tratamientos(self):
+        """Valida la información ingresada y guarda el nuevo registro.
+        Si falta algo importante, muestra un mensaje y no continúa."""
         if not validar_widget(self.tr_nombre, "Nombre", max_len=50): return
         if not validar_widget(self.tr_descripcion, "Descripción", max_len=100, requerido=False): return
         if not validar_combo(self.id_paciente, "Paciente"): return
@@ -263,4 +275,5 @@ class CrearTratamientos:
         # regresar a lista usuarios
 
     def guardar(self):
+        """Ejecuta la creación desde el botón guardar."""
         self.crear_tratamientos()

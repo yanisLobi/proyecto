@@ -5,12 +5,17 @@ from tkinter import ttk
 from tkcalendar import DateEntry
 from tkinter import messagebox
 from herramients import navegar_a_pagina, limpiar_frame, agregar_boton_mostrar_contrasena, validar_widget, validar_combo
-from db_mysql import insertar_registro
+from db.db_mysql import insertar_registro
 from seguridad import encriptar_contrasena
 
 
 class CrearUsuario:
+    """Muestra un formulario para crear un nuevo usuario.
+    Permite capturar los datos principales y guardarlos en la aplicación."""
+
     def __init__(self, parent, titulo="Crear", usuario={}):
+        """Inicializa la vista de creación del usuario.
+        Carga los campos del formulario y prepara los botones de acción."""
         self.frame = ttkb.Frame(parent)
         self.accion = titulo
         self.frame.pack(fill="both", expand=True)
@@ -219,9 +224,11 @@ class CrearUsuario:
             row=4, column=1, sticky="ew", pady=(0, 16))
 
     def limpiar(self):
+        """Limpia los campos del formulario para empezar de nuevo."""
         limpiar_frame(self.frame)
 
     def ir_lista(self):
+        """Regresa a la vista de lista de usuarios."""
         navegar_a_pagina(
             self.frame,
             f"Lista {
@@ -229,6 +236,8 @@ class CrearUsuario:
             usuario=self.usuario)
 
     def guardar_valores(self):
+        """Recoge la información ingresada en los campos del formulario.
+        Convierte esos datos en un diccionario listo para guardar."""
         # actualizar los valores del diccionario con los valores de lo widgets
         self.nuevo_registro = {
             'us_tipo_usuario': '',
@@ -258,6 +267,8 @@ class CrearUsuario:
         self.nuevo_registro["us_especialidad"] = self.us_especialidad.get()
 
     def crear_usuario(self):
+        """Valida la información ingresada y guarda el nuevo usuario.
+        Si falta algún dato importante, muestra un mensaje y no continúa."""
         if not validar_combo(self.us_tipo_usuario, "Tipo de usuario"): return
         if not validar_widget(self.us_nombre, "Nombre", max_len=50): return
         if not validar_widget(self.us_apellidos, "Apellidos", max_len=50): return
@@ -282,4 +293,5 @@ class CrearUsuario:
         navegar_a_pagina(self.frame, "Lista usuarios", usuario=self.usuario)
 
     def guardar(self):
+        """Ejecuta la creación del usuario desde el botón guardar."""
         self.crear_usuario()

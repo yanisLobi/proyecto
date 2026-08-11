@@ -1,7 +1,7 @@
 import ttkbootstrap as ttkb
 
 
-from db_mongo import obtener_registros
+from db.db_mongo import obtener_registros
 from herramients import navegar_a_pagina
 
 

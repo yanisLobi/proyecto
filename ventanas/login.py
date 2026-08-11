@@ -3,7 +3,7 @@ from tkinter import messagebox
 
 from ventanas.aplicacion import iniciar_aplicacion
 from ventanas.registro import iniciar_registro
-from db_mysql import obtener_tabla
+from db.db_mysql import obtener_tabla
 import ttkbootstrap as ttkb
 from seguridad import verificar_contrasena
 from herramients import agregar_boton_mostrar_contrasena
@@ -112,8 +112,14 @@ def main():
 
         usuario = [usuario for usuario in lista_usuarios if usuario.get(
             "us_correo_electronico") == correo_introducido][0]
+<<<<<<< Updated upstream
         nombre_usuario = usuario.get("us_nombre")
 
+=======
+        nombre_usuario = [usuario.get("us_nombre") for usuario in lista_usuarios if usuario.get(
+            "us_correo_electronico") == correo_introducido][0]
+        print(f"Usuario encontrado en la DB: {usuario}")
+>>>>>>> Stashed changes
         contenido_frame.pack_forget()
         frame_bienvenida = ttkb.Frame(ventana)
         frame_bienvenida.grid_columnconfigure(0, weight=1)

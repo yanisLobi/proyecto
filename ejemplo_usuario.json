@@ -1,0 +1,14 @@
+{
+  "id_usuarios": 27,
+  "us_tipo_usuario": "Administrador",
+  "us_nombre": "Fabian",
+  "us_apellidos": "Carmona Juárez",
+  "us_fecha_nacimiento": "2091-08-15",
+  "us_contraseña": "$2b$12$IHX30dLJwRsTKYKBAsHzNew3eOFZVLuyiB/PzawZ/xw25fdr4Syvq",
+  "us_telefono": 4455662324,
+  "us_correo_electronico": "a",
+  "us_direccion": "Avenida Belén #102",
+  "us_especialidad": "",
+  "us_activo": 1,
+  "us_cedula": 3456788
+}

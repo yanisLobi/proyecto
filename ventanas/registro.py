@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 
 from crud.usuarios.crearUsuarios import CrearUsuario
-from db_mysql import insertar_registro
+from db.db_mysql import insertar_registro
 
 
 def iniciar_registro(ventana_login):

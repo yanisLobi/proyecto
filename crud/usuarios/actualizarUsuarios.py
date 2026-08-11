@@ -3,11 +3,16 @@ from tkinter import messagebox
 from crud.usuarios.crearUsuarios import CrearUsuario
 import tkinter as tk
 from herramients import navegar_a_pagina, obtener_indice, mostrar_sin_registros, validar_widget, validar_combo
-from db_mysql import obtener_registros, actualizar_registro
+from db.db_mysql import obtener_registros, actualizar_registro
 
 
 class ActualizarUsuarios(CrearUsuario):
+    """Muestra un formulario para actualizar un usuario existente.
+    Carga los datos actuales y permite editarlos desde la misma interfaz."""
+
     def __init__(self, parent, id_seleccionado, usuario={}):
+        """Inicializa la vista de actualización con los datos del usuario elegido.
+        Busca la información correspondiente y la muestra en los campos del formulario."""
 
         self.usuario = usuario
         self.tipo_usuario = usuario.get("us_tipo_usuario")
@@ -44,6 +49,8 @@ class ActualizarUsuarios(CrearUsuario):
                 "ninguno"))
 
     def actualizar_usuario(self):
+        """Valida los datos editados y guarda los cambios del usuario.
+        Si falta información importante, muestra un mensaje y no continúa."""
         if not validar_combo(self.us_tipo_usuario, "Tipo de usuario"): return
         if not validar_widget(self.us_nombre, "Nombre", max_len=50): return
         if not validar_widget(self.us_apellidos, "Apellidos", max_len=50): return
@@ -69,4 +76,5 @@ class ActualizarUsuarios(CrearUsuario):
         navegar_a_pagina(self.frame, "Lista usuarios", usuario=self.usuario)
 
     def guardar(self):
+        """Ejecuta la actualización del usuario desde el botón guardar."""
         self.actualizar_usuario()

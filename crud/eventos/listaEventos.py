@@ -5,18 +5,21 @@ from tkinter import messagebox
 from typing import Any, cast
 
 from herramients import navegar_a_pagina, regresar_string, mostrar_sin_registros
-from db_mongo import (
+from db.db_mongo import (
     obtener_eventos_doctor,
     obtener_eventos_enfermera,
     obtener_tabla,
     borrar_registro
    
 )
-from db_mysql import obtener_tabla as obtener_tabla_mysql
+from db.db_mysql import obtener_tabla as obtener_tabla_mysql
 
 
 class ListaEventos:
+    """Muestra una vista básica de recordatorios en pantalla."""
+
     def __init__(self, parent):
+        """Inicializa el encabezado de la vista de recordatorios."""
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
 
@@ -29,7 +32,12 @@ class ListaEventos:
 
 
 class ListaEventosMongo:
+    """Muestra la lista principal de recordatorios en una tabla interactiva.
+    Permite crear, eliminar, revisar y navegar según el tipo de usuario."""
+
     def __init__(self, parent, usuario=None):
+        """Inicializa la vista de lista con los controles y la tabla de datos.
+        Recibe el contenedor principal y la información del usuario activo."""
         self.tabla = "consultas"
         self.frame = ttkb.Frame(parent)
         self.frame.pack(fill="both", expand=True)
@@ -117,15 +125,13 @@ class ListaEventosMongo:
         }
         self.fk_ids_por_fila = {}
 
-        self.tree.bind("<Double-1>", self.on_doble_click)
-        self.tree.bind("<Motion>", self.on_mouse_move)
-
         self.recargar_tabla()
         self.tree.bind("<<TreeviewSelect>>", self.on_seleccion)
         self.on_seleccion()
         self.tree.pack(pady=(10, 0))
 
     def recargar_tabla(self):
+        """Actualiza la información visible en la tabla de recordatorios."""
         for item in self.tree.get_children():
             self.tree.delete(item)
 
@@ -159,9 +165,11 @@ class ListaEventosMongo:
         self.on_seleccion()
 
     def ir_crear(self):
+        """Abre la pantalla para crear un nuevo recordatorio."""
         navegar_a_pagina(self.frame, "Crear eventos", usuario=self.usuario)
 
     def on_seleccion(self, event=None):
+        """Activa o desactiva los botones según haya una fila seleccionada."""
         if self.boton_actualizar is None and self.boton_eliminar is None:
             return
 
@@ -172,6 +180,7 @@ class ListaEventosMongo:
             self.boton_eliminar.config(state=estado)
 
     def obtener_id_seleccionado(self):
+        """Devuelve el identificador del recordatorio seleccionado."""
         item_id = self.tree.selection()
         if not item_id:
             messagebox.showinfo(
@@ -186,6 +195,7 @@ class ListaEventosMongo:
         return str(valores[0])
 
     def borrar(self):
+        """Elimina el recordatorio seleccionado de la lista."""
         id_seleccionado = self.obtener_id_seleccionado()
         if not id_seleccionado:
             return
@@ -197,6 +207,7 @@ class ListaEventosMongo:
         self.recargar_tabla()
 
     def ir_actualizar(self):
+        """Abre la vista para revisar o modificar el recordatorio elegido."""
         id_seleccionado = self.obtener_id_seleccionado()
         if not id_seleccionado:
             return
@@ -209,6 +220,8 @@ class ListaEventosMongo:
         )
 
     def _cargar_display_map_tratamientos(self):
+        """Construye un mapa de texto para mostrar mejor los tratamientos.
+        Combina nombres relacionados para que la tabla sea más legible."""
         try:
             tratamientos = obtener_tabla_mysql(
                 "tratamientos", solo_activos=False)
@@ -229,6 +242,7 @@ class ListaEventosMongo:
             return {}
 
     def obtener_celda_evento(self, event):
+        """Devuelve la celda seleccionada en la tabla a partir del clic del usuario."""
         region = self.tree.identify_region(event.x, event.y)
         if region != "cell":
             return None
@@ -252,31 +266,3 @@ class ListaEventosMongo:
             return None
 
         return row_id, col_name, values[col_index]
-
-    def on_doble_click(self, event):
-        info = self.obtener_celda_evento(event)
-        if not info:
-            return
-
-        row_iid, col_name, _ = info
-        pagina = self.fk_paginas.get(col_name)
-        if not pagina:
-            return
-
-        id_real = self.fk_ids_por_fila.get(row_iid, {}).get(col_name)
-        if id_real in (None, ""):
-            return
-
-        navegar_a_pagina(
-            self.frame,
-            pagina,
-            id_seleccionado=id_real,
-            tipo_usuario=self.tipo_usuario,
-        )
-
-    def on_mouse_move(self, event):
-        info = self.obtener_celda_evento(event)
-        if info and info[1] in self.fk_paginas:
-            self.tree.configure(cursor="hand2")
-        else:
-            self.tree.configure(cursor="")

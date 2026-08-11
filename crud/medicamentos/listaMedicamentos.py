@@ -3,11 +3,16 @@ import ttkbootstrap as ttkb
 from tkinter import ttk
 from tkinter import messagebox
 from herramients import navegar_a_pagina, obtener_columnas, regresar_string, mostrar_sin_registros
-from db_mysql import obtener_tabla, borrar_registro, obtener_tratamientos_enfermera
+from db.db_mysql import obtener_tabla, borrar_registro, obtener_tratamientos_enfermera
 
 
 class ListaMedicamentos:
+    """Muestra la lista de registros en una tabla interactiva.
+    Permite ver, eliminar y navegar a otras pantallas según el tipo de usuario."""
+
     def __init__(self, parent, usuario={}):
+        """Inicializa la vista de lista con los botones y la tabla de registros.
+        parent es el contenedor de la interfaz y usuario guarda la sesión actual."""
 
         self.tabla = 'medicamentos'
         self.frame = ttkb.Frame(parent)
@@ -87,6 +92,8 @@ class ListaMedicamentos:
         self.tree.pack(pady=(10, 0))
 
     def recargar_tabla(self):
+        """Actualiza la información mostrada en la tabla según el usuario actual.
+        Carga los registros disponibles y los muestra en la vista."""
         # limpiar filas
         for item in self.tree.get_children():
             self.tree.delete(item)
@@ -104,6 +111,8 @@ class ListaMedicamentos:
         self.on_seleccion()
 
     def ir_crear(self):
+        """Abre la pantalla para crear un nuevo registro.
+        Cambia de vista y pasa el usuario activo como contexto."""
         navegar_a_pagina(
             self.frame,
             f"Crear {
@@ -111,6 +120,8 @@ class ListaMedicamentos:
             usuario=self.usuario)
 
     def on_seleccion(self, event=None):
+        """Activa o desactiva los botones de acción según haya una fila seleccionada.
+        Esto evita ejecutar acciones sin un registro elegido."""
         if self.boton_actualizar is None and self.boton_eliminar is None:
             return
         estado = "normal" if self.tree.selection() else "disabled"
@@ -120,6 +131,8 @@ class ListaMedicamentos:
             self.boton_eliminar.config(state=estado)
 
     def obtener_id_seleccionado(self):
+        """Devuelve el identificador del registro que está seleccionado.
+        Si no hay selección, muestra un mensaje de advertencia."""
         item_id = self.tree.selection()
         if not item_id:
             messagebox.showinfo(
@@ -135,6 +148,8 @@ class ListaMedicamentos:
         return self.valores[0]
 
     def borrar(self):
+        """Elimina el registro seleccionado de la lista.
+        Usa el identificador actual para borrar el elemento correspondiente."""
 
         id = self.obtener_id_seleccionado()
         borrar_registro(self.tabla, self.columnas_tupla[0], id)
@@ -144,6 +159,8 @@ class ListaMedicamentos:
         self.recargar_tabla()
 
     def ir_actualizar(self):
+        """Abre la pantalla para ver o modificar el registro seleccionado.
+        Pasa el identificador del elemento elegido a la siguiente vista."""
 
         item_id = self.tree.selection()
         if not item_id:
