@@ -112,14 +112,9 @@ def main():
 
         usuario = [usuario for usuario in lista_usuarios if usuario.get(
             "us_correo_electronico") == correo_introducido][0]
-<<<<<<< Updated upstream
         nombre_usuario = usuario.get("us_nombre")
 
-=======
-        nombre_usuario = [usuario.get("us_nombre") for usuario in lista_usuarios if usuario.get(
-            "us_correo_electronico") == correo_introducido][0]
         print(f"Usuario encontrado en la DB: {usuario}")
->>>>>>> Stashed changes
         contenido_frame.pack_forget()
         frame_bienvenida = ttkb.Frame(ventana)
         frame_bienvenida.grid_columnconfigure(0, weight=1)
